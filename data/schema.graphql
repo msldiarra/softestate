@@ -1,0 +1,94 @@
+type Contact implements Node {
+  id: ID!
+  first_name: String
+  last_name: String
+  credentials: [Login]
+}
+
+type ContactInfo implements Node {
+  id: ID!
+  email: String
+}
+
+type Customer implements Node {
+  id: ID!
+  name: String
+  contacts: [Contact]
+}
+
+type Login implements Node {
+  id: ID!
+  login: String
+  password: String
+  enabled: Boolean
+}
+
+interface Node {
+  id: ID!
+}
+
+type Owner implements Node {
+  id: ID!
+  reference: String
+  name: String
+  type: String
+  contact: [Contact]
+  rentSummary: RentSummary
+  sellSummary: SellSummary
+}
+
+type OwnersConnection {
+  pageInfo: PageInfo!
+  edges: [OwnersEdge]
+}
+
+type OwnersEdge {
+  node: Owner
+  cursor: String!
+}
+
+type OwnerType implements Node {
+  id: ID!
+  label: String
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type Property implements Node {
+  id: ID!
+  name: String
+  enabled: Boolean
+  type: String
+}
+
+type Query {
+  node(id: ID!): Node
+  viewer(userID: Int!): User
+}
+
+type RentSummary implements Node {
+  id: ID!
+  apartmentCount: Int
+  houseCount: Int
+  landCount: Int
+}
+
+type SellSummary implements Node {
+  id: ID!
+  apartmentCount: Int
+  houseCount: Int
+  landCount: Int
+}
+
+type User implements Node {
+  id: ID!
+  credentials: Login
+  contact: Contact
+  info: ContactInfo
+  owners(after: String, first: Int, before: String, last: Int): OwnersConnection
+}
