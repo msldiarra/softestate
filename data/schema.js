@@ -23,6 +23,11 @@ import {
 
 import DB from './database';
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+exports.AddOwnerMutation = undefined;
 
 var {nodeInterface, nodeField} = nodeDefinitions(
     (globalId) => {
@@ -61,10 +66,11 @@ var {nodeInterface, nodeField} = nodeDefinitions(
 
 const userType = new GraphQLObjectType({
   name: 'User',
-  description: 'A realestate agency owner',
+  description: 'A realestate agency customer',
   fields: () => {
     return {
       id: globalIdField('User'),
+      customer: { type: GraphQLString, resolve(user) { return user.customer} },
       credentials: { type: loginType, resolve(user) { return DB.models.login.findOne({where: {login: user.login}}) } },
       contact: { type: contactType, resolve(user) { return DB.models.contact.findOne({where: {id: user.id}}) } },
       info: { type: contactInfoType, resolve(user) { return DB.models.contact_info.findOne({where: {email: user.email}}) } },
@@ -211,9 +217,11 @@ const propertyType = new GraphQLObjectType({
 /**
  * Define your own connection types here
  */
+/*
 var {connectionType: propertyConnection} =
     connectionDefinitions({name: 'Properties', nodeType: propertyType});
-var {connectionType: ownerConnection} =
+*/
+export var {connectionType: ownerConnection} =
     connectionDefinitions({name: 'Owners', nodeType: ownerType});
 
 /**
@@ -242,36 +250,41 @@ var queryType = new GraphQLObjectType({
  * This is the type that will be the root of our mutations,
  * and the entry point into performing writes in our schema.
  */
-/**
-var AddNewPropertyMutation = mutationWithClientMutationId({
-  name: 'AddNewProperty',
+
+var AddOwnerMutation = exports.AddOwnerMutation = mutationWithClientMutationId({
+  name: 'AddOwner',
   inputFields: {
     name: { type: new GraphQLNonNull(GraphQLString) },
     reference: { type: new GraphQLNonNull(GraphQLString) },
-    type_id: { type: new GraphQLNonNull(GraphQLInt) },
+    type: { type: new GraphQLNonNull(GraphQLInt) },
   },
   outputFields: {
-    hidingSpot: {
-      type: hidingSpotType,
-      resolve: ({localHidingSpotId}) => getHidingSpot(localHidingSpotId),
-    },
-    game: {
-      type: gameType,
-      resolve: () => getGame(),
-    },
+    user: {
+      type: userType,
+      resolve: ({userID}) => DB.models.user.findOne({where: {id: userID}}),
+    }
   },
-  mutateAndGetPayload: ({id}) => {
-    var localHidingSpotId = fromGlobalId(id).id;
-    checkHidingSpotForTreasure(localHidingSpotId);
-    return {localHidingSpotId};
+  mutateAndGetPayload: ({reference, name, type}) => {
+
+    var owner = {
+      reference: reference,
+      type_id: type
+    };
+
+    return DB.models.owner.create(owner).then((owner)  => {
+      // spread is necessary when multiple return value
+      console.log("created event : " + JSON.stringify(owner));
+      return owner;
+    });
+
   },
 });
-*/
+
 
 var mutationType = new GraphQLObjectType({
   name: 'Mutation',
   fields: () => ({
-    /**addNewProperty: AddNewPropertyMutation,**/
+    addOwnerMutation: AddOwnerMutation
   })
 });
 
@@ -282,5 +295,5 @@ var mutationType = new GraphQLObjectType({
 export var Schema = new GraphQLSchema({
   query: queryType,
   // Uncomment the following after adding some mutation fields:
-  // mutation: mutationType
+  mutation: mutationType
 });

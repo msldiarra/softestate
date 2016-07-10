@@ -1,3 +1,15 @@
+input AddOwnerInput {
+  name: String!
+  reference: String!
+  type: Int!
+  clientMutationId: String!
+}
+
+type AddOwnerPayload {
+  user: User
+  clientMutationId: String!
+}
+
 type Contact implements Node {
   id: ID!
   first_name: String
@@ -21,6 +33,10 @@ type Login implements Node {
   login: String
   password: String
   enabled: Boolean
+}
+
+type Mutation {
+  addOwnerMutation(input: AddOwnerInput!): AddOwnerPayload
 }
 
 interface Node {
@@ -87,6 +103,7 @@ type SellSummary implements Node {
 
 type User implements Node {
   id: ID!
+  customer: String
   credentials: Login
   contact: Contact
   info: ContactInfo

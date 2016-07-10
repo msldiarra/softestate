@@ -4,6 +4,7 @@ import { IndexRoute, Route } from 'react-router';
 import AuthenticatedApp from '../components/AuthenticatedApp';
 import Dashboard from '../components/Dashboard';
 import Login from '../components/Login';
+import NewOwner from '../components/NewOwner';
 
 class RouteHome extends Relay.Route {
     static queries = {
@@ -40,6 +41,7 @@ function getParams(params, route){
 export default  <Route>
                     <Route path="/" component={AuthenticatedApp} queries={RouteHome.queries} prepareParams={getParams} >
                         <IndexRoute component={Dashboard} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />
+                        <Route path="newowner" component={NewOwner} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />
                     </Route>
                     <Route path="login" component={Login}  />
                 </Route>
