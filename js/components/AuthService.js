@@ -34,6 +34,11 @@ class Auth {
             });
     }
 
+    getUserId() {
+        console.log(localStorage.getItem('user'))
+        return JSON.parse(localStorage.getItem('user')).id
+    }
+
 
 }
 

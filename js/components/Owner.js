@@ -11,7 +11,7 @@ export default class Owner extends React.Component {
 
 
         let company = owner.type == 'INDIVIDUAL' ?
-            owner.contact[0].first_name+ ' ' + owner.contact[0].last_name :
+            (owner.contact[0]) ? owner.contact[0].first_name+ ' ' + owner.contact[0].last_name : '' :
             owner.name;
 
 

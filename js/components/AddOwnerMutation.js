@@ -1,4 +1,6 @@
 import Relay from 'react-relay';
+import _ from 'lodash'
+
 
 export default class AddOwnerMutation extends Relay.Mutation {
     // This method should return a GraphQL operation that represents
@@ -12,6 +14,7 @@ export default class AddOwnerMutation extends Relay.Mutation {
     // one variable as input – the ID of the story to like.
     getVariables() {
         return {
+            viewerId: this.props.viewerId,
             reference: this.props.reference,
             name: this.props.name,
             type: this.props.type
@@ -43,7 +46,19 @@ export default class AddOwnerMutation extends Relay.Mutation {
                 fieldIDs: {
                     user: this.props.viewer.id
                 }
-            }
+            }/*,
+            {
+                type: 'RANGE_ADD',
+                parentName: 'viewer',
+                parentID: this.props.viewer.id,
+                connectionName: 'owners',
+                edgeName: 'ownerEdge',
+                rangeBehaviors: {
+                    '': 'append',
+                    // Prepend the ship, wherever the connection is sorted by age
+                    'first(100)': 'prepend'
+                }
+            }*/
         ]
     }
     // This mutation has a hard dependency on the story's ID. We specify this
@@ -57,5 +72,14 @@ export default class AddOwnerMutation extends Relay.Mutation {
           }
     `,
     };
+
+    getOptimisticResponse() {
+
+        return {
+            viewer: {
+                id: this.props.viewer.id,
+            }
+        };
+    }
 }
 

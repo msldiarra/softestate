@@ -22,12 +22,16 @@ import {
 } from 'graphql-relay';
 
 import DB from './database';
+import _ from 'underscore';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
 exports.AddOwnerMutation = undefined;
+
+
+var AppMessage = {};
 
 var {nodeInterface, nodeField} = nodeDefinitions(
     (globalId) => {
@@ -42,6 +46,7 @@ var {nodeInterface, nodeField} = nodeDefinitions(
       if (type === 'OwnerType') { return DB.models.owner_type.findOne({where: {id: id}}); }
       if (type === 'SellSummary') { return DB.models.sell_summary.findOne({where: {id: id}}); }
       if (type === 'RentSummary') { return DB.models.rent_summary.findOne({where: {id: id}}); }
+      if (type === 'AppMessage') { return _.findWhere(AppMessage, {id: id}); }
       else { return null; }
     },
     (obj) => {
@@ -55,6 +60,7 @@ var {nodeInterface, nodeField} = nodeDefinitions(
       else if (obj instanceof OwnerType) { return ownerTypeType; }
       else if (obj instanceof SellSummary) { return sellSummaryType; }
       else if (obj instanceof RentSummary) { return rentSummaryType; }
+      else if (obj instanceof AppMessage) { return appMessageType; }
       else { return null; }
     }
 );
@@ -79,7 +85,8 @@ const userType = new GraphQLObjectType({
         description: "A customer's collection of owners",
         args: connectionArgs,
         resolve: (_, args) => connectionFromPromisedArray(DB.models.owner.findAll(), args)
-      }
+      },
+      message: { type: appMessageType, resolve() { _.findWhere(AppMessage, {id: 0}); } }
     }
   },
   interfaces: [nodeInterface]
@@ -188,6 +195,17 @@ const loginType = new GraphQLObjectType({
   interfaces: [nodeInterface]
 });
 
+const appMessageType = new GraphQLObjectType({
+  name: 'AppMessage',
+  fields: () => {
+    return {
+      id: globalIdField('AppMessage'),
+      text: { type: GraphQLString, resolve(message) { return message.text } }
+    }
+  },
+  interfaces: [nodeInterface]
+});
+
 const contactInfoType = new GraphQLObjectType({
   name: 'ContactInfo',
   fields: () => {
@@ -221,7 +239,7 @@ const propertyType = new GraphQLObjectType({
 var {connectionType: propertyConnection} =
     connectionDefinitions({name: 'Properties', nodeType: propertyType});
 */
-export var {connectionType: ownerConnection} =
+export var {connectionType: ownerConnection, edgeType : ownerEdge} =
     connectionDefinitions({name: 'Owners', nodeType: ownerType});
 
 /**
@@ -254,6 +272,7 @@ var queryType = new GraphQLObjectType({
 var AddOwnerMutation = exports.AddOwnerMutation = mutationWithClientMutationId({
   name: 'AddOwner',
   inputFields: {
+    viewerId: { type: new GraphQLNonNull(GraphQLInt) },
     name: { type: new GraphQLNonNull(GraphQLString) },
     reference: { type: new GraphQLNonNull(GraphQLString) },
     type: { type: new GraphQLNonNull(GraphQLInt) },
@@ -261,10 +280,10 @@ var AddOwnerMutation = exports.AddOwnerMutation = mutationWithClientMutationId({
   outputFields: {
     user: {
       type: userType,
-      resolve: ({userID}) => DB.models.user.findOne({where: {id: userID}}),
+      resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}}),
     }
   },
-  mutateAndGetPayload: ({reference, name, type}) => {
+  mutateAndGetPayload: ({viewerId, reference, name, type}) => {
 
     var owner = {
       reference: reference,
@@ -272,19 +291,52 @@ var AddOwnerMutation = exports.AddOwnerMutation = mutationWithClientMutationId({
     };
 
     return DB.models.owner.create(owner).then((owner)  => {
-      // spread is necessary when multiple return value
-      console.log("created event : " + JSON.stringify(owner));
-      return owner;
+      return {
+        viewerId: viewerId,
+        owner: owner
+      };
     });
 
   },
 });
 
+var AddAppMessageMutation = exports.AddAppMessageMutation = mutationWithClientMutationId({
+  name: 'AddAppMessage',
+  inputFields: {
+    viewerId: { type: new GraphQLNonNull(GraphQLInt) },
+    text: { type: new GraphQLNonNull(GraphQLString) }
+  },
+  outputFields: {
+    user: {
+      type: userType,
+      resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}}),
+    },
+    message: {
+      type: appMessageType,
+      resolve: ({appMessage}) => appMessage
+    }
+  },
+  mutateAndGetPayload: ({viewerId, text}) => {
+
+    var appMessage = {
+      id: 0,
+      text: text
+    };
+
+    AppMessage = appMessage;
+
+    return {
+      viewerId: viewerId,
+      appMessage: appMessage
+    };
+  }
+});
 
 var mutationType = new GraphQLObjectType({
   name: 'Mutation',
   fields: () => ({
-    addOwnerMutation: AddOwnerMutation
+    addOwnerMutation: AddOwnerMutation,
+    addAppMessageMutation: AddAppMessageMutation
   })
 });
 

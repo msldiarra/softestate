@@ -1,3 +1,4 @@
+-- noinspection SqlNoDataSourceInspectionForFile
 
 INSERT INTO property_type (label) VALUES ('APARTMENT'), ('HOUSE'), ('LAND');
 INSERT INTO contact_type (label) VALUES ('CUSTOMER'), ('OWNER');

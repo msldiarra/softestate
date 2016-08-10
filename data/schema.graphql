@@ -1,4 +1,17 @@
+input AddAppMessageInput {
+  viewerId: Int!
+  text: String!
+  clientMutationId: String!
+}
+
+type AddAppMessagePayload {
+  user: User
+  message: AppMessage
+  clientMutationId: String!
+}
+
 input AddOwnerInput {
+  viewerId: Int!
   name: String!
   reference: String!
   type: Int!
@@ -8,6 +21,11 @@ input AddOwnerInput {
 type AddOwnerPayload {
   user: User
   clientMutationId: String!
+}
+
+type AppMessage implements Node {
+  id: ID!
+  text: String
 }
 
 type Contact implements Node {
@@ -37,6 +55,7 @@ type Login implements Node {
 
 type Mutation {
   addOwnerMutation(input: AddOwnerInput!): AddOwnerPayload
+  addAppMessageMutation(input: AddAppMessageInput!): AddAppMessagePayload
 }
 
 interface Node {
@@ -108,4 +127,5 @@ type User implements Node {
   contact: Contact
   info: ContactInfo
   owners(after: String, first: Int, before: String, last: Int): OwnersConnection
+  message: AppMessage
 }

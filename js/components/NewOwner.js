@@ -1,12 +1,18 @@
 import React from 'react'
 import Relay from 'react-relay'
 import AddOwnerMutation from './AddOwnerMutation'
+import AddAppMessageMutation from './AddAppMessageMutation'
+import AppMessage from './AppMessage';
+
+import UserService from './AuthService'
+
+
 
 class NewOwner extends React.Component {
 
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {type: 0 };
     }
 
@@ -14,22 +20,33 @@ class NewOwner extends React.Component {
 
         e.preventDefault();
 
+        console.log(this.props.viewer)
+
         var name = this.refs.name.value;
         var reference =  this.refs.reference.value;
         var type =  this.state.type;
 
         var addOwnerMutation = new AddOwnerMutation({
             viewer: this.props.viewer,
+            viewerId: UserService.getUserId(),
             reference: reference,
             name: name,
             type: type
         });
 
-        var onSuccess = (response) => { alert("Test success"); };
+        var onSuccess = (response) => "Success";
 
         var onFailure = (transaction) => console.log("An error occurred when adding new event", "error");
 
         Relay.Store.commitUpdate(addOwnerMutation, {onSuccess, onFailure})
+
+        var addAppMessageMutation = new AddAppMessageMutation({
+            viewer: this.props.viewer,
+            viewerId: UserService.getUserId(),
+            text: "Well done!"
+        });
+
+        Relay.Store.commitUpdate(addAppMessageMutation, {onSuccess, onFailure})
     }
 
     handleType(e) {
@@ -40,6 +57,7 @@ class NewOwner extends React.Component {
 
         return (
             <div className="">
+                <AppMessage message={this.props.viewer.message} />
                 <div className="page-header row">
                     <h4>
                         <span className="col-xs-10"><i className="fa fa-user" aria-hidden="true" /> Nouveau client</span>
@@ -90,12 +108,49 @@ class NewOwner extends React.Component {
 
 
 export default Relay.createContainer(NewOwner, {
+
+    initialVariables: {viewerId: null},
+
+    prepareVariables: prevVariables => {
+        return {
+            ...prevVariables,
+            viewerId: UserService.getUserId() + "",
+        };
+    },
+
     fragments: {
         viewer: () => Relay.QL`
           fragment on User {
-               ${AddOwnerMutation.getFragment('viewer')}
                id
-               customer
+               message {
+                  text
+               }
+               owners(first: 100) {
+                  edges {
+                    node {
+                      id
+                      reference
+                      name
+                      type
+                      contact {
+                        first_name
+                        last_name
+                      }
+                      rentSummary {
+                        apartmentCount
+                        houseCount
+                        landCount
+                      }
+                      sellSummary {
+                        apartmentCount
+                        houseCount
+                        landCount
+                      }
+                    }
+                  },
+                },
+               ${AddOwnerMutation.getFragment('viewer')}
+               ${AddAppMessageMutation.getFragment('viewer')}
           }
     `,
     }
