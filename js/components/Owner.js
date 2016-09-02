@@ -1,5 +1,5 @@
 import React from 'react';
-import Property from './Property';
+import PropertySummary from './PropertySummary';
 
 export default class Owner extends React.Component {
 
@@ -7,12 +7,9 @@ export default class Owner extends React.Component {
 
         var owner = this.props.owner;
 
-        console.log(owner);
-
-
         let company = owner.type == 'INDIVIDUAL' ?
             (owner.contact[0]) ? owner.contact[0].first_name+ ' ' + owner.contact[0].last_name : '' :
-            owner.name;
+            owner.company;
 
 
         return (
@@ -20,7 +17,7 @@ export default class Owner extends React.Component {
                 <div className="background-grey padding-20">
                     <h4 className="bold">Référence {owner.reference} {company? ' - '  + company:''}</h4>
                 </div>
-                <Property rentSummary={owner.rentSummary} sellSummary={owner.sellSummary} />
+                <PropertySummary rentSummary={owner.rentSummary} sellSummary={owner.sellSummary} />
             </div>
         );
     }

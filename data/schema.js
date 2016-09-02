@@ -21,8 +21,29 @@ import {
     nodeDefinitions,
 } from 'graphql-relay';
 
-import DB from './database';
+
+import {
+    DB,
+    User,
+    Contact,
+    Login,
+    ContactInfo,
+    Customer,
+    Owner,
+    Property,
+    PropertyType,
+    OwnerType,
+    SellSummary,
+    RentSummary,
+    Media
+
+}from './database';
 import _ from 'underscore';
+import uploadMedia from './uploadMedia';
+import fs from 'fs';
+const Promise = require('bluebird');
+
+Promise.promisifyAll(fs.writeFile);
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -31,11 +52,11 @@ Object.defineProperty(exports, "__esModule", {
 exports.AddOwnerMutation = undefined;
 
 
-var AppMessage = {};
+export var AppMessage = {id:0, text: ""};
 
 var {nodeInterface, nodeField} = nodeDefinitions(
     (globalId) => {
-      var {type, id} = fromGlobalId(globalId);
+      let {type, id} = fromGlobalId(globalId);
       if (type === 'User') { return DB.models.user.findOne({where: {id: id}}); }
       if (type === 'Contact') { return DB.models.contact.findOne({where: {id: id}}); }
       if (type === 'ContactInfo') { return DB.models.contact_info.findOne({where: {id: id}}); }
@@ -43,6 +64,8 @@ var {nodeInterface, nodeField} = nodeDefinitions(
       if (type === 'Customer') { return DB.models.customer.findOne({where: {id: id}}); }
       if (type === 'Owner') { return DB.models.owner.findOne({where: {id: id}}); }
       if (type === 'Property') { return DB.models.property.findOne({where: {id: id}}); }
+      if (type === 'PropertyType') { return DB.models.property_type.findOne({where: {id: id}}); }
+      if (type === 'Media') { return DB.models.media.findOne({where: {id: id}}); }
       if (type === 'OwnerType') { return DB.models.owner_type.findOne({where: {id: id}}); }
       if (type === 'SellSummary') { return DB.models.sell_summary.findOne({where: {id: id}}); }
       if (type === 'RentSummary') { return DB.models.rent_summary.findOne({where: {id: id}}); }
@@ -50,18 +73,22 @@ var {nodeInterface, nodeField} = nodeDefinitions(
       else { return null; }
     },
     (obj) => {
-      if (obj instanceof User) { return userType; }
-      else if (obj instanceof Contact) { return contactType; }
-      else if (obj instanceof Login) { return loginType; }
-      else if (obj instanceof ContactInfo) { return contactInfoType; }
-      else if (obj instanceof Customer) { return customerType; }
-      else if (obj instanceof Owner) { return ownerType; }
-      else if (obj instanceof Property) { return propertyType; }
-      else if (obj instanceof OwnerType) { return ownerTypeType; }
-      else if (obj instanceof SellSummary) { return sellSummaryType; }
-      else if (obj instanceof RentSummary) { return rentSummaryType; }
-      else if (obj instanceof AppMessage) { return appMessageType; }
-      else { return null; }
+      if (obj instanceof User.Instance) { return userType; }
+      else if (obj instanceof Contact.Instance) { return contactType; }
+      else if (obj instanceof Login.Instance) { return loginType; }
+      else if (obj instanceof ContactInfo.Instance) { return contactInfoType; }
+      else if (obj instanceof Customer.Instance) { return customerType; }
+      else if (obj instanceof Owner.Instance) { return ownerType; }
+      else if (obj instanceof Property.Instance) { return propertyType; }
+      else if (obj instanceof PropertyType.Instance) { return propertyTypeType; }
+      else if (obj instanceof Media.Instance) { return mediaType; }
+      else if (obj instanceof OwnerType.Instance) { return ownerTypeType; }
+      else if (obj instanceof SellSummary.Instance) { return sellSummaryType; }
+      else if (obj instanceof RentSummary.Instance) { return rentSummaryType; }
+      else if (obj instanceof AppMessage.Instance) { return appMessageType; }
+      else {
+        return null;
+      }
     }
 );
 
@@ -70,7 +97,7 @@ var {nodeInterface, nodeField} = nodeDefinitions(
  */
 
 
-const userType = new GraphQLObjectType({
+export const userType = new GraphQLObjectType({
   name: 'User',
   description: 'A realestate agency customer',
   fields: () => {
@@ -79,14 +106,45 @@ const userType = new GraphQLObjectType({
       customer: { type: GraphQLString, resolve(user) { return user.customer} },
       credentials: { type: loginType, resolve(user) { return DB.models.login.findOne({where: {login: user.login}}) } },
       contact: { type: contactType, resolve(user) { return DB.models.contact.findOne({where: {id: user.id}}) } },
-      info: { type: contactInfoType, resolve(user) { return DB.models.contact_info.findOne({where: {email: user.email}}) } },
       owners: {
         type: ownerConnection,
         description: "A customer's collection of owners",
-        args: connectionArgs,
-        resolve: (_, args) => connectionFromPromisedArray(DB.models.owner.findAll(), args)
+        args: {
+          ...connectionArgs,
+          search: {
+            name: 'search',
+            type: new GraphQLNonNull(GraphQLString)
+          }
+        },
+        resolve: (_, args) => {
+          var term = args.search? args.search + '%' : '';
+          return connectionFromPromisedArray(DB.models.owner.findAll({where: {reference: {$like: term} }}), args)
+        }
       },
-      message: { type: appMessageType, resolve() { _.findWhere(AppMessage, {id: 0}); } }
+      properties : {
+        type: propertyConnection,
+        description: "An owner's collection of properties",
+        args: {
+          ...connectionArgs,
+          reference: {
+            name: 'reference',
+            type: GraphQLString
+          }
+        },
+        resolve: (_, args) => {
+
+          var term;
+
+          if(args.reference) {
+            term = {where: {reference: args.reference }}
+          } else {
+            term =  {}
+          }
+
+          return connectionFromPromisedArray(DB.models.property.findAll(term), args)
+        }
+      },
+      message: { type: appMessageType, resolve() { return AppMessage } }
     }
   },
   interfaces: [nodeInterface]
@@ -122,9 +180,17 @@ const ownerType = new GraphQLObjectType({
     return {
       id: globalIdField('Owner'),
       reference: { type: GraphQLString, resolve(owner) { return owner.reference } },
-      name: { type: GraphQLString, resolve(owner) {  return  "Name"}},
+      company: { type: GraphQLString,
+        resolve(owner) {
+          return DB.models.owner_company_name.findOne({where: {owner_id: owner.id}})
+            .then(company_name => {
+              return company_name? company_name.get('name') : '';
+            });
+        }
+      },
       type: { type: GraphQLString, resolve(owner) { return DB.models.owner_type.findOne({where: {id: owner.type_id}}).get('label') } },
-      contact: { type: new GraphQLList(contactType), resolve(owner) { return owner.getContacts() } },
+      type_id: { type: GraphQLInt, resolve(owner) { return owner.type_id}},
+      contact: { type: contactType, resolve(owner) { return owner.getContacts().then( contacts => contacts ? contacts[0] : {} ) } },
       rentSummary: {
         type: rentSummaryType,
         description: "A customer's properties to rent summary",
@@ -134,6 +200,12 @@ const ownerType = new GraphQLObjectType({
         type: sellSummaryType,
         description: "A customer's properties to sell summary",
         resolve(owner) { return owner.getSellSummary();}
+      },
+      properties : {
+        type: propertyConnection,
+        description: "An owner's collection of properties",
+        args: connectionArgs,
+        resolve: (owner, args) => connectionFromPromisedArray(owner.getProperties(), args)
       }
     }
   },
@@ -176,6 +248,7 @@ const contactType = new GraphQLObjectType({
       id: globalIdField('Contact'),
       first_name: { type: GraphQLString, resolve(contact) { return contact.first_name } },
       last_name: { type: GraphQLString, resolve(contact) { return contact.last_name } },
+      info: {type: contactInfoType, resolve(contact) {return contact.getContactInfo().then(infos => infos ? infos[0]: {})}},
       credentials: { type: new GraphQLList(loginType), resolve(contact) { return contact.getLogins() } }
     }
   },
@@ -211,7 +284,7 @@ const contactInfoType = new GraphQLObjectType({
   fields: () => {
     return {
       id: globalIdField('ContactInfo'),
-      email: { type: GraphQLString, resolve(contactInfo) { return contactInfo.email } }
+      phone: { type: GraphQLString, resolve(contactInfo) { return contactInfo.phone } }
     }
   },
   interfaces: [nodeInterface]
@@ -224,23 +297,73 @@ const propertyType = new GraphQLObjectType({
     return {
       id: globalIdField('Property'),
       name: { type: GraphQLString, resolve(property) { return property.name } },
+      reference: { type: GraphQLString, resolve(property) { return property.reference } },
       enabled: { type: GraphQLBoolean, resolve(property) { return property.enabled } },
-      type: { type: GraphQLString, resolve(property) { return property.getType().reference } }
+      type_label: { type: GraphQLString, resolve(property) { return DB.models.property_type.findOne({where :{id: property.type_id } }).get('label')}},
+      type_id: { type: GraphQLInt, resolve(property) { return property.type_id}},
+      contract_type: { type: GraphQLInt, resolve(property) { return DB.models.property_property_contract.findOne({where :{property_id: property.type_id } }).get('id')}},
+      description: { type: GraphQLString, resolve(property) { return DB.models.property_description.findOne({where :{property_id: property.id } }).get('description')}},
+      owner: { type: ownerType, resolve(property) { return property.getOwners().then( owners => owners[0]) }},
+      media: {
+        type: mediaConnection,
+        description: "A property's collection of images",
+        args: connectionArgs,
+        resolve: (property, args) => {
+          return connectionFromPromisedArray(property.getMedia(), args)
+        }
+      }
+    }
+  },
+  interfaces: [nodeInterface]
+});
+
+export const propertyTypeType = new GraphQLObjectType({
+  name: 'PropertyType',
+  fields: () => {
+    return {
+      id: globalIdField('PropertyType'),
+      label: { type: GraphQLString, resolve(propertyTypeType) { return propertyTypeType.label } }
     }
   },
   interfaces: [nodeInterface]
 });
 
 
-/**
+export const mediaType = new GraphQLObjectType({
+  name: 'Media',
+  fields: () => ({
+    id: globalIdField('Media'),
+    uri: {
+      type: GraphQLString,
+      description: 'Media uri',
+      resolve(mediaType) { return mediaType.uri }
+    },
+    name: {
+      type: GraphQLString,
+      description: 'Media name',
+      resolve(mediaType) { return mediaType.name }
+    },
+    mime_type: {
+      type: GraphQLString,
+      description: 'Media mime type',
+      resolve(mediaType) { return mediaType.mime_type }
+    },
+  }),
+  interfaces: [nodeInterface]
+});
+
+/**!!
  * Define your own connection types here
  */
-/*
-var {connectionType: propertyConnection} =
+
+export var {connectionType: propertyConnection} =
     connectionDefinitions({name: 'Properties', nodeType: propertyType});
-*/
+
 export var {connectionType: ownerConnection, edgeType : ownerEdge} =
     connectionDefinitions({name: 'Owners', nodeType: ownerType});
+
+export var {connectionType: mediaConnection, edgeType : mediaEdge} =
+    connectionDefinitions({name: 'Medias', nodeType: mediaType});
 
 /**
  * This is the type that will be the root of our query,
@@ -259,7 +382,7 @@ var queryType = new GraphQLObjectType({
           type: new GraphQLNonNull(GraphQLInt)
         }
       },
-      resolve: (root, {userID}) => DB.models.user.findOne({where: {id: userID}}),
+      resolve: (root, {userID}) => DB.models.user.findOne({where: {id: userID}})
     },
   }),
 });
@@ -273,17 +396,21 @@ var AddOwnerMutation = exports.AddOwnerMutation = mutationWithClientMutationId({
   name: 'AddOwner',
   inputFields: {
     viewerId: { type: new GraphQLNonNull(GraphQLInt) },
-    name: { type: new GraphQLNonNull(GraphQLString) },
+    company: { type: new GraphQLNonNull(GraphQLString) },
     reference: { type: new GraphQLNonNull(GraphQLString) },
+    firstName: { type: new GraphQLNonNull(GraphQLString) },
+    lastName: { type: new GraphQLNonNull(GraphQLString) },
+    phone: { type: new GraphQLNonNull(GraphQLString) },
     type: { type: new GraphQLNonNull(GraphQLInt) },
   },
   outputFields: {
     user: {
       type: userType,
-      resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}}),
+      resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}})
     }
+
   },
-  mutateAndGetPayload: ({viewerId, reference, name, type}) => {
+  mutateAndGetPayload: ({viewerId, reference, company, firstName, lastName, phone, type}) => {
 
     var owner = {
       reference: reference,
@@ -291,6 +418,91 @@ var AddOwnerMutation = exports.AddOwnerMutation = mutationWithClientMutationId({
     };
 
     return DB.models.owner.create(owner).then((owner)  => {
+
+      if(company){
+        owner.createOwnerCompanyName({
+          name: company
+        })
+      }
+
+      if(firstName || lastName) {
+        owner.createContact({
+          first_name: firstName,
+          last_name: lastName
+        }).then(contact => {
+
+          if(phone) {
+            contact.createContactInfo({
+              phone: phone
+            })
+          }
+        })
+        .catch(response => {
+
+          console.log(response)
+        });
+
+
+      }
+
+      return {
+        viewerId: viewerId,
+        owner: owner
+      };
+
+    });
+
+  },
+});
+
+var EditOwnerMutation = exports.EditOwnerMutation = mutationWithClientMutationId({
+  name: 'EditOwner',
+  inputFields: {
+    viewerId: { type: new GraphQLNonNull(GraphQLInt) },
+    reference: { type: new GraphQLNonNull(GraphQLString) },
+    company: { type: new GraphQLNonNull(GraphQLString) },
+    firstName: { type: new GraphQLNonNull(GraphQLString) },
+    lastName: { type: new GraphQLNonNull(GraphQLString) },
+    phone: { type: new GraphQLNonNull(GraphQLString) },
+    type: { type: new GraphQLNonNull(GraphQLInt) }
+  },
+  outputFields: {
+    user: {
+      type: userType,
+      resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}})
+    }
+
+  },
+  mutateAndGetPayload: ({viewerId, reference, company, firstName, lastName, type, phone}) => {
+
+    return DB.models.owner.findOne({where : {reference : reference }})
+        .then(owner => owner.updateAttributes({type_id: type}) )
+        .then((owner)  => {
+
+          DB.models.owner_company_name.findOne({where: {owner_id: owner.id}})
+              .then(owner_company_name => owner_company_name.updateAttributes({name: company}))
+
+          if(firstName || lastName) {
+            DB.models.owner_contact.findOne({where: {owner_id: owner.id}})
+                .then(owner_contact => {
+
+                  if (owner_contact) {
+                    DB.models.contact.findOne({where: {id: owner_contact.contact_id}})
+                        .then(contact => {
+
+                          contact.updateAttributes({first_name: firstName, last_name: lastName})
+
+                          if (contact.getContactInfo()) { contact.getContactInfo().then(contactInfo => contactInfo[0].updateAttributes({phone: phone})) }
+                          else { if (phone) contact.createContactInfo({phone: phone}) }
+                        })
+                  }
+                  else {
+                    owner.createContact({first_name: firstName, last_name: lastName})
+                        .then(contact => { if (phone) contact.createContactInfo({phone: phone}) })
+                  }
+                })
+          }
+
       return {
         viewerId: viewerId,
         owner: owner
@@ -299,6 +511,187 @@ var AddOwnerMutation = exports.AddOwnerMutation = mutationWithClientMutationId({
 
   },
 });
+
+var AddPropertyMutation = exports.AddPropertyMutation = mutationWithClientMutationId({
+  name: 'AddProperty',
+  inputFields: {
+    viewerId: { type: new GraphQLNonNull(GraphQLInt) },
+    name: { type: new GraphQLNonNull(GraphQLString) },
+    reference: { type: new GraphQLNonNull(GraphQLString) },
+    propertyType: { type: new GraphQLNonNull(GraphQLInt) },
+    contractType: { type: new GraphQLNonNull(GraphQLInt) },
+    description: { type: GraphQLString },
+    ownerRef: { type: new GraphQLNonNull(GraphQLString) },
+    mediaName: { type: GraphQLString }
+  },
+  outputFields: {
+    user: {
+      type: userType,
+      resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}}),
+    }
+  },
+  mutateAndGetPayload: ({viewerId, name, reference, propertyType, contractType, description, ownerRef, mediaName}) => {
+
+    return DB.models.owner.findOne({where: {reference: ownerRef}})
+        .then((owner) =>
+            owner.createProperty({
+                  name: name,
+                  reference: reference,
+                  type_id: propertyType
+                }
+            )
+        ).then((property) => {
+
+          property.createPropertyPropertyContract({
+            property_id: property.id,
+            property_contract_id: contractType
+          });
+
+          property.createPropertyDescription({
+            property_id: property.id,
+            description: description
+          });
+
+          return property;
+
+        })
+        .then((property) => {
+
+          if(mediaName) {
+            DB.models.media.findOne({where: {name: mediaName}})
+            .then((media) => {
+              if(media) {
+                property.addMedia(media);
+              }
+            });
+
+          }
+
+          return property;
+        })
+        .then((property) => {
+          return {
+            viewerId: viewerId,
+            property: property
+          };
+        })
+  }
+});
+
+
+var EditPropertyMutation = exports.EditPropertyMutation = mutationWithClientMutationId({
+  name: 'EditProperty',
+  inputFields: {
+    viewerId: { type: new GraphQLNonNull(GraphQLInt) },
+    name: { type: new GraphQLNonNull(GraphQLString) },
+    reference: { type: new GraphQLNonNull(GraphQLString) },
+    propertyType: { type: new GraphQLNonNull(GraphQLInt) },
+    contractType: { type: new GraphQLNonNull(GraphQLInt) },
+    description: { type: GraphQLString },
+    ownerRef: { type: new GraphQLNonNull(GraphQLString) },
+    mediaName: { type: GraphQLString }
+  },
+  outputFields: {
+    user: {
+      type: userType,
+      resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}}),
+    }
+  },
+  mutateAndGetPayload: ({viewerId, name, reference, propertyType, contractType, description, ownerRef, mediaName}) => {
+
+    return DB.models.property.findOne({where: {reference: reference}})
+        .then((property) =>
+            property.updateAttributes({
+                  name: name,
+                  reference: reference,
+                  type_id: propertyType
+                }
+            )
+        ).then((property) => {
+
+          DB.models.property_property_contract.findOne({where: {property_id: property.id}})
+              .then(property_property_contract => property_property_contract.updateAttributes({property_contract_id: contractType}))
+
+          DB.models.property_description.findOne({where: {property_id: property.id}})
+              .then(property_description => property_description.updateAttributes({description: description}))
+
+          return property;
+
+        })
+        .then((property) => {
+
+          if(mediaName) {
+            DB.models.media.findOne({where: {name: mediaName}})
+                .then((media) => {
+                  if(media) {
+                    property.addMedia(media);
+                  }
+                });
+
+          }
+
+          return property;
+        })
+        .then((property) => {
+          return {
+            viewerId: viewerId,
+            property: property
+          };
+        })
+  }
+});
+
+const AttachMediaMutation = mutationWithClientMutationId({
+  name: 'AttachMedia',
+  inputFields: {
+    viewerId: { type: new GraphQLNonNull(GraphQLInt) },
+    uri: {type: new GraphQLNonNull(GraphQLString)},
+    name: {type: new GraphQLNonNull(GraphQLString)},
+  },
+  outputFields: {
+
+    user: {
+      type: userType,
+      resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}}),
+    }
+  },
+  mutateAndGetPayload: (input, options) => {
+
+    let imageName = input.name;
+    const mimeType = input.name.substring(input.name.lastIndexOf('.')+1);
+
+    return DB.models.media.create({
+          name: imageName,
+          uri: input.uri,
+          mime_type: mimeType
+        })
+        .then((media) => {
+
+          const file = options.rootValue.request.file;
+          const filePath = __dirname + '/../public/images/' + imageName;
+
+          //prepare for update image
+          fs.writeFile(filePath, file.buffer, 'binary', (err) => {
+            if (err) throw err
+            console.log('File saved.')
+          })
+
+          return media;
+        })
+        .then((media) => {
+          return  {
+            viewerId: input.viewerId,
+            media: media
+          }
+        })
+        .catch(error => {
+          console.log(error)
+          throw error;
+        })
+
+  },
+});
+
 
 var AddAppMessageMutation = exports.AddAppMessageMutation = mutationWithClientMutationId({
   name: 'AddAppMessage',
@@ -310,10 +703,6 @@ var AddAppMessageMutation = exports.AddAppMessageMutation = mutationWithClientMu
     user: {
       type: userType,
       resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}}),
-    },
-    message: {
-      type: appMessageType,
-      resolve: ({appMessage}) => appMessage
     }
   },
   mutateAndGetPayload: ({viewerId, text}) => {
@@ -326,8 +715,7 @@ var AddAppMessageMutation = exports.AddAppMessageMutation = mutationWithClientMu
     AppMessage = appMessage;
 
     return {
-      viewerId: viewerId,
-      appMessage: appMessage
+      viewerId: viewerId
     };
   }
 });
@@ -336,7 +724,11 @@ var mutationType = new GraphQLObjectType({
   name: 'Mutation',
   fields: () => ({
     addOwnerMutation: AddOwnerMutation,
-    addAppMessageMutation: AddAppMessageMutation
+    editOwnerMutation: EditOwnerMutation,
+    addPropertyMutation: AddPropertyMutation,
+    addAppMessageMutation: AddAppMessageMutation,
+    attachPropertyMediaMutation: AttachMediaMutation,
+    editPropertyMutation: EditPropertyMutation,
   })
 });
 

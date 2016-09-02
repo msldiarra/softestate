@@ -1,11 +1,13 @@
 import Relay from 'react-relay';
+import _ from 'lodash'
 
-export default class AddAppMessageMutation extends Relay.Mutation {
+
+export default class EditOwnerMutation extends Relay.Mutation {
     // This method should return a GraphQL operation that represents
     // the mutation to be performed. This presumes that the server
     // implements a mutation type named ‘likeStory’.
     getMutation() {
-        return Relay.QL`mutation {addAppMessageMutation}`;
+        return Relay.QL`mutation {editOwnerMutation}`;
     }
     // Use this method to prepare the variables that will be used as
     // input to the mutation. Our ‘likeStory’ mutation takes exactly
@@ -13,7 +15,12 @@ export default class AddAppMessageMutation extends Relay.Mutation {
     getVariables() {
         return {
             viewerId: this.props.viewerId,
-            text: this.props.text
+            reference: this.props.reference,
+            company: this.props.company,
+            firstName: this.props.firstName,
+            lastName: this.props.lastName,
+            phone: this.props.phone,
+            type: this.props.type
         };
     }
     // Use this method to design a ‘fat query’ – one that represents every
@@ -25,14 +32,8 @@ export default class AddAppMessageMutation extends Relay.Mutation {
     // instruct the server to include only those fields in its response.
     getFatQuery() {
         return Relay.QL`
-          fragment on AddAppMessagePayload {
-              user {
-                 id,
-                 message {
-                    text
-                  }
-              },
-
+          fragment on EditOwnerPayload {
+              user
           }
     `;
     }
@@ -48,7 +49,19 @@ export default class AddAppMessageMutation extends Relay.Mutation {
                 fieldIDs: {
                     user: this.props.viewer.id
                 }
-            }
+            }/*,
+            {
+                type: 'RANGE_ADD',
+                parentName: 'viewer',
+                parentID: this.props.viewer.id,
+                connectionName: 'owners',
+                edgeName: 'ownerEdge',
+                rangeBehaviors: {
+                    '': 'append',
+                    // Prepend the ship, wherever the connection is sorted by age
+                    'first(100)': 'prepend'
+                }
+            }*/
         ]
     }
     // This mutation has a hard dependency on the story's ID. We specify this
@@ -62,5 +75,14 @@ export default class AddAppMessageMutation extends Relay.Mutation {
           }
     `,
     };
+
+    getOptimisticResponse() {
+
+        return {
+            viewer: {
+                id: this.props.viewer.id,
+            }
+        };
+    }
 }
 

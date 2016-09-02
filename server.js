@@ -3,12 +3,13 @@ import graphQLHTTP from 'express-graphql';
 import path from 'path';
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
-import DB from './data/database';
+import {DB} from './data/database';
 import jwt from 'jsonwebtoken';
 import {Schema} from './data/schema';
 import bodyParser from 'body-parser';
 import crypto from 'crypto';
 import request from 'request';
+import multer from 'multer';
 
 const APP_PORT = 3000;
 const API_PORT = 3001;
@@ -25,11 +26,16 @@ var graphqlPort = isProduction ? GRAPHQL_PORT : GRAPHQL_PORT;
 // Expose a GraphQL endpoint
 var graphQLServer = express();
 
-graphQLServer.use('/', graphQLHTTP({
+
+const storage = multer.memoryStorage();
+graphQLServer.use('/', multer({ storage }).single('file'));
+
+graphQLServer.use('/', graphQLHTTP( req => { return {
     graphiql: true,
+    rootValue: {request: req},
     pretty: true,
     schema: Schema
-}));
+}}));
 
 graphQLServer.listen(graphqlPort, () => console.log(
     `GraphQL Server is now running on port ${graphqlPort}`
@@ -84,6 +90,7 @@ app.post('/api/authenticate', (request, response) => {
             });
         });
 });
+
 
 app.listen(apiPort);
 

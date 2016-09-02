@@ -296,3 +296,27 @@ a {
 .background-grey {background-color: #fff;}
 
 .bold {font-weight: 800;}
+
+.autocomplete { margin-top: 55px; z-index: 999; position: absolute;}
+.autocomplete ul {list-style-type: none; border: 1px solid #ccc; padding-bottom:15px; border-radius: 3px; background: #fff; }
+.autocomplete ul li {
+    width:100%;
+    min-height:40px;
+    line-height:40px;
+    vertical-align: middle;
+    border-bottom: 1px solid #eee
+}
+
+.autocomplete ul li div { padding-left:10px;}
+.autocomplete ul li:hover,  .autocomplete ul li:focus { cursor: pointer;
+    box-shadow: rgba(0,0,0,0.3) 0 16px 16px 0;
+    -webkit-box-shadow: rgba(0,0,0,0.3) 0 16px 16px 0;
+    -moz-box-shadow: rgba(0,0,0,0.3) 0 16px 16px 0;
+}
+
+.input-group > input {height: 40px;}
+
+.visible {visibility: visible}
+.hidden {visibility: hidden}
+
+li:hover {  }

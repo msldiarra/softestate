@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class Property extends React.Component {
+export default class PropertySummary extends React.Component {
 
     render() {
 

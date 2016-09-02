@@ -6,14 +6,16 @@ input AddAppMessageInput {
 
 type AddAppMessagePayload {
   user: User
-  message: AppMessage
   clientMutationId: String!
 }
 
 input AddOwnerInput {
   viewerId: Int!
-  name: String!
+  company: String!
   reference: String!
+  firstName: String!
+  lastName: String!
+  phone: String!
   type: Int!
   clientMutationId: String!
 }
@@ -23,27 +25,90 @@ type AddOwnerPayload {
   clientMutationId: String!
 }
 
+input AddPropertyInput {
+  viewerId: Int!
+  name: String!
+  reference: String!
+  propertyType: Int!
+  contractType: Int!
+  description: String
+  ownerRef: String!
+  mediaName: String
+  clientMutationId: String!
+}
+
+type AddPropertyPayload {
+  user: User
+  clientMutationId: String!
+}
+
 type AppMessage implements Node {
   id: ID!
   text: String
+}
+
+input AttachMediaInput {
+  viewerId: Int!
+  uri: String!
+  name: String!
+  clientMutationId: String!
+}
+
+type AttachMediaPayload {
+  user: User
+  clientMutationId: String!
 }
 
 type Contact implements Node {
   id: ID!
   first_name: String
   last_name: String
+  info: ContactInfo
   credentials: [Login]
 }
 
 type ContactInfo implements Node {
   id: ID!
-  email: String
+  phone: String
 }
 
 type Customer implements Node {
   id: ID!
   name: String
   contacts: [Contact]
+}
+
+input EditOwnerInput {
+  viewerId: Int!
+  reference: String!
+  company: String!
+  firstName: String!
+  lastName: String!
+  phone: String!
+  type: Int!
+  clientMutationId: String!
+}
+
+type EditOwnerPayload {
+  user: User
+  clientMutationId: String!
+}
+
+input EditPropertyInput {
+  viewerId: Int!
+  name: String!
+  reference: String!
+  propertyType: Int!
+  contractType: Int!
+  description: String
+  ownerRef: String!
+  mediaName: String
+  clientMutationId: String!
+}
+
+type EditPropertyPayload {
+  user: User
+  clientMutationId: String!
 }
 
 type Login implements Node {
@@ -53,9 +118,30 @@ type Login implements Node {
   enabled: Boolean
 }
 
+type Media implements Node {
+  id: ID!
+  uri: String
+  name: String
+  mime_type: String
+}
+
+type MediasConnection {
+  pageInfo: PageInfo!
+  edges: [MediasEdge]
+}
+
+type MediasEdge {
+  node: Media
+  cursor: String!
+}
+
 type Mutation {
   addOwnerMutation(input: AddOwnerInput!): AddOwnerPayload
+  editOwnerMutation(input: EditOwnerInput!): EditOwnerPayload
+  addPropertyMutation(input: AddPropertyInput!): AddPropertyPayload
   addAppMessageMutation(input: AddAppMessageInput!): AddAppMessagePayload
+  attachPropertyMediaMutation(input: AttachMediaInput!): AttachMediaPayload
+  editPropertyMutation(input: EditPropertyInput!): EditPropertyPayload
 }
 
 interface Node {
@@ -65,11 +151,13 @@ interface Node {
 type Owner implements Node {
   id: ID!
   reference: String
-  name: String
+  company: String
   type: String
-  contact: [Contact]
+  type_id: Int
+  contact: Contact
   rentSummary: RentSummary
   sellSummary: SellSummary
+  properties(after: String, first: Int, before: String, last: Int): PropertiesConnection
 }
 
 type OwnersConnection {
@@ -94,11 +182,32 @@ type PageInfo {
   endCursor: String
 }
 
+type PropertiesConnection {
+  pageInfo: PageInfo!
+  edges: [PropertiesEdge]
+}
+
+type PropertiesEdge {
+  node: Property
+  cursor: String!
+}
+
 type Property implements Node {
   id: ID!
   name: String
+  reference: String
   enabled: Boolean
-  type: String
+  type_label: String
+  type_id: Int
+  contract_type: Int
+  description: String
+  owner: Owner
+  media(after: String, first: Int, before: String, last: Int): MediasConnection
+}
+
+type PropertyType implements Node {
+  id: ID!
+  label: String
 }
 
 type Query {
@@ -125,7 +234,7 @@ type User implements Node {
   customer: String
   credentials: Login
   contact: Contact
-  info: ContactInfo
-  owners(after: String, first: Int, before: String, last: Int): OwnersConnection
+  owners(after: String, first: Int, before: String, last: Int, search: String!): OwnersConnection
+  properties(after: String, first: Int, before: String, last: Int, reference: String): PropertiesConnection
   message: AppMessage
 }

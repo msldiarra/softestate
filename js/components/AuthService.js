@@ -10,7 +10,6 @@ class Auth {
 
     login(login, password) {
 
-        console.log('testing credentials');
         return this.handleAuth(when(request({
             url: 'http://localhost:3001/api/authenticate',
             method: 'POST',
@@ -35,7 +34,6 @@ class Auth {
     }
 
     getUserId() {
-        console.log(localStorage.getItem('user'))
         return JSON.parse(localStorage.getItem('user')).id
     }
 

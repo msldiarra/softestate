@@ -22,15 +22,18 @@ class Owners extends React.Component {
 }
 
 export default Relay.createContainer(Owners, {
+
+    initialVariables: {search: "%"},
+
     fragments: {
         customer: () => Relay.QL`
           fragment on User {
-            owners(first: 10) {
+            owners(search: $search, first: 10) {
               edges {
                 node {
                   id
                   reference
-                  name
+                  company
                   type
                   contact {
                     first_name

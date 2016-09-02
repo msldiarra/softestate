@@ -12,6 +12,7 @@ export default class Header extends React.Component {
             headerItems =
                 <ul className="nav navbar-nav navbar-right">
                     <li className=""><Link to="/newowner">Ajouter un client</Link></li>
+                    <li className=""><Link to="/newproperty">Ajouter une propriété</Link></li>
                     <li><a href="" onClick={this.props.onLogout}>Déconnexion</a></li>
                 </ul>
         }

@@ -9,12 +9,14 @@ INSERT INTO owner_type (label) VALUES ('INDIVIDUAL'), ('COMPANY'); -- particulie
 
 --- Customer 1
 
-INSERT INTO contact_info (email) VALUES
-('seydou.niang@aia-mali.com');
+INSERT INTO contact_info (phone) VALUES ('0022373034603');
 
-INSERT INTO contact (first_name, last_name, contact_info_id, contact_type_id) VALUES
-('Seydou', 'Niang', 1, 1);
+INSERT INTO contact (first_name, last_name) VALUES ('Seydou', 'Niang');
 
+
+INSERT INTO contact_contact_info VALUES (1,1);
+INSERT INTO contact_contact_type VALUES (1,1);
+;
 INSERT INTO customer (name, reference) VALUES ('AIA-Mali SARL','00001');
 INSERT INTO customer_contact VALUES (1,1);
 
@@ -22,16 +24,18 @@ INSERT INTO customer_contact VALUES (1,1);
 INSERT INTO login (login, password, enabled) VALUES ('seydou.niang','dnaqr7AnyCW9mrq3iyNAcOcCdS9iW3UuVeVbSOYH41g=','1');
 INSERT INTO contact_login VALUES (1,1);
 
-INSERT INTO contact_info (email) VALUES ('mamadou.diarra@gmail.com');
-INSERT INTO contact_info (email) VALUES ('ousmane.drame@gmail.com');
+INSERT INTO contact_info (phone) VALUES ('0022373034604');
+INSERT INTO contact_info (phone) VALUES ('0022373034605');
 
-INSERT INTO contact (first_name, last_name, contact_info_id, contact_type_id) VALUES ('Mamadou', 'Diarra', 2, 2);
-INSERT INTO contact (first_name, last_name, contact_info_id, contact_type_id) VALUES ('Ousmane', 'Drame', 2, 2);
+INSERT INTO contact (first_name, last_name) VALUES ('Mamadou', 'Diarra');
+INSERT INTO contact (first_name, last_name) VALUES ('Ousmane', 'Drame');
 
+INSERT INTO contact_contact_info VALUES (2,2);
+INSERT INTO contact_contact_type VALUES (2,3);
 
 INSERT INTO owner (reference, type_id) VALUES ('00001', 1), ('00002', 1), ('00003', 2);
 INSERT INTO owner_contact (owner_id, contact_id) VALUES (1, 2), (2, 3);
-INSERT INTO owner_name (owner_id, name) VALUES (3, 'Kone Immobilier SA');
+INSERT INTO owner_company_name (owner_id, name) VALUES (3, 'Kone Immobilier SA');
 
 INSERT INTO customer_owner VALUES  (1,1), (2,1), (3,1);
 

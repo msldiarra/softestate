@@ -1,13 +1,11 @@
 import React from 'react'
 import Relay from 'react-relay'
-import AddOwnerMutation from './AddOwnerMutation'
+import EditOwnerMutation from './EditOwnerMutation'
 import AppMessage from './AppMessage';
-
 import UserService from './AuthService'
 
 
-
-class NewOwner extends React.Component {
+class OwnerEdit extends React.Component {
 
 
     constructor(props) {
@@ -19,14 +17,17 @@ class NewOwner extends React.Component {
 
         e.preventDefault();
 
+        var owner = this.props.viewer.owners.edges[0].node;
+
+
         var company = this.refs.company.value;
-        var reference =  this.refs.reference.value;
+        var reference =  owner.reference;
         var firstName =  this.refs.firstName.value;
         var lastName =  this.refs.lastName.value;
         var phone =  this.refs.phone.value;
         var type =  this.state.type;
 
-        var addOwnerMutation = new AddOwnerMutation({
+        var editOwnerMutation = new EditOwnerMutation({
             viewer: this.props.viewer,
             viewerId: UserService.getUserId(),
             reference: reference,
@@ -37,19 +38,28 @@ class NewOwner extends React.Component {
             phone: phone
         });
 
-        var onSuccess = (response) => this.setState({message : "Nouveau propriétaire ajoutée avec succes!"});
+        var onSuccess = (response) => this.setState({message : "Propriétaire modifié avec succes!"});
 
         var onFailure = (transaction) => this.setState({message : "Désolé, nous avons rencontré un problème lors de l'enregistrement." +
         " Contactez l'administrateur"});
 
-        Relay.Store.commitUpdate(addOwnerMutation, {onSuccess, onFailure});
+        Relay.Store.commitUpdate(editOwnerMutation, {onSuccess, onFailure})
     }
 
     handleType(e) {
         this.setState({ type : e.target.value });
     }
 
+    componentDidMount() {
+
+        var owner = this.props.viewer.owners.edges[0].node;
+
+        this.setState({ type : owner.type_id });
+    }
+
     render() {
+
+        var owner = this.props.viewer.owners.edges[0].node;
 
         const text = this.state.message;
 
@@ -58,7 +68,7 @@ class NewOwner extends React.Component {
 
                 <div className="page-header row">
                     <h4>
-                        <span className="col-xs-10"><i className="fa fa-user" aria-hidden="true" /> Nouveau client</span>
+                        <span className="col-xs-10"><i className="fa fa-user" aria-hidden="true" />{owner.reference}</span>
                     </h4>
                 </div>
                 <AppMessage message={text} />
@@ -66,44 +76,40 @@ class NewOwner extends React.Component {
                     <div className="page-content row">
                         <div className="col-md-6 col-md-offset-1">
                             <div className="form-group">
-                                <label htmlFor="reference" className="col-md-3 control-label">Reference</label>
-                                <div className="col-md-9">
-                                    <input ref="reference" id="reference" type="text" className="form-control" placeholder="reference" />
-                                </div>
-                            </div>
-                            <div className="form-group">
                                 <label htmlFor="type" className="col-md-3 control-label">Type de client</label>
                                 <div className="col-md-9">
                                     <label className="radio-inline control-label">
-                                        <input type="radio" id="individual" value="1" name="type" onClick={this.handleType.bind(this)} /> individu
+                                        <input type="radio" id="individual" value="1" name="type" onClick={this.handleType.bind(this)}
+                                               checked={this.state.type == 1 ? true : false} /> individu
                                     </label>
                                     <label className="radio-inline control-label">
-                                        <input type="radio" id="company" value="2" name="type" onClick={this.handleType.bind(this)} /> entreprise
+                                        <input type="radio" id="company" value="2" name="type" onClick={this.handleType.bind(this)}
+                                               checked={this.state.type == 2 ? true : false} /> entreprise
                                     </label>
                                 </div>
                             </div>
                             <div className="form-group">
                                 <label htmlFor="name" className="col-md-3 control-label">Nom de la société</label>
                                 <div className="col-md-9">
-                                    <input ref="company" id="name" type="text" className="form-control" placeholder="nom de la société" />
+                                    <input ref="company" id="name" type="text" className="form-control" placeholder="nom de la société" defaultValue={owner.company} />
                                 </div>
                             </div>
                             <div className="form-group">
                                 <label htmlFor="name" className="col-md-3 control-label">Prénom du contact</label>
                                 <div className="col-md-9">
-                                    <input ref="firstName" id="first_name" type="text" className="form-control" placeholder="Ex: Mamadou Lamine" />
+                                    <input ref="firstName" id="first_name" type="text" className="form-control" placeholder="Ex: Mamadou Lamine" defaultValue={owner.contact.first_name} />
                                 </div>
                             </div>
                             <div className="form-group">
                                 <label htmlFor="name" className="col-md-3 control-label">Nom du contact</label>
                                 <div className="col-md-9">
-                                    <input ref="lastName" id="last_name" type="text" className="form-control" placeholder="Ex: DIARRA" />
+                                    <input ref="lastName" id="last_name" type="text" className="form-control" placeholder="Ex: DIARRA" defaultValue={owner.contact.last_name} />
                                 </div>
                             </div>
                             <div className="form-group">
                                 <label htmlFor="name" className="col-md-3 control-label">Numéro du contact</label>
                                 <div className="col-md-9">
-                                    <input ref="phone" id="phone" type="text" className="form-control" placeholder="Ex: 0022373034603" />
+                                    <input ref="phone" id="phone" type="text" className="form-control" placeholder="Ex: 0022373034603" defaultValue={owner.contact.info.phone} />
                                 </div>
                             </div>
                             <div className="form-group">
@@ -122,9 +128,9 @@ class NewOwner extends React.Component {
 }
 
 
-export default Relay.createContainer(NewOwner, {
+export default Relay.createContainer(OwnerEdit, {
 
-    initialVariables: {viewerId: null},
+    initialVariables: {viewerId: null, search: ''},
 
     prepareVariables: prevVariables => {
         return {
@@ -137,10 +143,25 @@ export default Relay.createContainer(NewOwner, {
         viewer: () => Relay.QL`
           fragment on User {
                id
-               message {
-                  text
-               },
-               ${AddOwnerMutation.getFragment('viewer')}
+               owners(search: $search, first: 1) {
+                  edges {
+                    node {
+                      id
+                      reference
+                      company
+                      type
+                      type_id
+                      contact {
+                        first_name
+                        last_name
+                        info {
+                           phone
+                        }
+                      }
+                    }
+                  },
+                },
+               ${EditOwnerMutation.getFragment('viewer')}
           }
     `,
     }
