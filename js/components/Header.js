@@ -11,8 +11,12 @@ export default class Header extends React.Component {
         if (!!this.props.user) {
             headerItems =
                 <ul className="nav navbar-nav navbar-right">
-                    <li className=""><Link to="/newowner">Ajouter un client</Link></li>
-                    <li className=""><Link to="/newproperty">Ajouter une propriété</Link></li>
+                    <li data-toggle="collapse" data-target=".navbar-collapse">
+                        <Link to="/newowner">Ajouter un client</Link>
+                    </li>
+                    <li data-toggle="collapse" data-target=".navbar-collapse">
+                        <Link to="/newproperty">Ajouter une propriété</Link>
+                    </li>
                     <li><a href="" onClick={this.props.onLogout}>Déconnexion</a></li>
                 </ul>
         }

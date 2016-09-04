@@ -1,7 +1,7 @@
 import React from 'react';
 import Relay from 'react-relay';
 import AuthenticatedComponent from './AuthenticatedComponent';
-import Owners  from './Owners'
+import Properties  from './Properties'
 
 class Dashboard extends React.Component {
 
@@ -13,7 +13,7 @@ class Dashboard extends React.Component {
                         <span className="col-xs-10"><i className="fa fa-users" aria-hidden="true"></i> Clients</span>
                     </h4>
                 </div>
-                <Owners customer={this.props.viewer} />
+                <Properties customer={this.props.viewer} />
             </div>
         );
     }
@@ -25,7 +25,7 @@ export default Relay.createContainer(Dashboard, {
         viewer: () => Relay.QL`
           fragment on User {
                id
-               ${Owners.getFragment('customer')}
+               ${Properties.getFragment('customer')}
           }
     `,
     }

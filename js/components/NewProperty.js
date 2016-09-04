@@ -14,7 +14,7 @@ class NewProperty extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {propertyType : 0,  contractType : 0, ownerRef: '', message : "", mediaName: ''} ;
+        this.state = {propertyType : 0,  contractType : 0, ownerRef: '', message : "", mediaNames: []} ;
     }
 
     onAddProperty(e) {
@@ -27,7 +27,7 @@ class NewProperty extends React.Component {
         var contractType =  this.state.contractType;
         var description =  this.refs.description.value;
         var owner = this.state.ownerRef;
-        var mediaName = this.state.mediaName;
+        var mediaNames = this.state.mediaNames;
 
 
         var addPropertyMutation = new AddPropertyMutation({
@@ -39,29 +39,37 @@ class NewProperty extends React.Component {
             contractType: contractType,
             description: description,
             ownerRef: owner,
-            mediaName: mediaName
+            mediaNames: mediaNames
         });
 
-        var onSuccess = (response) => this.setState({message : "Nouvelle propriété ajoutée avec succes!"});
+        var onSuccess = () => this.context.router.push('/property/' + reference);
 
         var onFailure = (transaction) => this.setState({message : "Désolé"});
 
         Relay.Store.commitUpdate(addPropertyMutation, {onSuccess, onFailure})
 
-        /*
-        var addAppMessageMutation = new AddAppMessageMutation({
-            viewer: this.props.viewer,
-            viewerId: UserService.getUserId(),
-            text: "Well done!"
-        });
-
-        Relay.Store.commitUpdate(addAppMessageMutation, {onSuccess, onFailure})
-        */
-
     }
 
-    onAddMedia(mediaName) {
-        this.setState({mediaName: mediaName});
+    onMediaInsert(file, uri) {
+
+        var onSuccess = (response) => this.setState({message: "Nouvelle image ajoutée avec succes!"});
+        var onFailure = (transaction) => this.setState({message: transaction});
+
+        Relay.Store.commitUpdate(
+            new AttachMediaMutation({
+                viewer: this.props.viewer,
+                viewerId: UserService.getUserId(),
+                uri: uri,
+                name: file.name,
+                file: file
+            }, {onSuccess, onFailure})
+        );
+    }
+
+    onAddMedia(mediaNames) {
+        var names = this.state.mediaNames;
+        names.push(mediaNames);
+        this.setState({mediaNames: names});
     }
 
     handlePropertyType(e) {
@@ -148,7 +156,7 @@ class NewProperty extends React.Component {
                             <div className="form-group">
                                 <label htmlFor="name" className="col-md-3 control-label">Ajouter une image</label>
                                 <div className="col-md-9">
-                                    <AttachMedia viewer={this.props.viewer} onAddMedia={this.onAddMedia.bind(this)}/>
+                                    <AttachMedia viewer={this.props.viewer} onAddMedia={this.onAddMedia.bind(this)} onMediaInsert={this.onMediaInsert.bind(this)}/>
                                 </div>
                             </div>
                             <div className="form-group">
@@ -166,6 +174,10 @@ class NewProperty extends React.Component {
     }
 }
 
+
+NewProperty.contextTypes = {
+    router: React.PropTypes.object.isRequired
+}
 
 export default Relay.createContainer(NewProperty, {
 

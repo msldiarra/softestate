@@ -2,9 +2,7 @@ import React from 'react'
 import Relay from 'react-relay'
 import AddOwnerMutation from './AddOwnerMutation'
 import AppMessage from './AppMessage';
-
 import UserService from './AuthService'
-
 
 
 class NewOwner extends React.Component {
@@ -37,7 +35,7 @@ class NewOwner extends React.Component {
             phone: phone
         });
 
-        var onSuccess = (response) => this.setState({message : "Nouveau propriétaire ajoutée avec succes!"});
+        var onSuccess = () => this.context.router.push('/owner/' + reference);
 
         var onFailure = (transaction) => this.setState({message : "Désolé, nous avons rencontré un problème lors de l'enregistrement." +
         " Contactez l'administrateur"});
@@ -121,6 +119,9 @@ class NewOwner extends React.Component {
     }
 }
 
+NewOwner.contextTypes = {
+    router: React.PropTypes.object.isRequired
+}
 
 export default Relay.createContainer(NewOwner, {
 

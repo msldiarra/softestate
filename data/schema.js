@@ -522,7 +522,7 @@ var AddPropertyMutation = exports.AddPropertyMutation = mutationWithClientMutati
     contractType: { type: new GraphQLNonNull(GraphQLInt) },
     description: { type: GraphQLString },
     ownerRef: { type: new GraphQLNonNull(GraphQLString) },
-    mediaName: { type: GraphQLString }
+    mediaNames: { type: new GraphQLList(GraphQLString) }
   },
   outputFields: {
     user: {
@@ -530,7 +530,7 @@ var AddPropertyMutation = exports.AddPropertyMutation = mutationWithClientMutati
       resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}}),
     }
   },
-  mutateAndGetPayload: ({viewerId, name, reference, propertyType, contractType, description, ownerRef, mediaName}) => {
+  mutateAndGetPayload: ({viewerId, name, reference, propertyType, contractType, description, ownerRef, mediaNames}) => {
 
     return DB.models.owner.findOne({where: {reference: ownerRef}})
         .then((owner) =>
@@ -557,8 +557,8 @@ var AddPropertyMutation = exports.AddPropertyMutation = mutationWithClientMutati
         })
         .then((property) => {
 
-          if(mediaName) {
-            DB.models.media.findOne({where: {name: mediaName}})
+          if(mediaNames.length > 0) {
+            DB.models.media.findAll({where: {name: {in: mediaNames}}})
             .then((media) => {
               if(media) {
                 property.addMedia(media);
@@ -589,7 +589,7 @@ var EditPropertyMutation = exports.EditPropertyMutation = mutationWithClientMuta
     contractType: { type: new GraphQLNonNull(GraphQLInt) },
     description: { type: GraphQLString },
     ownerRef: { type: new GraphQLNonNull(GraphQLString) },
-    mediaName: { type: GraphQLString }
+    mediaNames: { type: new GraphQLList(GraphQLString) }
   },
   outputFields: {
     user: {
@@ -597,7 +597,7 @@ var EditPropertyMutation = exports.EditPropertyMutation = mutationWithClientMuta
       resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}}),
     }
   },
-  mutateAndGetPayload: ({viewerId, name, reference, propertyType, contractType, description, ownerRef, mediaName}) => {
+  mutateAndGetPayload: ({viewerId, name, reference, propertyType, contractType, description, ownerRef, mediaNames}) => {
 
     return DB.models.property.findOne({where: {reference: reference}})
         .then((property) =>
@@ -620,14 +620,13 @@ var EditPropertyMutation = exports.EditPropertyMutation = mutationWithClientMuta
         })
         .then((property) => {
 
-          if(mediaName) {
-            DB.models.media.findOne({where: {name: mediaName}})
+          if(mediaNames.length > 0) {
+            DB.models.media.findAll({where: {name: {in: mediaNames}}})
                 .then((media) => {
                   if(media) {
                     property.addMedia(media);
                   }
                 });
-
           }
 
           return property;
@@ -683,10 +682,6 @@ const AttachMediaMutation = mutationWithClientMutationId({
             viewerId: input.viewerId,
             media: media
           }
-        })
-        .catch(error => {
-          console.log(error)
-          throw error;
         })
 
   },

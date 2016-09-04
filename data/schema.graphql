@@ -33,7 +33,7 @@ input AddPropertyInput {
   contractType: Int!
   description: String
   ownerRef: String!
-  mediaName: String
+  mediaNames: [String]
   clientMutationId: String!
 }
 
@@ -102,7 +102,7 @@ input EditPropertyInput {
   contractType: Int!
   description: String
   ownerRef: String!
-  mediaName: String
+  mediaNames: [String]
   clientMutationId: String!
 }
 

@@ -21,7 +21,7 @@ export default class AddPropertyMutation extends Relay.Mutation {
             contractType: this.props.contractType,
             description: this.props.description,
             ownerRef: this.props.ownerRef,
-            mediaName: this.props.mediaName
+            mediaNames: this.props.mediaNames
         };
     }
     // Use this method to design a ‘fat query’ – one that represents every
@@ -50,19 +50,7 @@ export default class AddPropertyMutation extends Relay.Mutation {
                 fieldIDs: {
                     user: this.props.viewer.id
                 }
-            }/*,
-            {
-                type: 'RANGE_ADD',
-                parentName: 'viewer',
-                parentID: this.props.viewer.id,
-                connectionName: 'owners',
-                edgeName: 'ownerEdge',
-                rangeBehaviors: {
-                    '': 'append',
-                    // Prepend the ship, wherever the connection is sorted by age
-                    'first(100)': 'prepend'
-                }
-            }*/
+            }
         ]
     }
     // This mutation has a hard dependency on the story's ID. We specify this

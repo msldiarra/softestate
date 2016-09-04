@@ -21,7 +21,7 @@ export default class EditPropertyMutation extends Relay.Mutation {
             contractType: this.props.contractType,
             description: this.props.description,
             ownerRef: this.props.ownerRef,
-            mediaName: this.props.mediaName
+            mediaNames: this.props.mediaNames
         };
     }
     // Use this method to design a ‘fat query’ – one that represents every

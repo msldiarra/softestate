@@ -38,7 +38,7 @@ class OwnerEdit extends React.Component {
             phone: phone
         });
 
-        var onSuccess = (response) => this.setState({message : "Propriétaire modifié avec succes!"});
+        var onSuccess = () => this.context.router.push('/owner/' + reference);
 
         var onFailure = (transaction) => this.setState({message : "Désolé, nous avons rencontré un problème lors de l'enregistrement." +
         " Contactez l'administrateur"});
@@ -127,6 +127,9 @@ class OwnerEdit extends React.Component {
     }
 }
 
+OwnerEdit.contextTypes = {
+    router: React.PropTypes.object.isRequired
+}
 
 export default Relay.createContainer(OwnerEdit, {
 

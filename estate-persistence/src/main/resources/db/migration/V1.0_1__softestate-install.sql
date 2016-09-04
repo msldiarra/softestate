@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS media (
   id SERIAL PRIMARY KEY,
   uri varchar(255) NOT NULL UNIQUE,
   name varchar(255) NOT NULL UNIQUE,
-  mime_type varchar(255) NOT NULL UNIQUE
+  mime_type varchar(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS property_media (
