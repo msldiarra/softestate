@@ -108,10 +108,6 @@ ul.tanks li span.box {
 .orange {
     background: orange
 }
-.grey {
-    background: #eee
-}
-
 
 .cblack {
     color: #000!important
@@ -282,7 +278,7 @@ a {
 
 .progress{height:50px!important}
 
-.full {background: #fff !important; padding-bottom: 15px;  border-bottom: 1px solid rgba(0,0,0,0.2);}
+.full {background: #fff !important; padding-bottom: 15px; }
 
 .padding-20 { padding: 20px 10px 3px 10px !important; }
 .padding-10 { padding: 5px 10px 3px 10px !important; }
@@ -320,3 +316,32 @@ a {
 .hidden {visibility: hidden}
 
 li:hover {  }
+
+img {
+    width: 100%; /* you can use % */
+    height: auto;
+}
+.spacer {
+    margin-bottom:40px;
+}
+
+dd { line-height: 1.85714285714286; font-size: 18px;}
+dd label {
+    color: #9f9f9f;
+    font-weight: 400;
+    display: inline-block;
+    max-width: 100%;
+    margin-bottom: 0;
+}
+
+.grey {color: #9f9f9f;}
+
+
+.center-block {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.min-height {min-height: 690px;}
+

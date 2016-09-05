@@ -6,15 +6,15 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 class Properties extends React.Component {
 
     render() {
-        var owners = this.props.customer.properties.edges.map(function(edge){
+        var properties = this.props.customer.properties.edges.map(function(edge){
             return <Property key={edge.node.id} property={edge.node} />
 
         });
 
         return (
-            <div className="">
+            <div className="padding-25" style={{ backgroundColor: '#f4f4f4'}}>
                 <ReactCSSTransitionGroup transitionName="example" transitionAppear={true} transitionAppearTimeout={500} transitionEnterTimeout={0} transitionLeaveTimeout={0}>
-                    {owners}
+                    {properties}
                 </ReactCSSTransitionGroup>
             </div>
         );
@@ -35,6 +35,14 @@ export default Relay.createContainer(Properties, {
                   reference
                   name
                   type_label
+                  contract_type
+                  size
+                  floor_count
+                  room_count
+                  price
+                  description
+                  district
+                  city
                   media(first: 20) {
                     edges {
                         node {

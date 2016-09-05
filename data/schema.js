@@ -302,7 +302,41 @@ const propertyType = new GraphQLObjectType({
       type_label: { type: GraphQLString, resolve(property) { return DB.models.property_type.findOne({where :{id: property.type_id } }).get('label')}},
       type_id: { type: GraphQLInt, resolve(property) { return property.type_id}},
       contract_type: { type: GraphQLInt, resolve(property) { return DB.models.property_property_contract.findOne({where :{property_id: property.type_id } }).get('id')}},
-      description: { type: GraphQLString, resolve(property) { return DB.models.property_description.findOne({where :{property_id: property.id } }).get('description')}},
+      description: { type: GraphQLString, resolve(property) { return DB.models.property_description.findOne({where :{property_id: property.id } })
+          .then(property_description => {
+            if(property_description) return property_description.get('description');
+          })
+      }},
+      size: { type: GraphQLInt, resolve(property) { return DB.models.property_size.findOne({where :{property_id: property.id } })
+          .then(property_floor_count => {
+            if(property_floor_count) return property_floor_count.get('size');
+          })
+      }},
+      floor_count: { type: GraphQLFloat, resolve(property) { return DB.models.property_floor_count.findOne({where :{property_id: property.id } })
+          .then(property_floor_count => {
+            if(property_floor_count) return property_floor_count.get('count');
+          })
+      }},
+      room_count: { type: GraphQLFloat, resolve(property) { return DB.models.property_room_count.findOne({where :{property_id: property.id } })
+          .then(property_room_count => {
+            if(property_room_count) return property_room_count.get('count');
+          })
+      }},
+      price: { type: GraphQLInt, resolve(property) { return DB.models.property_price.findOne({where :{property_id: property.id } })
+          .then(property_price => {
+            if(property_price) return property_price.get('price');
+          })
+      }},
+      district: { type: GraphQLString, resolve(property) { return DB.models.property_location.findOne({where :{property_id: property.id } })
+          .then(property_location => {
+            if(property_location) return property_location.get('district');
+          })
+      }},
+      city: { type: GraphQLString, resolve(property) { return DB.models.property_location.findOne({where :{property_id: property.id } })
+          .then(property_location => {
+            if(property_location) return property_location.get('city');
+          })
+      }},
       owner: { type: ownerType, resolve(property) { return property.getOwners().then( owners => owners[0]) }},
       media: {
         type: mediaConnection,
@@ -521,6 +555,12 @@ var AddPropertyMutation = exports.AddPropertyMutation = mutationWithClientMutati
     propertyType: { type: new GraphQLNonNull(GraphQLInt) },
     contractType: { type: new GraphQLNonNull(GraphQLInt) },
     description: { type: GraphQLString },
+    price: { type: GraphQLInt },
+    floorCount: { type: GraphQLInt },
+    roomCount: { type: GraphQLInt },
+    size: { type: GraphQLFloat },
+    district: { type: GraphQLString},
+    city: { type: GraphQLString },
     ownerRef: { type: new GraphQLNonNull(GraphQLString) },
     mediaNames: { type: new GraphQLList(GraphQLString) }
   },
@@ -530,7 +570,7 @@ var AddPropertyMutation = exports.AddPropertyMutation = mutationWithClientMutati
       resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}}),
     }
   },
-  mutateAndGetPayload: ({viewerId, name, reference, propertyType, contractType, description, ownerRef, mediaNames}) => {
+  mutateAndGetPayload: ({viewerId, name, reference, propertyType, contractType, description, ownerRef, mediaNames, price, floorCount, roomCount, size, district, city}) => {
 
     return DB.models.owner.findOne({where: {reference: ownerRef}})
         .then((owner) =>
@@ -547,10 +587,48 @@ var AddPropertyMutation = exports.AddPropertyMutation = mutationWithClientMutati
             property_contract_id: contractType
           });
 
-          property.createPropertyDescription({
-            property_id: property.id,
-            description: description
-          });
+          if(description) {
+            property.createPropertyDescription({
+              property_id: property.id,
+              description: description
+            });
+          }
+
+          if(price) {
+            property.createPropertyPrice({
+              property_id: property.id,
+              price: price
+            });
+          }
+
+          if(floorCount) {
+            property.createPropertyFloorCount({
+              property_id: property.id,
+              count: floorCount
+            });
+          }
+
+          if(roomCount) {
+            property.createPropertyRoomCount({
+              property_id: property.id,
+              count: roomCount
+            });
+          }
+
+          if(size) {
+            property.createPropertySize({
+              property_id: property.id,
+              size: size
+            });
+          }
+
+          if(district && city) {
+            property.createPropertyLocation({
+              property_id: property.id,
+              district: district,
+              city: city
+            });
+          }
 
           return property;
 
@@ -569,6 +647,7 @@ var AddPropertyMutation = exports.AddPropertyMutation = mutationWithClientMutati
 
           return property;
         })
+        .catch(error => console.log(error))
         .then((property) => {
           return {
             viewerId: viewerId,
@@ -588,6 +667,12 @@ var EditPropertyMutation = exports.EditPropertyMutation = mutationWithClientMuta
     propertyType: { type: new GraphQLNonNull(GraphQLInt) },
     contractType: { type: new GraphQLNonNull(GraphQLInt) },
     description: { type: GraphQLString },
+    price: { type: GraphQLInt },
+    floorCount: { type: GraphQLInt },
+    roomCount: { type: GraphQLInt },
+    size: { type: GraphQLFloat },
+    district: { type: GraphQLString},
+    city: { type: GraphQLString },
     ownerRef: { type: new GraphQLNonNull(GraphQLString) },
     mediaNames: { type: new GraphQLList(GraphQLString) }
   },
@@ -597,7 +682,7 @@ var EditPropertyMutation = exports.EditPropertyMutation = mutationWithClientMuta
       resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}}),
     }
   },
-  mutateAndGetPayload: ({viewerId, name, reference, propertyType, contractType, description, ownerRef, mediaNames}) => {
+  mutateAndGetPayload: ({viewerId, name, reference, propertyType, contractType, description, mediaNames, price, floorCount, roomCount, size, district, city}) => {
 
     return DB.models.property.findOne({where: {reference: reference}})
         .then((property) =>
@@ -610,10 +695,73 @@ var EditPropertyMutation = exports.EditPropertyMutation = mutationWithClientMuta
         ).then((property) => {
 
           DB.models.property_property_contract.findOne({where: {property_id: property.id}})
-              .then(property_property_contract => property_property_contract.updateAttributes({property_contract_id: contractType}))
+              .then(property_property_contract => property_property_contract.updateAttributes({property_contract_id: contractType}));
 
-          DB.models.property_description.findOne({where: {property_id: property.id}})
-              .then(property_description => property_description.updateAttributes({description: description}))
+          if(description)
+            DB.models.property_description.findOne({where: {property_id: property.id}})
+                .then(property_description => {
+                  if(property_description) property_description.updateAttributes({description: description})
+                  else property.createPropertyDescription({
+                    property_id: property.id,
+                    description: description
+                  });
+                });
+
+          if(price)
+            DB.models.property_price.findOne({where: {property_id: property.id}})
+                .then(property_price => {
+
+                  if(property_price) property_price.updateAttributes({price: price})
+                  else property.createPropertyPrice({
+                    property_id: property.id,
+                    price: price
+                  });
+                });
+
+          if(floorCount)
+            DB.models.property_floor_count.findOne({where: {property_id: property.id}})
+                .then(property_floor_count => {
+
+                  if(property_floor_count) property_floor_count.updateAttributes({count: floorCount})
+                  else property.createPropertyFloorCount({
+                    property_id: property.id,
+                    count: floorCount
+                  });
+                });
+
+          if(roomCount)
+            DB.models.property_room_count.findOne({where: {property_id: property.id}})
+                .then(property_room_count => {
+                  if(property_room_count) property_room_count.updateAttributes({count: roomCount})
+                  else property.createPropertyRoomCount({
+                    property_id: property.id,
+                    count: roomCount
+                  });
+                });
+
+          if(size)
+            DB.models.property_size.findOne({where: {property_id: property.id}})
+                .then(property_size => {
+                  if(property_size) property_size.updateAttributes({size: size})
+                  else property.createPropertySize({
+                    property_id: property.id,
+                    size: size
+                  });
+                });
+
+
+          if(district) {
+
+            DB.models.property_location.findOne({where: {property_id: property.id}})
+                .then(property_location => {
+                  if (property_location) property_location.updateAttributes({district: district, city: city})
+                  else property.createPropertyLocation({
+                    property_id: property.id,
+                    district: district,
+                    city: city
+                  });
+                });
+          }
 
           return property;
 
@@ -631,6 +779,7 @@ var EditPropertyMutation = exports.EditPropertyMutation = mutationWithClientMuta
 
           return property;
         })
+        .catch(error => console.log(error))
         .then((property) => {
           return {
             viewerId: viewerId,

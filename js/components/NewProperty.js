@@ -7,6 +7,7 @@ import AppMessage from './AppMessage';
 import SearchComponent from './SearchComponent';
 import AttachMedia from './AttachMedia';
 import UserService from './AuthService'
+import {Editor, EditorState, ContentState} from 'draft-js';
 import ReactDOM from 'react-dom'
 
 
@@ -14,7 +15,12 @@ class NewProperty extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {propertyType : 0,  contractType : 0, ownerRef: '', message : "", mediaNames: []} ;
+        this.state = {propertyType : 0,  contractType : 0, ownerRef: '', message : "", mediaNames: [], editorState: EditorState.createEmpty()} ;
+    }
+
+    onEditDescription(editorState){
+
+        this.setState({editorState});
     }
 
     onAddProperty(e) {
@@ -25,7 +31,13 @@ class NewProperty extends React.Component {
         var reference =  this.refs.reference.value;
         var propertyType =  this.state.propertyType;
         var contractType =  this.state.contractType;
-        var description =  this.refs.description.value;
+        var description =  this.state.editorState.getCurrentContent().getPlainText();
+        var size = this.refs.size.value;
+        var floorCount = this.refs.floorCount.value;
+        var roomCount = this.refs.roomCount.value;
+        var district = this.refs.district.value;
+        var city = this.refs.city.value;
+        var price = this.refs.price.value;
         var owner = this.state.ownerRef;
         var mediaNames = this.state.mediaNames;
 
@@ -38,6 +50,12 @@ class NewProperty extends React.Component {
             propertyType: propertyType,
             contractType: contractType,
             description: description,
+            size: size,
+            floorCount: floorCount,
+            roomCount: roomCount,
+            price: price,
+            district: district,
+            city: city,
             ownerRef: owner,
             mediaNames: mediaNames
         });
@@ -113,13 +131,25 @@ class NewProperty extends React.Component {
                             <div className="form-group">
                                 <label htmlFor="name" className="col-md-3 control-label">Nom de la propriété</label>
                                 <div className="col-md-9">
-                                    <input ref="name" id="name"  type="text" className="form-control" placeholder="Saisissez un nom pour la propriété" />
+                                    <input type="text" ref="name" id="name"  className="form-control" placeholder="Saisissez un nom pour la propriété" />
                                 </div>
                             </div>
                             <div className="form-group">
                                 <label htmlFor="name" className="col-md-3 control-label">Reference</label>
                                 <div className="col-md-9">
                                     <input ref="reference" id="reference" type="text" className="form-control" placeholder="Saisissez une référence plus technique" />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="name" className="col-md-3 control-label">Quartier</label>
+                                <div className="col-md-9">
+                                    <input ref="district" id="district" type="text" className="form-control" placeholder="Saisissez le quartier ou se trouve le bien" />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="name" className="col-md-3 control-label">Ville</label>
+                                <div className="col-md-9">
+                                    <input ref="city" id="city" type="text" className="form-control" placeholder="Saisissez la ville ou se trouve le bien" />
                                 </div>
                             </div>
                             <div className="form-group">
@@ -148,15 +178,39 @@ class NewProperty extends React.Component {
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-3 control-label">Description</label>
-                                <div className="col-md-9">
-                                    <textarea ref="description" id="description" className="form-control" placeholder="Décrivez la propriété en quelques mots." />
-                                </div>
-                            </div>
-                            <div className="form-group">
                                 <label htmlFor="name" className="col-md-3 control-label">Ajouter une image</label>
                                 <div className="col-md-9">
                                     <AttachMedia viewer={this.props.viewer} onAddMedia={this.onAddMedia.bind(this)} onMediaInsert={this.onMediaInsert.bind(this)}/>
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="name" className="col-md-3 control-label">Prix</label>
+                                <div className="col-md-9">
+                                    <input type="text" ref="price" id="price" className="form-control" placeholder="Mensualité ou prix de vente" />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="name" className="col-md-3 control-label">Nombre d'étage(s)</label>
+                                <div className="col-md-9">
+                                    <input type="text" ref="floorCount" id="floorCount" className="form-control" placeholder="Si appartement ou villa indiquez le nombre d'étages" />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="name" className="col-md-3 control-label">Nombre de chambres</label>
+                                <div className="col-md-9">
+                                    <input type="text" ref="roomCount" id="roomCount" className="form-control" placeholder="Nombre total de chambre(s) du bien" />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="name" className="col-md-3 control-label">Superficie totale</label>
+                                <div className="col-md-9">
+                                    <input type="text" ref="size" id="size" className="form-control" placeholder="Superficie totale du bien" />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="name" className="col-md-3 control-label">Description</label>
+                                <div className="col-md-9">
+                                    <Editor editorState={this.state.editorState} onChange={this.onEditDescription.bind(this)}/>
                                 </div>
                             </div>
                             <div className="form-group">

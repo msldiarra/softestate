@@ -8,13 +8,20 @@ import AttachMedia from './AttachMedia';
 import UserService from './AuthService'
 import ReactDOM from 'react-dom'
 import AttachMediaMutation from './AttachMediaMutation'
+import {Editor, EditorState, ContentState} from 'draft-js';
 
 
 class PropertyDetailsEdit extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {propertyType : 0,  contractType : 0, ownerRef: '', message : "", mediaNames: []} ;
+        this.state = {propertyType : 0,  contractType : 0, ownerRef: '', message : "", mediaNames: [], editorState: EditorState.createEmpty()} ;
+    }
+
+
+    onEditDescription(editorState){
+
+        this.setState({editorState});
     }
 
     onEditProperty(e) {
@@ -25,7 +32,13 @@ class PropertyDetailsEdit extends React.Component {
         var reference =  this.refs.reference.value;
         var propertyType =  this.state.propertyType;
         var contractType =  this.state.contractType;
-        var description =  this.refs.description.value;
+        var description =  this.state.editorState.getCurrentContent().getPlainText();
+        var size = this.refs.size.value;
+        var floorCount = this.refs.floorCount.value;
+        var roomCount = this.refs.roomCount.value;
+        var price = this.refs.price.value;
+        var district = this.refs.district.value;
+        var city = this.refs.city.value;
         var owner = this.state.ownerRef;
         var mediaNames = this.state.mediaNames;
 
@@ -38,7 +51,13 @@ class PropertyDetailsEdit extends React.Component {
             propertyType: propertyType,
             contractType: contractType,
             description: description,
+            size: size,
+            floorCount: floorCount,
+            roomCount: roomCount,
+            price: price,
             ownerRef: owner,
+            district: district,
+            city: city,
             mediaNames: mediaNames
         });
 
@@ -91,6 +110,11 @@ class PropertyDetailsEdit extends React.Component {
         this.setState({ propertyType : property.type_id });
 
         this.setState({ contractType : property.contract_type });
+
+        if(property.description)
+            this.setState({editorState:
+                EditorState.createWithContent(ContentState.createFromText(property.description))
+            })
     }
 
     render() {
@@ -137,6 +161,18 @@ class PropertyDetailsEdit extends React.Component {
                                 </div>
                             </div>
                             <div className="form-group">
+                                <label htmlFor="name" className="col-md-3 control-label">Quartier</label>
+                                <div className="col-md-9">
+                                    <input ref="district" id="district" defaultValue={property.district}  type="text" className="form-control" placeholder="Saisissez le quartier ou se trouve le bien" />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="name" className="col-md-3 control-label">Ville</label>
+                                <div className="col-md-9">
+                                    <input ref="city" id="city" type="text" defaultValue={property.city} className="form-control" placeholder="Saisissez la ville ou se trouve le bien" />
+                                </div>
+                            </div>
+                            <div className="form-group">
                                 <label htmlFor="type" className="col-md-3 control-label">Type de bien</label>
                                 <div className="col-md-9">
                                     <label className="radio-inline control-label">
@@ -167,15 +203,39 @@ class PropertyDetailsEdit extends React.Component {
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-3 control-label">Description</label>
-                                <div className="col-md-9">
-                                    <textarea ref="description" id="description" className="form-control" defaultValue={property.description} placeholder="Décrivez la propriété en quelques mots." />
-                                </div>
-                            </div>
-                            <div className="form-group">
                                 <label htmlFor="name" className="col-md-3 control-label">Ajouter une image</label>
                                 <div className="col-md-9">
                                     <AttachMedia viewer={this.props.viewer} onAddMedia={this.onAddMedia.bind(this)} onMediaInsert={this.onMediaInsert.bind(this)}/>
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="name" className="col-md-3 control-label">Prix</label>
+                                <div className="col-md-9">
+                                    <input type="text" ref="price" id="price" defaultValue={property.price} className="form-control" placeholder="Mensualité ou prix de vente" />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="name" className="col-md-3 control-label">Nombre d'étage(s)</label>
+                                <div className="col-md-9">
+                                    <input type="text" ref="floorCount" id="floorCount" defaultValue={property.floor_count} className="form-control" placeholder="Si appartement ou villa indiquez le nombre d'étages" />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="name" className="col-md-3 control-label">Nombre de chambres</label>
+                                <div className="col-md-9">
+                                    <input type="text" ref="roomCount" id="roomCount" defaultValue={property.room_count} className="form-control" placeholder="Nombre total de chambre(s) du bien" />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="name" className="col-md-3 control-label">Superficie totale</label>
+                                <div className="col-md-9">
+                                    <input type="text" ref="size" id="size" defaultValue={property.size} className="form-control" placeholder="Superficie totale du bien" />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="name" className="col-md-3 control-label">Description</label>
+                                <div className="col-md-9">
+                                    <Editor editorState={this.state.editorState} onChange={this.onEditDescription.bind(this)}/>
                                 </div>
                             </div>
                             <div className="form-group">
@@ -213,6 +273,12 @@ export default Relay.createContainer(PropertyDetailsEdit, {
                       name
                       type_id
                       contract_type
+                      district
+                      city
+                      size
+                      floor_count
+                      room_count
+                      price
                       description
                       owner {
                         reference

@@ -32,6 +32,12 @@ input AddPropertyInput {
   propertyType: Int!
   contractType: Int!
   description: String
+  price: Int
+  floorCount: Int
+  roomCount: Int
+  size: Float
+  district: String
+  city: String
   ownerRef: String!
   mediaNames: [String]
   clientMutationId: String!
@@ -101,6 +107,12 @@ input EditPropertyInput {
   propertyType: Int!
   contractType: Int!
   description: String
+  price: Int
+  floorCount: Int
+  roomCount: Int
+  size: Float
+  district: String
+  city: String
   ownerRef: String!
   mediaNames: [String]
   clientMutationId: String!
@@ -201,6 +213,12 @@ type Property implements Node {
   type_id: Int
   contract_type: Int
   description: String
+  size: Int
+  floor_count: Float
+  room_count: Float
+  price: Int
+  district: String
+  city: String
   owner: Owner
   media(after: String, first: Int, before: String, last: Int): MediasConnection
 }

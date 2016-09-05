@@ -64,6 +64,19 @@ CREATE TABLE IF NOT EXISTS property_floor_count (
   count INTEGER NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS property_location (
+  id SERIAL PRIMARY KEY,
+  property_id INTEGER NOT NULL,
+  district VARCHAR(100) NOT NULL,
+  city VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS property_room_count (
+  id SERIAL PRIMARY KEY,
+  property_id INTEGER NOT NULL,
+  count INTEGER NOT NULL
+);
+
 
 CREATE TABLE IF NOT EXISTS property_size (
   id SERIAL PRIMARY KEY,
@@ -265,8 +278,14 @@ ADD CONSTRAINT fk_property_rental_expenses_property FOREIGN KEY (property_id) RE
 ALTER TABLE property_floor_count
 ADD CONSTRAINT fk_property_floor_count_property FOREIGN KEY (property_id) REFERENCES property (id);
 
+ALTER TABLE property_room_count
+ADD CONSTRAINT fk_property_room_count_property FOREIGN KEY (property_id) REFERENCES property (id);
+
 ALTER TABLE property_size
 ADD CONSTRAINT fk_property_size_property FOREIGN KEY (property_id) REFERENCES property (id);
+
+ALTER TABLE property_location
+ADD CONSTRAINT fk_property_location_property FOREIGN KEY (property_id) REFERENCES property (id);
 
 ALTER TABLE property_media
 ADD CONSTRAINT fk_property_media_property FOREIGN KEY (property_id) REFERENCES property (id),

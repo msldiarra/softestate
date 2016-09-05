@@ -81,6 +81,39 @@ export const PropertyDescription = DB.define('property_description', {
     } , {timestamps: false, freezeTableName: true}
 );
 
+export const PropertySize = DB.define('property_size', {
+        property_id: Sequelize.INTEGER,
+        size: Sequelize.FLOAT
+    } , {timestamps: false, freezeTableName: true}
+);
+
+
+export const PropertyPrice = DB.define('property_price', {
+        property_id: Sequelize.INTEGER,
+        price: Sequelize.INTEGER
+    } , {timestamps: false, freezeTableName: true}
+);
+
+export const PropertyFloorCount = DB.define('property_floor_count', {
+        property_id: Sequelize.INTEGER,
+        count: Sequelize.INTEGER
+    } , {timestamps: false, freezeTableName: true}
+);
+
+export const PropertyRoomCount = DB.define('property_room_count', {
+        property_id: Sequelize.INTEGER,
+        count: Sequelize.INTEGER
+    } , {timestamps: false, freezeTableName: true}
+);
+
+export const PropertyLocation = DB.define('property_location', {
+        property_id: Sequelize.INTEGER,
+        district: Sequelize.STRING,
+        city: Sequelize.STRING
+    } , {timestamps: false, freezeTableName: true}
+);
+
+
 export const Media = DB.define('media', {
         name: Sequelize.STRING,
         uri: Sequelize.STRING,
@@ -166,7 +199,12 @@ Owner.hasOne(RentSummary, {as: 'RentSummary', foreignKey: 'owner_id' });
 Owner.hasOne(SellSummary, {as: 'SellSummary', foreignKey: 'owner_id' } );
 
 Property.belongsToMany(Owner, { through: OwnerProperty, foreignKey: 'property_id' });
+Property.hasOne(PropertyLocation, {as: 'PropertyLocation', foreignKey: 'property_id' });
 Property.hasOne(PropertyDescription, {as: 'PropertyDescription', foreignKey: 'property_id' });
+Property.hasOne(PropertyPrice, {as: 'PropertyPrice', foreignKey: 'property_id' });
+Property.hasOne(PropertyFloorCount, {as: 'PropertyFloorCount', foreignKey: 'property_id' });
+Property.hasOne(PropertySize, {as: 'PropertySize', foreignKey: 'property_id' });
+Property.hasOne(PropertyRoomCount, {as: 'PropertyRoomCount', foreignKey: 'property_id' });
 Property.hasOne(PropertyPropertyContract, {as: 'PropertyPropertyContract', foreignKey: 'property_id' });
 Property.belongsToMany(Media, {through: PropertyMedia, foreignKey: 'property_id' });
 Media.belongsToMany(Property, {through: PropertyMedia, foreignKey: 'media_id' });

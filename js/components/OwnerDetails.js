@@ -2,22 +2,34 @@ import React from 'react';
 import Relay from 'react-relay';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
-export default class PropertyDetails extends React.Component {
+export default class OwnerDetails extends React.Component {
+
+
+    componentDidMount() {
+
+        var owner = this.props.viewer.owners.edges.length > 0 ? this.props.viewer.owners.edges[0].node: null;
+        if(!owner)
+            this.context.router.replace('/');
+
+    }
 
     render() {
 
-        var owner = this.props.viewer.owners.edges[0].node;
-        var ownerDisplay = (
-            <div className="row" >
-                <div className="page-header row">
-                    <h4>
-                        <span className="col-xs-10"><i className="fa fa-users" aria-hidden="true"></i> {owner.reference}</span>
-                    </h4>
-                </div>
-                <span>{owner.company}</span>
-                <span>{owner.contact.first_name + ' ' + owner.contact.last_name}</span>
-                <span>{owner.contact.info.phone}</span>
-            </div>)
+        var ownerDisplay = '';
+        var owner = this.props.viewer.owners.edges.length > 0 ? this.props.viewer.owners.edges[0].node: null;
+
+        if(owner)
+            ownerDisplay = (
+                <div className="row" >
+                    <div className="page-header row">
+                        <h4>
+                            <span className="col-xs-10"><i className="fa fa-users" aria-hidden="true"></i> {owner.reference}</span>
+                        </h4>
+                    </div>
+                    <span>{owner.company}</span>
+                    <span>{owner.contact.first_name + ' ' + owner.contact.last_name}</span>
+                    <span>{owner.contact.info.phone}</span>
+                </div>)
 
         return (
             <div className="">
@@ -29,7 +41,11 @@ export default class PropertyDetails extends React.Component {
     }
 }
 
-export default Relay.createContainer(PropertyDetails, {
+OwnerDetails.contextTypes = {
+    router: React.PropTypes.object.isRequired
+}
+
+export default Relay.createContainer(OwnerDetails, {
 
     initialVariables: {search: ''},
 

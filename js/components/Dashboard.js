@@ -10,7 +10,7 @@ class Dashboard extends React.Component {
             <div className="">
                 <div className="page-header row">
                     <h4>
-                        <span className="col-xs-10"><i className="fa fa-users" aria-hidden="true"></i> Clients</span>
+                        <span className="col-xs-10"><i className="fa fa-users" aria-hidden="true"></i> Propriétés</span>
                     </h4>
                 </div>
                 <Properties customer={this.props.viewer} />

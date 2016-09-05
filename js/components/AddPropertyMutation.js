@@ -20,6 +20,12 @@ export default class AddPropertyMutation extends Relay.Mutation {
             propertyType: this.props.propertyType,
             contractType: this.props.contractType,
             description: this.props.description,
+            size: this.props.size,
+            floorCount: this.props.floorCount,
+            roomCount: this.props.roomCount,
+            price: this.props.price,
+            district: this.props.district,
+            city: this.props.city,
             ownerRef: this.props.ownerRef,
             mediaNames: this.props.mediaNames
         };

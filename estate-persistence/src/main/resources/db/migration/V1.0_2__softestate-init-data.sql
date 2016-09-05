@@ -42,11 +42,11 @@ INSERT INTO customer_owner VALUES  (1,1), (2,1), (3,1);
 
 -- Properties
 INSERT INTO Property (name, reference, type_id) VALUES
-  ('Sokorodji 1', '0001', 1),
-  ('Badalabougou', '0002', 1),
-  ('Sogoniko', '0003', 1),
-  ('Hamdalaye', '0004', 2),
-  ('Point G', '0005', 3);
+  ('Bel appart dans grand immeuble', '0001', 1),
+  ('Villa luxeuse avec piscine', '0002', 1),
+  ('Grand duplex en bord de fleuve', '0003', 1),
+  ('2 pièces meublé au calme', '0004', 2),
+  ('Terrain de 1ha à Nyamana', '0005', 3);
 
 INSERT INTO property_property_contract (property_id, property_contract_id) VALUES
   (1, 1),

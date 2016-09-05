@@ -3,22 +3,46 @@ import Relay from 'react-relay';
 import Images from './Images'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
+
 export default class PropertyDetails extends React.Component {
+
+    componentDidMount() {
+
+        var property = this.props.viewer.properties.edges.length > 0? this.props.viewer.properties.edges[0].node : null;
+
+        if(property == null)
+            this.context.router.replace('/');
+
+    }
 
     render() {
 
-        var property = this.props.viewer.properties.edges[0].node;
-        var propertyDisplay = (
-            <div className="row" >
-                <div className="page-header row">
-                    <h4>
-                        <span className="col-xs-10"><i className="fa fa-users" aria-hidden="true"></i> {property.name}</span>
-                    </h4>
-                </div>
-                <span>A partir de 7,000 FCFA par mois</span>
-                <span>{property.type_label}</span>
-                <Images media={property.media} />
-            </div>)
+        var propertyDisplay = '';
+        var property = this.props.viewer.properties.edges.length > 0? this.props.viewer.properties.edges[0].node : null;
+
+        if(property)
+            propertyDisplay = (
+                <div className="row padding-25">
+                    <div className="col-md-8">
+                        <Images media={property.media} />
+                    </div>
+                    <div className="col-md-4">
+                        <h2>{property.name}</h2>
+                        <h4>A partir de {property.price}  {property.contract_type==1? 'FCFA / mois' : ''} </h4><br/>
+                        <dl>
+                            <dt></dt>
+                            <dd>
+                                {property.size? <div><label>Superficie:</label> {property.size} m²</div> : ''}
+                                {property.room_count ? <div><label>Nombre de chambres:</label> {property.room_count}</div>:''}
+                                {property.floor_count ? <div><label>Nombre de niveau :</label> {property.floor_count}</div> : ''}
+                                {property.district ?<div>{property.district}, {property.city}</div> : ''}
+                            </dd>
+                        </dl>
+                        <h3>Description</h3>
+                        {property.description ? <p style={{paddingRight: '15px'}}>{property.description}</p> : <p>...</p>}
+
+                    </div>
+                </div>)
 
         return (
             <div className="">
@@ -28,6 +52,11 @@ export default class PropertyDetails extends React.Component {
             </div>
         );
     }
+}
+
+
+PropertyDetails.contextTypes = {
+    router: React.PropTypes.object.isRequired
 }
 
 export default Relay.createContainer(PropertyDetails, {
@@ -45,6 +74,14 @@ export default Relay.createContainer(PropertyDetails, {
                       reference
                       name
                       type_label
+                      contract_type
+                      size
+                      floor_count
+                      room_count
+                      price
+                      description
+                      district
+                      city
                       media(first: 10) {
                         edges {
                             node {

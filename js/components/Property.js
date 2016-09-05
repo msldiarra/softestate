@@ -10,16 +10,27 @@ export default class Property extends React.Component {
         var property = this.props.property;
 
         var propertyDisplay = (
-            <div className="row" >
-                <div className="page-header row">
-                    <h4>
-                        <span className="col-xs-10"><i className="fa fa-users" aria-hidden="true"></i> {property.name}</span>
-                    </h4>
+            <div className="row col-xs-12 col-sm-6 col-md-4 col-lg-3 spacer center-block">
+                <div className="full">
+                    <div className="row">
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+                            {this.props.property.media.edges.length > 0 ?
+                                <a href={"/#/property/" + this.props.property.reference }><img src={this.props.property.media.edges[0].node.uri} alt={''}/></a> :
+                                <a href={"/#/property/" + this.props.property.reference }><img src='/images/PT_hero_42_153645159.jpg' alt={''}/></a> }
+                        </div>
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            {property.district? <h5>{property.district}, {property.city}</h5> : ''}
+                        </div>
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <a href={"/#/property/" + this.props.property.reference }><h4>{this.props.property.name}</h4></a>
+                            <span className="grey">{this.props.property.room_count? this.props.property.room_count + ' chambre(s) - ' : ''}
+                                {this.props.property.price? this.props.property.price + property.contract_type==1? ' FCFA / mois' : '' : ''}
+                            </span>
+                        </div>
+                    </div>
                 </div>
-                <span>A partir de 7,000 FCFA par mois</span>
-                <span>{property.type_label}</span>
-                <Images media={property.media} />
-            </div>)
+            </div>
+        )
 
         return (
             <div className="">
