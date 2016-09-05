@@ -24,7 +24,8 @@ export default class Property extends React.Component {
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <a href={"/#/property/" + this.props.property.reference }><h4>{this.props.property.name}</h4></a>
                             <span className="grey">{this.props.property.room_count? this.props.property.room_count + ' chambre(s) - ' : ''}
-                                {this.props.property.price? this.props.property.price + property.contract_type==1? ' FCFA / mois' : '' : ''}
+                                {this.props.property.price? this.props.property.price: ''}
+                                {this.props.property.price && property.contract_type==1? ' FCFA / mois' : ''}
                             </span>
                         </div>
                     </div>
