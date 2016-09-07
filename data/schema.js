@@ -39,11 +39,8 @@ import {
 
 }from './database';
 import _ from 'underscore';
-import uploadMedia from './uploadMedia';
-import fs from 'fs';
-const Promise = require('bluebird');
+import sanitize from 'sanitize-filename';
 
-Promise.promisifyAll(fs.writeFile);
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -572,6 +569,11 @@ var AddPropertyMutation = exports.AddPropertyMutation = mutationWithClientMutati
   },
   mutateAndGetPayload: ({viewerId, name, reference, propertyType, contractType, description, ownerRef, mediaNames, price, floorCount, roomCount, size, district, city}) => {
 
+    var sanitizedMediaNames = _.map(mediaNames, name => {
+      return sanitize(name.replace(/[`~!@#$%^&*()_|+\-=÷¿?;:'",<>\{\}\[\]\\\/]/gi, '') )
+    });
+
+
     return DB.models.owner.findOne({where: {reference: ownerRef}})
         .then((owner) =>
             owner.createProperty({
@@ -635,8 +637,8 @@ var AddPropertyMutation = exports.AddPropertyMutation = mutationWithClientMutati
         })
         .then((property) => {
 
-          if(mediaNames.length > 0) {
-            DB.models.media.findAll({where: {name: {in: mediaNames}}})
+          if(sanitizedMediaNames.length > 0) {
+            DB.models.media.findAll({where: {name: {in: sanitizedMediaNames}}})
             .then((media) => {
               if(media) {
                 property.addMedia(media);
@@ -647,7 +649,10 @@ var AddPropertyMutation = exports.AddPropertyMutation = mutationWithClientMutati
 
           return property;
         })
-        .catch(error => console.log(error))
+        .catch(error => {
+          console.log(error)
+          throw error;
+        })
         .then((property) => {
           return {
             viewerId: viewerId,
@@ -683,6 +688,14 @@ var EditPropertyMutation = exports.EditPropertyMutation = mutationWithClientMuta
     }
   },
   mutateAndGetPayload: ({viewerId, name, reference, propertyType, contractType, description, mediaNames, price, floorCount, roomCount, size, district, city}) => {
+
+
+    var sanitizedMediaNames = _.map(mediaNames, name => {
+      return sanitize(name.replace(/[`~!@#$%^&*()_|+\-=÷¿?;:'",<>\{\}\[\]\\\/]/gi, '') )
+    });
+
+    console.log('-------------------------------------------')
+    console.log(sanitizedMediaNames)
 
     return DB.models.property.findOne({where: {reference: reference}})
         .then((property) =>
@@ -768,8 +781,8 @@ var EditPropertyMutation = exports.EditPropertyMutation = mutationWithClientMuta
         })
         .then((property) => {
 
-          if(mediaNames.length > 0) {
-            DB.models.media.findAll({where: {name: {in: mediaNames}}})
+          if(sanitizedMediaNames.length > 0) {
+            DB.models.media.findAll({where: {name: {in: sanitizedMediaNames}}})
                 .then((media) => {
                   if(media) {
                     property.addMedia(media);
@@ -779,7 +792,10 @@ var EditPropertyMutation = exports.EditPropertyMutation = mutationWithClientMuta
 
           return property;
         })
-        .catch(error => console.log(error))
+        .catch(error => {
+          console.log(error)
+          throw error;
+        })
         .then((property) => {
           return {
             viewerId: viewerId,
@@ -805,26 +821,14 @@ const AttachMediaMutation = mutationWithClientMutationId({
   },
   mutateAndGetPayload: (input, options) => {
 
-    let imageName = input.name;
+    const filename = sanitize(input.name.replace(/[`~!@#$%^&*()_|+\-=÷¿?;:'",<>\{\}\[\]\\\/]/gi, ''));
     const mimeType = input.name.substring(input.name.lastIndexOf('.')+1);
 
+
     return DB.models.media.create({
-          name: imageName,
-          uri: input.uri,
+          name: filename,
+          uri: '/images/' + filename,
           mime_type: mimeType
-        })
-        .then((media) => {
-
-          const file = options.rootValue.request.file;
-          const filePath = __dirname + '/../public/images/' + imageName;
-
-          //prepare for update image
-          fs.writeFile(filePath, file.buffer, 'binary', (err) => {
-            if (err) throw err
-            console.log('File saved.')
-          })
-
-          return media;
         })
         .then((media) => {
           return  {

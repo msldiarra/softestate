@@ -127,7 +127,7 @@ class PropertyDetailsEdit extends React.Component {
             <div className="">
                 <div className="page-header row">
                     <h4>
-                        <span className="col-xs-10"><i className="fa fa-user" aria-hidden="true" /> Nouvelle propriété</span>
+                        <i className="fa fa-home" aria-hidden="true" /> Nouveau bien
                     </h4>
                 </div>
 
@@ -235,7 +235,8 @@ class PropertyDetailsEdit extends React.Component {
                             <div className="form-group">
                                 <label htmlFor="name" className="col-md-3 control-label">Description</label>
                                 <div className="col-md-9">
-                                    <Editor editorState={this.state.editorState} onChange={this.onEditDescription.bind(this)}/>
+                                    <Editor editorState={this.state.editorState} onChange={this.onEditDescription.bind(this)}
+                                            placeholder="Décrivez le bien de manière à le mettre en valeur" />
                                 </div>
                             </div>
                             <div className="form-group">

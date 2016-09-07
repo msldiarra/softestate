@@ -33,26 +33,31 @@ class Login extends React.Component {
 
     render() {
         return (
-            <form className="form-signin">
-                <h2 className="form-signin-heading text-center">softestate</h2>
-                <hr/>
-                <div className="form-group">
-                    <label htmlFor="username" className="sr-only">Identifiant</label>
-                    <input type="text" ref="user" className="form-control"
-                           placeholder="Identifiant" autoFocus="true"/>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="password" className="sr-only">Mot de passe</label>
-                    <input type="password" ref="password" className="form-control"
-                           placeholder="Mot de passe"/>
-                </div>
-                <button className="btn btn-warning btn-block" type="submit" onClick={this.login.bind(this)}>
-                    Connectez-vous
-                </button>
-                {this.state.authenticationError && (
-                    <p>Mauvais paramètres d'authentification</p>
-                )}
-            </form>
+            <div>
+                <form className="form-signin">
+                    <h2 className="form-signin-heading text-center cursive">SOFTESTATE</h2>
+                    <hr/>
+                    <div className="form-group">
+                        <label htmlFor="username" className="sr-only">Identifiant</label>
+                        <input type="text" ref="user" className="form-control"
+                               placeholder="Identifiant" autoFocus="true"/>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="password" className="sr-only">Mot de passe</label>
+                        <input type="password" ref="password" className="form-control"
+                               placeholder="Mot de passe"/>
+                    </div>
+                    <button className="btn btn-default btn-block" type="submit" onClick={this.login.bind(this)}>
+                        Connectez-vous
+                    </button>
+                    {this.state.authenticationError && (
+                        <p>Mauvais paramètres d'authentification</p>
+                    )}
+                </form>
+                <br/>
+                <footer className="text-center">&copy;2016 UL- L'Usine Logicielle SARL</footer>
+                <br/>
+            </div>
         );
     }
 }

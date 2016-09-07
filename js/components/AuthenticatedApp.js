@@ -20,7 +20,7 @@ class AuthenticatedApp extends React.Component {
             <div>
                 <Header user={this.state.user} onLogout={this.logout.bind(this)}/>
                 <div className="content min-height">
-                    <div className="container-fluid">
+                    <div className="container">
                         {this.props.children}
                     </div>
                 </div>

@@ -10,6 +10,9 @@ import bodyParser from 'body-parser';
 import crypto from 'crypto';
 import request from 'request';
 import multer from 'multer';
+import _ from 'lodash';
+import sanitize from 'sanitize-filename';
+import fs from 'fs';
 
 const APP_PORT = 3000;
 const API_PORT = 3001;
@@ -26,17 +29,51 @@ var graphqlPort = isProduction ? GRAPHQL_PORT : GRAPHQL_PORT;
 // Expose a GraphQL endpoint
 var graphQLServer = express();
 
-
 const storage = multer.memoryStorage();
-graphQLServer.use('/', multer({ storage }).single('file'));
+const multerMiddleware = multer({ storage: storage }).fields([{name: 'file'}]);
+const uploadMiddleWare = (req, res, next) => {
+    multerMiddleware(req, res, () => {
 
+        const files = _.values(req.files);
+
+        if (!files || files.length === 0) {
+            next();
+            return;
+        }
+
+        // Parse variables so we can add to them. (express-graphql won't parse them again once populated)
+        req.body.variables = JSON.parse(req.body.variables);
+
+        files.forEach(fileArray => {
+            const file = fileArray[0];
+            const filename = sanitize(file.originalname.replace(/[`~!@#$%^&*()_|+\-=÷¿?;:'",<>\{\}\[\]\\\/]/gi, ''));
+
+            // save file to disk
+            const filePath = path.join(__dirname, 'public/images', filename);
+            fs.writeFileSync(filePath, file.buffer, 'binary', (err) => {
+                if (err) {
+                    console.log(err)
+                    throw err;
+                }
+                console.log('File saved.')
+            })
+
+            // add files to graphql input. we only support single images here
+            //req.body.variables.input_0['name'] = '/images/' + filename;
+            req.body.variables.input_0;
+        });
+
+        next();
+    });
+}
+
+graphQLServer.use('/graphql', uploadMiddleWare);
 graphQLServer.use('/', graphQLHTTP( req => { return {
     graphiql: true,
     rootValue: {request: req},
     pretty: true,
     schema: Schema
 }}));
-
 graphQLServer.listen(graphqlPort, () => console.log(
     `GraphQL Server is now running on port ${graphqlPort}`
 ));

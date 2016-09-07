@@ -12,9 +12,9 @@ class Properties extends React.Component {
         });
 
         return (
-            <div className="padding-25" style={{ backgroundColor: '#f4f4f4'}}>
+            <div className="padding-25">
                 <ReactCSSTransitionGroup transitionName="example" transitionAppear={true} transitionAppearTimeout={500} transitionEnterTimeout={0} transitionLeaveTimeout={0}>
-                    {properties}
+                    <div className="row">{properties}</div>
                 </ReactCSSTransitionGroup>
             </div>
         );

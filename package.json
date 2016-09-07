@@ -49,6 +49,7 @@
     "react-router-relay": "^0.13.4",
     "react-slick": "^0.13.6",
     "reqwest": "^1.1.5",
+    "sanitize-filename": "^1.6.0",
     "sequelize": "^3.21.0",
     "slick-carousel": "^1.6.0",
     "underscore": "^1.8.3",

@@ -3,7 +3,7 @@ html, body {
 }
 
 body {
-    background: #fff; font-family: 'Roboto', sans-serif;
+    background: #fff; font-family: 'Open Sans', sans-serif;
     color: #333;
     padding-top:15px;
     line-height:14px;
@@ -194,7 +194,7 @@ a {
 .content {}
 .padding-25 { margin-top: 50px; }
 .navbar-custom {
-    background-color:#00BCD4;
+    background-color:#fff;
     color:#000;
     border-radius:0;
 }
@@ -208,28 +208,31 @@ a {
 }
 .navbar-custom .navbar-brand {
     color:#000;
-    font-weight:600;
+    font-weight:500;
+    font-family: 'Passion One', cursive;
+    font-size: 26px;
 }
 
+.cursive {font-family: 'Passion One', cursive;}
 /* mobile version */
 .navbar-custom .navbar-toggle {
-    border-color: #00BCD4;
+    border-color: #fff;
 }
 .navbar-custom .navbar-toggle:hover,
 .navbar-custom .navbar-toggle:focus {
-    background-color: #00BCD4;
+    background-color: #fff;
 }
 .navbar-custom .navbar-toggle .icon-bar {
     background-color: #ffff00;
 }
 .navbar-custom .navbar-nav > li > a {
     color: #000;
-    background-color: #00BCD4;
+    background-color: #fff;
 }
 .navbar-custom .navbar-nav > .active > a:hover,
 .navbar-custom .navbar-nav > .active > a:focus {
     color: #000;
-    background-color: #00BCD4;
+    background-color: #fff;
 }
 .navbar-custom .navbar-nav > .active  {
     font-size: 17px;
@@ -238,15 +241,17 @@ a {
 .navbar-custom .navbar-nav > .open > a:hover,
 .navbar-custom .navbar-nav > .open > a:focus {
     color: #000;
-    background-color: #00BCD4;
+    background-color: #fff;
 }
 
 .page-header {
-    border-bottom: 1px solid rgba(0,0,0, 0.3) !important;
-    background-color:#4DD0E1 !important;
+    border:none !important;
+    background-color:#fff !important;
     margin-bottom: 0px !important;
-    margin-top: 36px !important;
+    margin-top: 80px !important;
+    padding-left: 15px !important;
     color:#000;
+    font-family: 'Passion One', cursive !important;
 }
 
 .example-appear {
@@ -278,12 +283,13 @@ a {
 
 .progress{height:50px!important}
 
-.full {background: #fff !important; padding-bottom: 15px; }
+.full {background: #fff !important; padding-bottom: 15px; overflow-x: hidden;}
 
 .padding-20 { padding: 20px 10px 3px 10px !important; }
 .padding-10 { padding: 5px 10px 3px 10px !important; }
 
 .spacer {
+    margin-bottom: 5px !important;
 }
 
 .opacity-54 { opacity: 0.54; }

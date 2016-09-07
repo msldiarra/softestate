@@ -9,11 +9,12 @@ class Dashboard extends React.Component {
         return (
             <div className="">
                 <div className="page-header row">
-                    <h4>
-                        <span className="col-xs-10"><i className="fa fa-users" aria-hidden="true"></i> Propriétés</span>
-                    </h4>
+
                 </div>
                 <Properties customer={this.props.viewer} />
+                <br/>
+                <footer className="text-center">&copy;2016 UL- L'Usine Logicielle SARL</footer>
+                <br/>
             </div>
         );
     }
