@@ -47,7 +47,7 @@ class Login extends React.Component {
                         <input type="password" ref="password" className="form-control"
                                placeholder="Mot de passe"/>
                     </div>
-                    <button className="btn btn-default btn-block" type="submit" onClick={this.login.bind(this)}>
+                    <button className="btn btn-default btn-block btn-lg" type="submit" onClick={this.login.bind(this)}>
                         Connectez-vous
                     </button>
                     {this.state.authenticationError && (
