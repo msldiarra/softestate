@@ -2,7 +2,7 @@ import Sequelize from 'sequelize';
 
 export const DB = new Sequelize(
     'estate',
-    'postgres',
+    'estate',
     '1234',
     {
       dialect: 'postgres',
