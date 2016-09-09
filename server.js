@@ -13,11 +13,14 @@ import multer from 'multer';
 import _ from 'lodash';
 import sanitize from 'sanitize-filename';
 import fs from 'fs';
+import httpProxy from 'http-proxy';
+import config from './webpack.config';
 
 const APP_PORT = 3000;
 const API_PORT = 3001;
 const GRAPHQL_PORT = 8181;
 
+const proxy = httpProxy.createProxyServer({})
 console.log("process.env.NODE_ENV : ");
 console.log(process.env.NODE_ENV)
 
@@ -128,43 +131,47 @@ app.post('/api/authenticate', (request, response) => {
         });
 });
 
-
 app.listen(apiPort);
 
+var application = express();
+
+application.all('/graphql', (req, res) => {
+    proxy.web(req, res, {
+        target: `http://localhost:${graphqlPort}`
+    })
+})
+
+application.all('/api/*', (req, res) => {
+    proxy.web(req, res, {
+        target: `http://localhost:${apiPort}`
+    })
+})
 
 if(!isProduction) {
 
 	// Serve the Relay app
-	var compiler = webpack({
-	    entry: path.resolve(__dirname, 'js', 'app.js'),
-	    module: {
-		loaders: [
-		    {
-		        exclude: /node_modules/,
-		        loader: 'babel',
-		        test: /\.js$/,
-		    }
-		]
-	    },
-	    output: {filename: 'app.js', path: '/'}
-	});
+	var compiler = webpack(config);
 
-	var application = new WebpackDevServer(compiler, {
-	    contentBase: '/public/',
-	    proxy: {'/graphql': `http://localhost:${graphqlPort}`},
-	    publicPath: '/js/',
+	var server = new WebpackDevServer(compiler, {
+        hot: true,
+	    //contentBase: '/public/',
+	    //proxy: {'/graphql': `http://localhost:${graphqlPort}`},
+	    publicPath: '/build',
 	    stats: {colors: true}
 	});
 
-} else {
-  
-  var application = express();
-  application.use('/graphql', (req, res) => {
-    var url = `http://localhost:${graphqlPort}/req.url` ;
-    req.pipe(request(url)).pipe(res); 
-  })
+    server.listen("8082", 'localhost', () => {
+        console.log(`webpack dev server running on http://localhost:8082`);
+    });
 
+    application.all('/build/*', (req, res) => {
+        proxy.web(req, res, {
+            target: 'http://localhost:8082'
+        })
+    })
 }
+
+proxy.on('error', (e) => console.log('COuld not connect to proxy....'))
 
 // Serve static resources
 application.use('/', express.static(path.resolve(__dirname, 'public')));
