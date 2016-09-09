@@ -10,7 +10,7 @@ export default class Property extends React.Component {
         var property = this.props.property;
 
         var propertyDisplay = (
-            <div className="col-xs-12 col-sm-6 col-md-4 col-lg-4 spacer center-block">
+            <div className="col-xs-12 col-sm-6 col-md-4 col-lg-4 spacer">
                 <div className="full">
                     <div className="row">
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{minHeight: '350px'}}>

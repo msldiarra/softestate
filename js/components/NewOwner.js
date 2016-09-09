@@ -54,24 +54,24 @@ class NewOwner extends React.Component {
         return (
             <div className="">
 
-                <div className="page-header row">
-                    <h4>
-                        <span className="col-xs-10"><i className="fa fa-user" aria-hidden="true" /> Nouveau client</span>
-                    </h4>
+                <div className="page-header col-md-6 center-block row">
+                    <h3>
+                        <span className="col-md-12"><i className="fa fa-user" aria-hidden="true" /> Nouveau client</span>
+                    </h3>
                 </div>
                 <AppMessage message={text} />
-                <form className="form-horizontal padding-20" name="addOwner" >
+                <form className="form-horizontal padding-20" name="add-owner" >
                     <div className="page-content row">
-                        <div className="col-md-6 col-md-offset-1">
+                        <div className="col-md-6 center-block">
                             <div className="form-group">
-                                <label htmlFor="reference" className="col-md-3 control-label">Reference</label>
-                                <div className="col-md-9">
+                                <label htmlFor="reference" className="col-md-12">Reference</label>
+                                <div className="col-md-12">
                                     <input ref="reference" id="reference" type="text" className="form-control" placeholder="reference" />
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="type" className="col-md-3 control-label">Type de client</label>
-                                <div className="col-md-9">
+                                <label htmlFor="type" className="col-md-12">Type de client</label>
+                                <div className="col-md-12">
                                     <label className="radio-inline control-label">
                                         <input type="radio" id="individual" value="1" name="type" onClick={this.handleType.bind(this)} /> individu
                                     </label>
@@ -81,33 +81,33 @@ class NewOwner extends React.Component {
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-3 control-label">Nom de la société</label>
-                                <div className="col-md-9">
+                                <label htmlFor="name" className="col-md-12">Nom de la société</label>
+                                <div className="col-md-12">
                                     <input ref="company" id="name" type="text" className="form-control" placeholder="nom de la société" />
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-3 control-label">Prénom du contact</label>
-                                <div className="col-md-9">
+                                <label htmlFor="name" className="col-md-12">Prénom du contact</label>
+                                <div className="col-md-12">
                                     <input ref="firstName" id="first_name" type="text" className="form-control" placeholder="Ex: Mamadou Lamine" />
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-3 control-label">Nom du contact</label>
-                                <div className="col-md-9">
+                                <label htmlFor="name" className="col-md-12">Nom du contact</label>
+                                <div className="col-md-12">
                                     <input ref="lastName" id="last_name" type="text" className="form-control" placeholder="Ex: DIARRA" />
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-3 control-label">Numéro du contact</label>
-                                <div className="col-md-9">
+                                <label htmlFor="name" className="col-md-12">Numéro du contact</label>
+                                <div className="col-md-12">
                                     <input ref="phone" id="phone" type="text" className="form-control" placeholder="Ex: 0022373034603" />
                                 </div>
                             </div>
                             <div className="form-group">
                                 <div className="col-md-3">&nbsp;</div>
-                                <div className="col-md-9">
-                                    <inupt type="s" className="btn btn-default" onClick={this.onAddOwner.bind(this)}>Enregistrer nouveau client</inupt>
+                                <div className="col-md-12">
+                                    <inupt type="s" className="btn btn-primary" onClick={this.onAddOwner.bind(this)}>Enregistrer nouveau client</inupt>
                                 </div>
                             </div>
                         </div>

@@ -8,7 +8,8 @@ import AttachMedia from './AttachMedia';
 import UserService from './AuthService'
 import ReactDOM from 'react-dom'
 import AttachMediaMutation from './AttachMediaMutation'
-import {Editor, EditorState, ContentState} from 'draft-js';
+import {EditorState, ContentState} from 'draft-js';
+import RichEditor from './RichEditor';
 
 
 class PropertyDetailsEdit extends React.Component {
@@ -111,10 +112,6 @@ class PropertyDetailsEdit extends React.Component {
 
         this.setState({ contractType : property.contract_type });
 
-        if(property.description)
-            this.setState({editorState:
-                EditorState.createWithContent(ContentState.createFromText(property.description))
-            })
     }
 
     render() {
@@ -125,20 +122,20 @@ class PropertyDetailsEdit extends React.Component {
 
         return (
             <div className="">
-                <div className="page-header row">
-                    <h4>
-                        <i className="fa fa-home" aria-hidden="true" /> Nouveau bien
-                    </h4>
+                <div className="page-header col-md-6 center-block row">
+                    <h3>
+                        <span className="col-md-12"><i className="fa fa-home" aria-hidden="true" /> Propriété ref: {property.reference} </span>
+                    </h3>
                 </div>
 
                 <AppMessage message={text} />
 
-                <form className="form-horizontal padding-20" name="addOwner" >
+                <form className="form-horizontal padding-20" name="edit-property" >
                     <div className="page-content row">
-                        <div className="col-md-6 col-md-offset-1">
+                        <div className="col-md-6 center-block">
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-3 control-label">Propriétaire</label>
-                                <div className="col-md-9">
+                                <label htmlFor="name" className="col-md-12">Propriétaire</label>
+                                <div className="col-md-12">
                                     <SearchComponent userID={UserService.getUserId()}
                                                      search="" placeHolder="Entrer le nom du Propriétaire"
                                                      onOwnerEnter={this.onOwnerEnter.bind(this)}
@@ -147,34 +144,34 @@ class PropertyDetailsEdit extends React.Component {
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-3 control-label">Nom de la propriété</label>
-                                <div className="col-md-9">
+                                <label htmlFor="name" className="col-md-12">Nom de la propriété</label>
+                                <div className="col-md-12">
                                     <input ref="name" id="name"  type="text" className="form-control"  defaultValue={property.name}
                                            placeholder="Saisissez un nom pour la propriété" />
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-3 control-label">Reference</label>
-                                <div className="col-md-9">
+                                <label htmlFor="name" className="col-md-12">Reference</label>
+                                <div className="col-md-12">
                                     <input ref="reference" id="reference" type="text" className="form-control" defaultValue={property.reference}
                                            placeholder="Saisissez une référence plus technique" />
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-3 control-label">Quartier</label>
-                                <div className="col-md-9">
+                                <label htmlFor="name" className="col-md-12">Quartier</label>
+                                <div className="col-md-12">
                                     <input ref="district" id="district" defaultValue={property.district}  type="text" className="form-control" placeholder="Saisissez le quartier ou se trouve le bien" />
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-3 control-label">Ville</label>
-                                <div className="col-md-9">
+                                <label htmlFor="name" className="col-md-12">Ville</label>
+                                <div className="col-md-12">
                                     <input ref="city" id="city" type="text" defaultValue={property.city} className="form-control" placeholder="Saisissez la ville ou se trouve le bien" />
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="type" className="col-md-3 control-label">Type de bien</label>
-                                <div className="col-md-9">
+                                <label htmlFor="type" className="col-md-12">Type de bien</label>
+                                <div className="col-md-12">
                                     <label className="radio-inline control-label">
                                         <input type="radio" id="apartment" value="1" name="propertyType" onChange={this.handlePropertyType.bind(this)}
                                         checked={this.state.propertyType == 1? true : false} /> Appartement
@@ -190,8 +187,8 @@ class PropertyDetailsEdit extends React.Component {
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="type" className="col-md-3 control-label">Type de contrat</label>
-                                <div className="col-md-9">
+                                <label htmlFor="type" className="col-md-12">Type de contrat</label>
+                                <div className="col-md-12">
                                     <label className="radio-inline control-label">
                                         <input type="radio" id="rent" value="1" name="contractType" onChange={this.handleContractType.bind(this)}
                                                checked={this.state.contractType == 1? true : false} /> Location
@@ -203,46 +200,46 @@ class PropertyDetailsEdit extends React.Component {
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-3 control-label">Ajouter une image</label>
-                                <div className="col-md-9">
+                                <label htmlFor="name" className="col-md-12">Ajouter une image</label>
+                                <div className="col-md-12">
                                     <AttachMedia viewer={this.props.viewer} onAddMedia={this.onAddMedia.bind(this)} onMediaInsert={this.onMediaInsert.bind(this)}/>
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-3 control-label">Prix</label>
-                                <div className="col-md-9">
+                                <label htmlFor="name" className="col-md-12">Prix</label>
+                                <div className="col-md-12">
                                     <input type="text" ref="price" id="price" defaultValue={property.price} className="form-control" placeholder="Mensualité ou prix de vente" />
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-3 control-label">Nombre d'étage(s)</label>
-                                <div className="col-md-9">
+                                <label htmlFor="name" className="col-md-12">Nombre de niveau</label>
+                                <div className="col-md-12">
                                     <input type="text" ref="floorCount" id="floorCount" defaultValue={property.floor_count} className="form-control" placeholder="Si appartement ou villa indiquez le nombre d'étages" />
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-3 control-label">Nombre de chambres</label>
-                                <div className="col-md-9">
+                                <label htmlFor="name" className="col-md-12">Nombre de chambres</label>
+                                <div className="col-md-12">
                                     <input type="text" ref="roomCount" id="roomCount" defaultValue={property.room_count} className="form-control" placeholder="Nombre total de chambre(s) du bien" />
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-3 control-label">Superficie totale</label>
-                                <div className="col-md-9">
+                                <label htmlFor="name" className="col-md-12">Superficie totale</label>
+                                <div className="col-md-12">
                                     <input type="text" ref="size" id="size" defaultValue={property.size} className="form-control" placeholder="Superficie totale du bien" />
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-3 control-label">Description</label>
-                                <div className="col-md-9">
-                                    <Editor editorState={this.state.editorState} onChange={this.onEditDescription.bind(this)}
-                                            placeholder="Décrivez le bien de manière à le mettre en valeur" />
+                                <label htmlFor="name" className="col-md-12">Description</label>
+                                <div className="col-md-12">
+                                    <RichEditor onChange={this.onEditDescription.bind(this)} propertyDescription={property.description}
+                                                placeholder="Décrivez le bien de manière à le mettre en valeur" />
                                 </div>
                             </div>
                             <div className="form-group">
                                 <div className="col-md-3">&nbsp;</div>
-                                <div className="col-md-9">
-                                    <inupt type="s" className="btn btn-default" onClick={this.onEditProperty.bind(this)}>Enregistrer les modifications</inupt>
+                                <div className="col-md-12">
+                                    <inupt type="s" className="btn btn-primary" onClick={this.onEditProperty.bind(this)}>Enregistrer les modifications</inupt>
                                 </div>
                             </div>
                         </div>
