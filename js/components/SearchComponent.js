@@ -96,7 +96,6 @@ class SearchComponent extends React.Component {
         }.bind(this));
 
         const visibility = this.state.isVisible? "visible": "hidden";
-        console.log(visibility);
         const placeHolder = this.props.placeHolder;
 
         return (

@@ -113,9 +113,11 @@ class NewProperty extends React.Component {
                         <span className="col-md-12"><i className="fa fa-home" aria-hidden="true" /> Nouveau bien</span>
                     </h3>
                 </div>
-                <AppMessage message={text} />
 
-                <form className="form-horizontal padding-20" name="add-property" >
+                {text? <AppMessage message={text} /> : ''}
+
+                <form className="form-horizontal padding-20" name="add-property"
+                >
                     <div className="page-content row">
                         <div className="col-md-6 center-block">
                             <div className="form-group">

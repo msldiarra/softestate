@@ -9,10 +9,15 @@ export default class AppMessage extends React.Component {
         var text = this.props.message;
 
         return (
-            <div className="">
+            <div className="message">
+                <div>
                 <ReactCSSTransitionGroup transitionName="test" transitionAppear={true} transitionAppearTimeout={500} transitionEnterTimeout={0} transitionLeaveTimeout={0}>
-                    <div>{text}</div>
+                    <div className="alert alert-danger">
+                        <button type="button" className="close" data-dismiss="alert">&times;</button>
+                        {text}
+                    </div>
                 </ReactCSSTransitionGroup>
+                </div>
             </div>
         );
     }
