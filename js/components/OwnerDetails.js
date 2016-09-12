@@ -20,15 +20,25 @@ export default class OwnerDetails extends React.Component {
 
         if(owner)
             ownerDisplay = (
-                <div className="row" >
-                    <div className="page-header row">
-                        <h4>
-                            <span className="col-xs-10"><i className="fa fa-users" aria-hidden="true"></i> {owner.reference}</span>
-                        </h4>
+                <div className="row padding-25">
+                    <div className="col-md-6 center-block">
+                        <h2 className="row">
+                            <div className="col-md-6 col-xs-6 col-sm-6"><i className="fa fa-users" aria-hidden="true"></i> Client ref {owner.reference}</div>
+                            <div className="pull-right padding-right-15">
+                                <a href={'/#/owner/' + owner.reference + '/edit'}>
+                                    <div className="circle text-center"><i className="fa fa-pencil" aria-hidden="true" /></div>
+                                </a>
+                            </div>
+                        </h2>
+                        <dl>
+                            <dt></dt>
+                            <dd>
+                                <div><label>Société: </label> {owner.company}</div>
+                                <div><label>Nom: </label> {owner.contact.first_name + ' ' + owner.contact.last_name}</div>
+                                <div><label>Contact: </label> {owner.contact.info.phone}</div>
+                            </dd>
+                        </dl>
                     </div>
-                    <span>{owner.company}</span>
-                    <span>{owner.contact.first_name + ' ' + owner.contact.last_name}</span>
-                    <span>{owner.contact.info.phone}</span>
                 </div>)
 
         return (

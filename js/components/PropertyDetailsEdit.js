@@ -129,7 +129,7 @@ class PropertyDetailsEdit extends React.Component {
                     </h3>
                 </div>
 
-                <AppMessage message={text} />
+                {text? <AppMessage message={text} /> : ''}
 
                 <form className="form-horizontal padding-20" name="edit-property" >
                     <div className="page-content row">
