@@ -64,7 +64,8 @@ class PropertyDetailsEdit extends React.Component {
 
         var onSuccess = () => this.context.router.push('/property/' + reference);
 
-        var onFailure = (response) => this.setState({message : response});
+        var onFailure = (transaction) => this.setState({message : "Désolé, nous avons rencontré un problème lors de l'enregistrement." +
+        " Contactez l'administrateur"});
 
         Relay.Store.commitUpdate(editPropertyMutation, {onSuccess, onFailure})
 

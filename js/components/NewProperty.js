@@ -63,7 +63,8 @@ class NewProperty extends React.Component {
 
         var onSuccess = () => this.context.router.push('/property/' + reference);
 
-        var onFailure = (transaction) => this.setState({message : "Désolé"});
+        var onFailure = (transaction) => this.setState({message : "Désolé, nous avons rencontré un problème lors de l'enregistrement." +
+        " Contactez l'administrateur"});
 
         Relay.Store.commitUpdate(addPropertyMutation, {onSuccess, onFailure})
 
