@@ -7,13 +7,15 @@ export default class Images extends React.Component {
 
     render() {
 
+        let imageCount = this.props.media.edges.length;
+
         const settings = {
             dots: true,
             infinite: true,
             slidesToShow: 1,
             slidesToScroll: 1,
-            autoplay: true,
-            autoplaySpeed: 2000,
+            autoplay: imageCount > 1,
+            autoplaySpeed: (imageCount > 1)? 2000: 0,
             pauseOnHover: true
         };
 
