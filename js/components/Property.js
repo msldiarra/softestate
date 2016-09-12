@@ -18,7 +18,7 @@ export default class Property extends React.Component {
                                 <a href={"/#/property/" + this.props.property.reference }>
                                     <div style={{maxHeight: '250px', overflowY: 'hidden'}}><img src={this.props.property.media.edges[0].node.uri} alt={''}/></div></a> :
                                 <a href={"/#/property/" + this.props.property.reference }>
-                                    <div style={{maxHeight: '250px', overflowY: 'hidden'}}><img src='/images/PT_hero_42_153645159.jpg' alt={''}/></div></a> }
+                                    <div style={{maxHeight: '250px', overflowY: 'hidden'}}><img src='/defaults/default.jpg' alt={''}/></div></a> }
                                 <div className="row" style={{height:'100px'}}>
                                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         {property.district? <h5>{property.district}, {property.city}</h5> : ''}
