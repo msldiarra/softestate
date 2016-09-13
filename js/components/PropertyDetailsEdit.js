@@ -29,8 +29,9 @@ class PropertyDetailsEdit extends React.Component {
 
         e.preventDefault();
 
+        var property = this.props.viewer.properties.edges[0].node;
+
         var name = this.refs.name.value;
-        var reference =  this.refs.reference.value;
         var propertyType =  this.state.propertyType;
         var contractType =  this.state.contractType;
         var description =  this.state.editorState.getCurrentContent().getPlainText();
@@ -48,7 +49,7 @@ class PropertyDetailsEdit extends React.Component {
             viewer: this.props.viewer,
             viewerId: UserService.getUserId(),
             name: name,
-            reference: reference,
+            reference: property.reference,
             propertyType: propertyType,
             contractType: contractType,
             description: description,
@@ -145,17 +146,10 @@ class PropertyDetailsEdit extends React.Component {
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-12">Nom de la propriété</label>
+                                <label htmlFor="name" className="col-md-12">Titre pour la propriété</label>
                                 <div className="col-md-12">
                                     <input ref="name" id="name"  type="text" className="form-control"  defaultValue={property.name}
-                                           placeholder="Saisissez un nom pour la propriété" />
-                                </div>
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="name" className="col-md-12">Reference</label>
-                                <div className="col-md-12">
-                                    <input ref="reference" id="reference" type="text" className="form-control" defaultValue={property.reference}
-                                           placeholder="Saisissez une référence plus technique" />
+                                           placeholder="Saisissez un titre pour la propriété" />
                                 </div>
                             </div>
                             <div className="form-group">

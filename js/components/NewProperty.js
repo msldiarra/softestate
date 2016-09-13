@@ -9,7 +9,9 @@ import AttachMedia from './AttachMedia';
 import UserService from './AuthService'
 import {EditorState} from 'draft-js';
 import RichEditor from './RichEditor';
-import ReactDOM from 'react-dom'
+import ReactDOM from 'react-dom';
+import Chance from 'chance';
+
 
 
 class NewProperty extends React.Component {
@@ -29,7 +31,7 @@ class NewProperty extends React.Component {
         e.preventDefault();
 
         var name = this.refs.name.value;
-        var reference =  this.refs.reference.value;
+        var reference =  new Chance().word({length: 12});
         var propertyType =  this.state.propertyType;
         var contractType =  this.state.contractType;
         var description =  this.state.editorState.getCurrentContent().getPlainText();
@@ -131,15 +133,9 @@ class NewProperty extends React.Component {
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-12">Nom de la propriété</label>
+                                <label htmlFor="name" className="col-md-12">Titre pour la propriété</label>
                                 <div className="col-md-12">
-                                    <input type="text" ref="name" id="name"  className="form-control" placeholder="Saisissez un nom pour la propriété" />
-                                </div>
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="name" className="col-md-12">Reference</label>
-                                <div className="col-md-12">
-                                    <input ref="reference" id="reference" type="text" className="form-control" placeholder="Saisissez une référence plus technique" />
+                                    <input type="text" ref="name" id="name"  className="form-control" placeholder="Saisissez un titre pour la propriété" />
                                 </div>
                             </div>
                             <div className="form-group">

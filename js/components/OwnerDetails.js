@@ -21,9 +21,9 @@ export default class OwnerDetails extends React.Component {
         if(owner)
             ownerDisplay = (
                 <div className="row padding-25">
-                    <div className="col-md-6 center-block">
+                    <div className="col-md-8 center-block">
                         <h2 className="row">
-                            <div className="col-md-6 col-xs-6 col-sm-6"><i className="fa fa-users" aria-hidden="true"></i> Client ref {owner.reference}</div>
+                            <div className="col-md-8 col-xs-8 col-sm-8"><i className="fa fa-user" aria-hidden="true" /> Client {owner.reference}</div>
                             <div className="pull-right padding-right-15">
                                 <a href={'/#/owner/' + owner.reference + '/edit'}>
                                     <div className="circle text-center"><i className="fa fa-pencil" aria-hidden="true" /></div>

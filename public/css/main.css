@@ -226,7 +226,8 @@ a {
     background-color: #4CAF50;
 }
 .navbar-custom .navbar-nav > li > a {
-    color: #000;
+    color: #4CAF50;
+    font-weight:600;
     background-color: #fff;
 }
 .navbar-custom .navbar-nav > .active > a:hover,

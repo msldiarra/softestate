@@ -2,7 +2,8 @@ import React from 'react'
 import Relay from 'react-relay'
 import AddOwnerMutation from './AddOwnerMutation'
 import AppMessage from './AppMessage';
-import UserService from './AuthService'
+import UserService from './AuthService';
+import Chance from 'chance';
 
 
 class NewOwner extends React.Component {
@@ -18,7 +19,7 @@ class NewOwner extends React.Component {
         e.preventDefault();
 
         var company = this.refs.company.value;
-        var reference =  this.refs.reference.value;
+        var reference =  new Chance().word({length: 12});
         var firstName =  this.refs.firstName.value;
         var lastName =  this.refs.lastName.value;
         var phone =  this.refs.phone.value;
@@ -63,12 +64,6 @@ class NewOwner extends React.Component {
                 <form className="form-horizontal padding-20" name="add-owner" >
                     <div className="page-content row">
                         <div className="col-md-6 center-block">
-                            <div className="form-group">
-                                <label htmlFor="reference" className="col-md-12">Reference</label>
-                                <div className="col-md-12">
-                                    <input ref="reference" id="reference" type="text" className="form-control" placeholder="reference" />
-                                </div>
-                            </div>
                             <div className="form-group">
                                 <label htmlFor="type" className="col-md-12">Type de client</label>
                                 <div className="col-md-12">
