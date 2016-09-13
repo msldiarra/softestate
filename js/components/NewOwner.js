@@ -59,7 +59,7 @@ class NewOwner extends React.Component {
                         <span className="col-md-12"><i className="fa fa-user" aria-hidden="true" /> Nouveau client</span>
                     </h3>
                 </div>
-                <AppMessage message={text} />
+                {text? <AppMessage message={text} /> : ''}
                 <form className="form-horizontal padding-20" name="add-owner" >
                     <div className="page-content row">
                         <div className="col-md-6 center-block">

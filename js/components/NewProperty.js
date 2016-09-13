@@ -117,8 +117,7 @@ class NewProperty extends React.Component {
 
                 {text? <AppMessage message={text} /> : ''}
 
-                <form className="form-horizontal padding-20" name="add-property"
-                >
+                <form className="form-horizontal padding-20" name="add-property">
                     <div className="page-content row">
                         <div className="col-md-6 center-block">
                             <div className="form-group">

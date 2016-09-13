@@ -75,7 +75,7 @@ class OwnerEdit extends React.Component {
 
                 <form className="form-horizontal padding-20" name="add-owner" >
                     <div className="page-content row">
-                        <div className="col-md-6 ccenter-block">
+                        <div className="col-md-6 center-block">
                             <div className="form-group">
                                 <label htmlFor="type" className="col-md-12">Type de client</label>
                                 <div className="col-md-12">
