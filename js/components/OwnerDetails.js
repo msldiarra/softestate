@@ -2,7 +2,7 @@ import React from 'react';
 import Relay from 'react-relay';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
-export default class OwnerDetails extends React.Component {
+class OwnerDetails extends React.Component {
 
 
     componentDidMount() {

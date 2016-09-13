@@ -4,7 +4,7 @@ import Images from './Images'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 
-export default class PropertyDetails extends React.Component {
+class PropertyDetails extends React.Component {
 
     componentDidMount() {
 
