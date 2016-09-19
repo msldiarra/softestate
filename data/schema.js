@@ -138,8 +138,14 @@ export const userType = new GraphQLObjectType({
             term =  {}
           }
 
-          return connectionFromPromisedArray(DB.models.property.findAll(term), args)
+          return connectionFromPromisedArray(DB.query('SELECT property.* FROM property' +
+              ' WHERE id in ' +
+              '(SELECT property_id FROM owner_property op ' +
+              ' INNER JOIN customer_owner co ON co.owner_id = op.owner_id' +
+              ' INNER JOIN customer c ON c.id = co.customer_id' +
+              ' WHERE c.name = \'AIA-Mali SARL\')', {type: DB.QueryTypes.SELECT}), args)
         }
+
       },
       message: { type: appMessageType, resolve() { return AppMessage } }
     }
@@ -185,7 +191,11 @@ const ownerType = new GraphQLObjectType({
             });
         }
       },
-      type: { type: GraphQLString, resolve(owner) { return DB.models.owner_type.findOne({where: {id: owner.type_id}}).get('label') } },
+      type: { type: GraphQLString, resolve(owner) { return DB.models.owner_type.findOne({where: {id: owner.type_id}})
+          .then(owner_type =>  {
+            if(owner_type) owner_type.get('label')
+          }  )
+      }},
       type_id: { type: GraphQLInt, resolve(owner) { return owner.type_id}},
       contact: { type: contactType, resolve(owner) { return owner.getContacts().then( contacts => contacts ? contacts[0] : {} ) } },
       rentSummary: {
@@ -296,7 +306,11 @@ const propertyType = new GraphQLObjectType({
       name: { type: GraphQLString, resolve(property) { return property.name } },
       reference: { type: GraphQLString, resolve(property) { return property.reference } },
       enabled: { type: GraphQLBoolean, resolve(property) { return property.enabled } },
-      type_label: { type: GraphQLString, resolve(property) { return DB.models.property_type.findOne({where :{id: property.type_id } }).get('label')}},
+      type_label: { type: GraphQLString, resolve(property) { return DB.models.property_type.findOne({where: {id: property.type_id}})
+          .then(property_type =>  {
+            if(property_type) return property_type.get('label')
+          })
+      }},
       type_id: { type: GraphQLInt, resolve(property) { return property.type_id}},
       contract_type: { type: GraphQLInt, resolve(property) {
         return DB.models.property_property_contract.findOne({where :{property_id: property.type_id } })
@@ -345,7 +359,7 @@ const propertyType = new GraphQLObjectType({
         description: "A property's collection of images",
         args: connectionArgs,
         resolve: (property, args) => {
-          return connectionFromPromisedArray(property.getMedia(), args)
+          if(property.rowCount > 0 ) return connectionFromPromisedArray(property.getMedia(), args)
         }
       }
     }
