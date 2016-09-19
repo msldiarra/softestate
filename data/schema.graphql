@@ -84,6 +84,19 @@ type Customer implements Node {
   contacts: [Contact]
 }
 
+input DeletePropertyInput {
+  viewerId: Int!
+  propertyId: String!
+  propertyReference: String!
+  clientMutationId: String!
+}
+
+type DeletePropertyPayload {
+  deletedPropertyID: String
+  user: User
+  clientMutationId: String!
+}
+
 input EditOwnerInput {
   viewerId: Int!
   reference: String!
@@ -154,6 +167,7 @@ type Mutation {
   addAppMessageMutation(input: AddAppMessageInput!): AddAppMessagePayload
   attachPropertyMediaMutation(input: AttachMediaInput!): AttachMediaPayload
   editPropertyMutation(input: EditPropertyInput!): EditPropertyPayload
+  deletePropertyMutation(input: DeletePropertyInput!): DeletePropertyPayload
 }
 
 interface Node {

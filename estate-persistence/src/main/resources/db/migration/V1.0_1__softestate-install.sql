@@ -261,39 +261,39 @@ ADD CONSTRAINT fk_property_type FOREIGN KEY (type_id) REFERENCES property_type (
 
 ALTER TABLE property_property_contract
 ADD CONSTRAINT fk_property_contract_property FOREIGN KEY (property_contract_id) REFERENCES property_contract (id),
-ADD CONSTRAINT fk_property_property_contract FOREIGN KEY (property_id) REFERENCES property (id);
+ADD CONSTRAINT fk_property_property_contract FOREIGN KEY (property_id) REFERENCES property (id) ON DELETE CASCADE;
 
 ALTER TABLE property_description
-ADD CONSTRAINT fk_property_description_property FOREIGN KEY (property_id) REFERENCES property (id);
+ADD CONSTRAINT fk_property_description_property FOREIGN KEY (property_id) REFERENCES property (id) ON DELETE CASCADE;
 
 ALTER TABLE owner_company_name
 ADD CONSTRAINT fk_owner_name_owner FOREIGN KEY (owner_id) REFERENCES owner (id);
 
 ALTER TABLE property_price
-ADD CONSTRAINT fk_property_price_property FOREIGN KEY (property_id) REFERENCES property (id);
+ADD CONSTRAINT fk_property_price_property FOREIGN KEY (property_id) REFERENCES property (id) ON DELETE CASCADE;
 
 ALTER TABLE property_rental_expenses
-ADD CONSTRAINT fk_property_rental_expenses_property FOREIGN KEY (property_id) REFERENCES property (id);
+ADD CONSTRAINT fk_property_rental_expenses_property FOREIGN KEY (property_id) REFERENCES property (id) ON DELETE CASCADE;
 
 ALTER TABLE property_floor_count
-ADD CONSTRAINT fk_property_floor_count_property FOREIGN KEY (property_id) REFERENCES property (id);
+ADD CONSTRAINT fk_property_floor_count_property FOREIGN KEY (property_id) REFERENCES property (id) ON DELETE CASCADE;
 
 ALTER TABLE property_room_count
-ADD CONSTRAINT fk_property_room_count_property FOREIGN KEY (property_id) REFERENCES property (id);
+ADD CONSTRAINT fk_property_room_count_property FOREIGN KEY (property_id) REFERENCES property (id) ON DELETE CASCADE;
 
 ALTER TABLE property_size
-ADD CONSTRAINT fk_property_size_property FOREIGN KEY (property_id) REFERENCES property (id);
+ADD CONSTRAINT fk_property_size_property FOREIGN KEY (property_id) REFERENCES property (id) ON DELETE CASCADE;
 
 ALTER TABLE property_location
-ADD CONSTRAINT fk_property_location_property FOREIGN KEY (property_id) REFERENCES property (id);
+ADD CONSTRAINT fk_property_location_property FOREIGN KEY (property_id) REFERENCES property (id) ON DELETE CASCADE;
 
 ALTER TABLE property_media
-ADD CONSTRAINT fk_property_media_property FOREIGN KEY (property_id) REFERENCES property (id),
+ADD CONSTRAINT fk_property_media_property FOREIGN KEY (property_id) REFERENCES property (id) ON DELETE CASCADE,
 ADD CONSTRAINT fk_property_property_media FOREIGN KEY (media_id) REFERENCES media (id);
 
 
 ALTER TABLE property_end_date
-ADD CONSTRAINT fk_property_property_en_date FOREIGN KEY (property_id) REFERENCES property (id);
+ADD CONSTRAINT fk_property_property_en_date FOREIGN KEY (property_id) REFERENCES property (id) ON DELETE CASCADE;
 
 ALTER TABLE owner_contact
 ADD CONSTRAINT fk_owner_contact_owner FOREIGN KEY (owner_id) REFERENCES owner (id);
@@ -314,7 +314,7 @@ ADD CONSTRAINT fk_owner_owner_type FOREIGN KEY (type_id) REFERENCES owner_type (
 
 ALTER TABLE owner_property
 ADD CONSTRAINT fk_owner_property_owner FOREIGN KEY (owner_id) REFERENCES owner (id),
-ADD CONSTRAINT fk_owner_property_property FOREIGN KEY (property_id) REFERENCES property (id);
+ADD CONSTRAINT fk_owner_property_property FOREIGN KEY (property_id) REFERENCES property (id) ON DELETE CASCADE;
 
 ALTER TABLE contact_login
 ADD CONSTRAINT fk_contact_login_login FOREIGN KEY (login_id) REFERENCES login (Id),

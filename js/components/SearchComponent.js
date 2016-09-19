@@ -100,7 +100,7 @@ class SearchComponent extends React.Component {
 
         return (
         <div  ref="area" className="row">
-            <div className="col-md-12 col-lg-12 col-xs-12">
+            <div>
             <div className="input-group col-md-12">
                         <span className="input-group-addon" aria-hidden="true" id="basic-addon1">
                             <i className="fa fa-search"></i>

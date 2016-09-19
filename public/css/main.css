@@ -361,6 +361,12 @@ dd label {
     float: none !important;
 }
 
+.row {
+
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
 .min-height {min-height: 690px;}
 
 .RichEditor-root {
@@ -428,9 +434,10 @@ dd label {
 }
 
 .circle {
-    width: 50px;
-    height: 50px;
-    line-height: 50px;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 25px;
     vertical-align: middle;
     background: #4CAF50;
     -moz-border-radius: 50%;

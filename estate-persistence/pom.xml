@@ -41,7 +41,7 @@
                         <configuration>
                             <driver>org.postgresql.Driver</driver>
                             <url>jdbc:postgresql://localhost/estate</url>
-                            <user>postgres</user>
+                            <user>estate</user>
                             <password>1234</password>
                             <locations>
                                 <location>filesystem:src/main/resources/db/migration</location>

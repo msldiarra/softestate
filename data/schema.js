@@ -298,7 +298,12 @@ const propertyType = new GraphQLObjectType({
       enabled: { type: GraphQLBoolean, resolve(property) { return property.enabled } },
       type_label: { type: GraphQLString, resolve(property) { return DB.models.property_type.findOne({where :{id: property.type_id } }).get('label')}},
       type_id: { type: GraphQLInt, resolve(property) { return property.type_id}},
-      contract_type: { type: GraphQLInt, resolve(property) { return DB.models.property_property_contract.findOne({where :{property_id: property.type_id } }).get('id')}},
+      contract_type: { type: GraphQLInt, resolve(property) {
+        return DB.models.property_property_contract.findOne({where :{property_id: property.type_id } })
+            .then(contract_type => {
+              if(contract_type) return contract_type.get('id');
+            })
+      }},
       description: { type: GraphQLString, resolve(property) { return DB.models.property_description.findOne({where :{property_id: property.id } })
           .then(property_description => {
             if(property_description) return property_description.get('description');
@@ -694,9 +699,6 @@ var EditPropertyMutation = exports.EditPropertyMutation = mutationWithClientMuta
       return sanitize(name.replace(/[`~!@#$%^&*()_|+\-=÷¿?;:'",<>\{\}\[\]\\\/]/gi, '') )
     });
 
-    console.log('-------------------------------------------')
-    console.log(sanitizedMediaNames)
-
     return DB.models.property.findOne({where: {reference: reference}})
         .then((property) =>
             property.updateAttributes({
@@ -840,6 +842,34 @@ const AttachMediaMutation = mutationWithClientMutationId({
   },
 });
 
+var DeletePropertyMutation = exports.DeletePropertyMutation = mutationWithClientMutationId({
+  name: 'DeleteProperty',
+  inputFields: {
+    viewerId: { type: new GraphQLNonNull(GraphQLInt) },
+    propertyId: { type: new GraphQLNonNull(GraphQLString) },
+    propertyReference: { type: new GraphQLNonNull(GraphQLString) }
+  },
+  outputFields: {
+    deletedPropertyID : {
+      type: GraphQLString,
+      resolve: ({propertyId}) => propertyId
+    },
+    user: {
+      type: userType,
+      resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}}),
+    }
+  },
+  mutateAndGetPayload: ({viewerId, propertyId, propertyReference}) => {
+
+    return DB.models.property.destroy({where: {reference: propertyReference }})
+        .then(() => {
+          return {
+            viewerId: viewerId,
+            propertyId: propertyId
+          };
+        })
+  }
+});
 
 var AddAppMessageMutation = exports.AddAppMessageMutation = mutationWithClientMutationId({
   name: 'AddAppMessage',
@@ -877,6 +907,7 @@ var mutationType = new GraphQLObjectType({
     addAppMessageMutation: AddAppMessageMutation,
     attachPropertyMediaMutation: AttachMediaMutation,
     editPropertyMutation: EditPropertyMutation,
+    deletePropertyMutation: DeletePropertyMutation,
   })
 });
 

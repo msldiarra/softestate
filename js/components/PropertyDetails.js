@@ -1,10 +1,40 @@
 import React from 'react';
 import Relay from 'react-relay';
-import Images from './Images'
+import Images from './Images';
+import DeletePropertyMutation from './DeletePropertyMutation';
+import UserService from './AuthService'
+import AppMessage from './AppMessage';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 
 class PropertyDetails extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = { message : "" } ;
+    }
+
+    deleteProperty(e) {
+
+        e.preventDefault();
+
+        let property = this.props.viewer.properties.edges[0].node;
+
+        var deletePropertyMutation = new DeletePropertyMutation({
+            viewer: this.props.viewer,
+            viewerId: UserService.getUserId(),
+            propertyId: property.id,
+            propertyReference: property.reference
+        });
+
+        var onSuccess = () => this.context.router.push('/');
+
+        var onFailure = (transaction) => this.setState({message : "Désolé, nous avons rencontré un problème lors de l'enregistrement." +
+        " Contactez l'administrateur"});
+
+        Relay.Store.commitUpdate(deletePropertyMutation, {onSuccess, onFailure})
+
+    }
 
     componentDidMount() {
 
@@ -16,6 +46,8 @@ class PropertyDetails extends React.Component {
     }
 
     render() {
+
+        const text = this.state.message;
 
         var propertyDisplay = '';
         var property = this.props.viewer.properties.edges.length > 0? this.props.viewer.properties.edges[0].node : null;
@@ -32,6 +64,10 @@ class PropertyDetails extends React.Component {
                             <div className="pull-right padding-right-15">
                                 <a href={'/#/property/' + property.reference + '/edit'}>
                                     <div className="circle text-center"><i className="fa fa-pencil" aria-hidden="true" /></div>
+                                </a>
+                                &nbsp;
+                                <a href="#" onClick={this.deleteProperty.bind(this)}>
+                                    <div className="circle text-center"><i className="fa fa-trash" aria-hidden="true" /></div>
                                 </a>
                             </div>
                         </h2>
@@ -52,6 +88,7 @@ class PropertyDetails extends React.Component {
 
         return (
             <div className="">
+                {text? <AppMessage message={text} /> : ''}
                 <ReactCSSTransitionGroup transitionName="example" transitionAppear={true} transitionAppearTimeout={500} transitionEnterTimeout={0} transitionLeaveTimeout={0}>
                     <br/>
                     <br/>
@@ -102,6 +139,7 @@ export default Relay.createContainer(PropertyDetails, {
                     }
                   },
                 },
+                ${DeletePropertyMutation.getFragment('viewer')}
           }
     `,
     },
