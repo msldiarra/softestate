@@ -7,7 +7,7 @@ var mainPath = path.resolve(__dirname, 'js', 'app.js');
 var config = {
 
   // We change to normal source mapping
-  devtool: 'source-map',
+  devtool: 'eval',
   entry: mainPath,
   output: {
     path: buildPath,
