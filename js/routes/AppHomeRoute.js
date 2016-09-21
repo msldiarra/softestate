@@ -51,6 +51,7 @@ function getParams(params, route){
 
 export default  <Route path="/">
                     <Route path="admin" component={AuthenticatedApp} queries={RouteHome.queries} prepareParams={getParams} >
+                        <IndexRoute path="login" component={Login}  />
                         <Route path="newowner" component={NewOwner} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />
                         <Route path="newproperty" component={NewProperty} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />
                         <Route path="property/:reference/edit" component={PropertyDetailsEdit} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />
@@ -63,5 +64,4 @@ export default  <Route path="/">
                         <Route path="property/:reference" component={PropertyDetails} queries={RouteHome.queries} prepareParams={getParams} />
                         <Route path="about" component={About}  />
                     </Route>
-                    <Route path="admin/login" component={Login}  />
                 </Route>
