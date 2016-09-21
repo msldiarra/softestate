@@ -20,12 +20,13 @@ var config = {
          warnings: false
        }
      }),
-/*     new webpack.DefinePlugin({
+     new webpack.DefinePlugin({
        'process.env.NODE_ENV': JSON.stringify('production'),
-       'process.env.GRAPHQL_PORT': JSON.stringify('8080'),
+       /*'process.env.GRAPHQL_PORT': JSON.stringify('8080'),
        'process.env.APP_PORT': JSON.stringify('3000'),
-       'process.env.API_PORT': JSON.stringify('3001')
-     })*/
+       'process.env.API_PORT': JSON.stringify('3001'),*/
+       'CUSTOMER': JSON.stringify('AIA-Mali SARL')
+     })
   ],
   module: {
     loaders: [{

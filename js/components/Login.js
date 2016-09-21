@@ -55,7 +55,7 @@ class Login extends React.Component {
                     )}
                 </form>
                 <br/>
-                <footer className="text-center">&copy;2016 UL- L'Usine Logicielle SARL</footer>
+                <footer className="text-center">&copy;2016 AIA-Mali SARL. Site réalisé par UL- L'Usine Logicielle SARL</footer>
                 <br/>
             </div>
         );

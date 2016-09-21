@@ -5,7 +5,7 @@ export default (ComposedComponent) => {
 
         static willTransitionTo(transition) {
             if (!JSON.parse(localStorage.getItem('user'))) {
-                transition.redirect('/login', {}, {'nextPath' : transition.path});
+                transition.redirect('/admin/login', {}, {'nextPath' : transition.path});
             }
         }
 

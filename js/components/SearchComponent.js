@@ -99,12 +99,11 @@ class SearchComponent extends React.Component {
         const placeHolder = this.props.placeHolder;
 
         return (
-        <div  ref="area" className="row">
-            <div>
-            <div className="input-group col-md-12">
-                        <span className="input-group-addon" aria-hidden="true" id="basic-addon1">
-                            <i className="fa fa-search"></i>
-                        </span>
+        <div  ref="area" className="col-md-12">
+            <div className="input-group">
+                <span className="input-group-addon" aria-hidden="true" id="basic-addon1">
+                    <i className="fa fa-search"></i>
+                </span>
                 <input ref="searchInput"
                        type="text"
                        className="form-control"
@@ -116,8 +115,7 @@ class SearchComponent extends React.Component {
                        defaultValue={this.props.defaultValue}
                 />
             </div>
-            </div>
-            <div className="autocomplete col-md-12 col-lg-12 col-xs-12" style={{visibility :  visibility}}>
+            <div className="autocomplete" style={{visibility :  visibility}}>
                 <ul id="owners" tabIndex="1">
                     {owners}
                 </ul>

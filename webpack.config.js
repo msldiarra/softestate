@@ -1,4 +1,4 @@
-var Webpack = require('webpack');
+var webpack = require('webpack');
 var path = require('path');
 var nodeModulesPath = path.resolve(__dirname, 'node_modules');
 var buildPath = path.resolve(__dirname, 'public', 'build');
@@ -11,14 +11,15 @@ var config = {
   devtool: 'eval',
   entry: [
 
+    mainPath,
     // For hot style updates
     'webpack/hot/dev-server',
 
     // The script refreshing the browser on none hot updates
-    'webpack-dev-server/client?http://localhost:8082',
+    'webpack-dev-server/client?http://localhost:8082'
 
     // Our application
-    mainPath],
+    ],
   devServer: {
     inline: true,
     hot: true
@@ -37,6 +38,14 @@ var config = {
     // localhost:3000/build. That makes proxying easier to handle
     publicPath: '/build/'
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV' : JSON.stringify('development')
+      },
+      __CUSTOMER__: JSON.stringify('AIA-Mali SARL')
+    })
+  ],
   module: {
 
     loaders: [
@@ -61,7 +70,7 @@ var config = {
 
   // We have to manually add the Hot Replacement plugin when running
   // from Node
-  plugins: [new Webpack.HotModuleReplacementPlugin()]
+  plugins: [new webpack.HotModuleReplacementPlugin()]
 };
 
 module.exports = config;

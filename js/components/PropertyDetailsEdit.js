@@ -124,10 +124,13 @@ class PropertyDetailsEdit extends React.Component {
 
         return (
             <div className="">
-                <div className="page-header col-md-6 center-block row">
+                <div className="page-header col-md-6 center-block">
                     <h3>
                         <span className="col-md-12"><i className="fa fa-home" aria-hidden="true" /> Propriété ref: {property.reference} </span>
                     </h3>
+                    <br/>
+                    <br/>
+                    <br/>
                 </div>
 
                 {text? <AppMessage message={text} /> : ''}
@@ -137,13 +140,11 @@ class PropertyDetailsEdit extends React.Component {
                         <div className="col-md-6 center-block">
                             <div className="form-group">
                                 <label htmlFor="name" className="col-md-12">Propriétaire</label>
-                                <div className="col-md-12">
                                     <SearchComponent userID={UserService.getUserId()}
                                                      search="" placeHolder="Entrer le nom du Propriétaire"
                                                      onOwnerEnter={this.onOwnerEnter.bind(this)}
                                                      defaultValue={property.owner.reference}
                                         {...this.props} />
-                                </div>
                             </div>
                             <div className="form-group">
                                 <label htmlFor="name" className="col-md-12">Titre pour la propriété</label>

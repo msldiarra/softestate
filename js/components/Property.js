@@ -14,7 +14,7 @@ export default class Property extends React.Component {
                 <div className="full">
                     <div className="row">
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{minHeight: '350px'}}>
-                            {this.props.property.media.edges.length > 0 ?
+                            {this.props.property.media && this.props.property.media.edges.length > 0 ?
                                 <a href={"/#/property/" + this.props.property.reference }>
                                     <div style={{maxHeight: '250px', overflowY: 'hidden'}}><img src={this.props.property.media.edges[0].node.uri} alt={''}/></div></a> :
                                 <a href={"/#/property/" + this.props.property.reference }>

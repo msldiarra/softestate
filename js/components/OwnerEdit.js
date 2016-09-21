@@ -65,10 +65,13 @@ class OwnerEdit extends React.Component {
 
         return (
             <div className="">
-                <div className="page-header col-md-6 center-block row">
+                <div className="page-header col-md-6 center-block">
                     <h3>
                         <span className="col-md-12"><i className="fa fa-user" aria-hidden="true" /> client {owner.reference}</span>
                     </h3>
+                    <br/>
+                    <br/>
+                    <br/>
                 </div>
 
                 {text? <AppMessage message={text} /> : ''}

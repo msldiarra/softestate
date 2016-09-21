@@ -37,6 +37,10 @@ class Auth {
         return JSON.parse(localStorage.getItem('user')).id
     }
 
+    getUser() {
+        return JSON.parse(localStorage.getItem('user'))
+    }
+
 
 }
 

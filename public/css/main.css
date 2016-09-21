@@ -300,7 +300,7 @@ a {
 
 .bold {font-weight: 800;}
 
-.autocomplete { margin-top: 55px; z-index: 999; position: absolute;}
+.autocomplete { margin-top: 10px; z-index: 999; position: absolute; padding-right: 30px! important; width:100%;}
 .autocomplete ul {list-style-type: none; border: 1px solid #ccc; padding-bottom:15px; border-radius: 3px; background: #fff; }
 .autocomplete ul li {
     width:100%;

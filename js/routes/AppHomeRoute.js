@@ -3,6 +3,7 @@ import React from 'react';
 import IndexRoute from 'react-router/lib/IndexRoute';
 import Route from 'react-router/lib/Route';
 import AuthenticatedApp from '../components/AuthenticatedApp';
+import UnauthenticatedApp from '../components/UnauthenticatedApp';
 import Dashboard from '../components/Dashboard';
 import Login from '../components/Login';
 import NewOwner from '../components/NewOwner';
@@ -10,6 +11,7 @@ import NewProperty from '../components/NewProperty';
 import PropertyDetails from '../components/PropertyDetails';
 import PropertyDetailsEdit from '../components/PropertyDetailsEdit';
 import OwnerDetails from '../components/OwnerDetails';
+import About from '../components/About';
 import OwnerEdit from '../components/OwnerEdit';
 
 class RouteHome extends Relay.Route {
@@ -24,7 +26,7 @@ class RouteHome extends Relay.Route {
     };
 
     static paramDefinitions = {
-        userID: {required: true},
+        userID: {required: false},
     };
 
     static routeName = 'AppHomeRoute';
@@ -43,20 +45,23 @@ function getParams(params, route){
 
     return {
         ...params,
-        userID: JSON.parse(localStorage.getItem('user')).id
+        userID: JSON.parse(localStorage.getItem('user'))? JSON.parse(localStorage.getItem('user')).id : null
     }
 }
 
-export default  <Route>
-                    <Route path="/" component={AuthenticatedApp} queries={RouteHome.queries} prepareParams={getParams} >
-                        <IndexRoute component={Dashboard} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />
+export default  <Route path="/">
+                    <Route path="admin" component={AuthenticatedApp} queries={RouteHome.queries} prepareParams={getParams} >
                         <Route path="newowner" component={NewOwner} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />
                         <Route path="newproperty" component={NewProperty} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />
-                        <Route path="property/:reference" component={PropertyDetails} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />
                         <Route path="property/:reference/edit" component={PropertyDetailsEdit} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />
                         <Route path="owner/:search" component={OwnerDetails} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />
                         <Route path="owner/:search/edit" component={OwnerEdit} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />
 
                     </Route>
-                    <Route path="login" component={Login}  />
+                    <Route component={UnauthenticatedApp} queries={RouteHome.queries} prepareParams={getParams} >
+                        <IndexRoute component={Dashboard} queries={RouteHome.queries} prepareParams={getParams}  />
+                        <Route path="property/:reference" component={PropertyDetails} queries={RouteHome.queries} prepareParams={getParams} />
+                        <Route path="about" component={About}  />
+                    </Route>
+                    <Route path="admin/login" component={Login}  />
                 </Route>

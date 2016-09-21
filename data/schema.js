@@ -133,9 +133,9 @@ export const userType = new GraphQLObjectType({
           var term;
 
           if(args.reference) {
-            term = {where: {reference: args.reference }}
+            term =  " WHERE c.name = :customer AND property.reference = '" + args.reference + "'"
           } else {
-            term =  {}
+            term =  " WHERE c.name = :customer"
           }
 
           return connectionFromPromisedArray(DB.query('SELECT property.* FROM property' +
@@ -143,7 +143,7 @@ export const userType = new GraphQLObjectType({
               '(SELECT property_id FROM owner_property op ' +
               ' INNER JOIN customer_owner co ON co.owner_id = op.owner_id' +
               ' INNER JOIN customer c ON c.id = co.customer_id' +
-              ' WHERE c.name = \'AIA-Mali SARL\')', {type: DB.QueryTypes.SELECT}), args)
+              term + ')', {model: Property,replacements: { customer: process.env.CUSTOMER }, type: DB.QueryTypes.SELECT}), args)
         }
 
       },
@@ -313,9 +313,9 @@ const propertyType = new GraphQLObjectType({
       }},
       type_id: { type: GraphQLInt, resolve(property) { return property.type_id}},
       contract_type: { type: GraphQLInt, resolve(property) {
-        return DB.models.property_property_contract.findOne({where :{property_id: property.type_id } })
+        return DB.models.property_property_contract.findOne({where :{property_id: property.id } })
             .then(contract_type => {
-              if(contract_type) return contract_type.get('id');
+              if(contract_type) return contract_type.get('property_contract_id');
             })
       }},
       description: { type: GraphQLString, resolve(property) { return DB.models.property_description.findOne({where :{property_id: property.id } })
@@ -359,7 +359,7 @@ const propertyType = new GraphQLObjectType({
         description: "A property's collection of images",
         args: connectionArgs,
         resolve: (property, args) => {
-          if(property.rowCount > 0 ) return connectionFromPromisedArray(property.getMedia(), args)
+          if(property) return connectionFromPromisedArray(property.getMedia(), args)
         }
       }
     }
@@ -429,11 +429,14 @@ var queryType = new GraphQLObjectType({
       args: {
         userID: {
           name: 'userID',
-          type: new GraphQLNonNull(GraphQLInt)
+          type: GraphQLInt
         }
       },
-      resolve: (root, {userID}) => DB.models.user.findOne({where: {id: userID}})
-    },
+      resolve: (root, {userID}) => {
+        if(userID) return DB.models.user.findOne({where: {id: userID}})
+        else return {}
+    }
+    }
   }),
 });
 
@@ -489,7 +492,6 @@ var AddOwnerMutation = exports.AddOwnerMutation = mutationWithClientMutationId({
         })
         .catch(response => {
 
-          console.log(response)
         });
 
 
@@ -669,7 +671,6 @@ var AddPropertyMutation = exports.AddPropertyMutation = mutationWithClientMutati
           return property;
         })
         .catch(error => {
-          console.log(error)
           throw error;
         })
         .then((property) => {
@@ -809,7 +810,6 @@ var EditPropertyMutation = exports.EditPropertyMutation = mutationWithClientMuta
           return property;
         })
         .catch(error => {
-          console.log(error)
           throw error;
         })
         .then((property) => {

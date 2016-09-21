@@ -12,16 +12,22 @@ export default class Header extends React.Component {
             headerItems =
                 <ul className="nav navbar-nav navbar-right">
                     <li data-toggle="collapse" data-target=".navbar-collapse">
-                        <Link to="/newowner">NOUVEAU CLIENT</Link>
+                        <Link to="/admin/newowner">NOUVEAU CLIENT</Link>
                     </li>
                     <li data-toggle="collapse" data-target=".navbar-collapse">
-                        <Link to="/newproperty">NOUVEAU BIEN</Link>
+                        <Link to="/admin/newproperty">NOUVEAU BIEN</Link>
                     </li>
                     <li><a href="" onClick={this.props.onLogout}>DÉCONNEXION</a></li>
                 </ul>
+        } else {
+            headerItems =
+                <ul className="nav navbar-nav navbar-right">
+                    <li data-toggle="collapse" data-target=".navbar-collapse">
+                        <Link to="/about">Qui sommes-nous?</Link>
+                    </li>
+                </ul>
+
         }
-
-
         let header =
                 <nav className="navbar navbar-custom navbar-fixed-top" role="navigation">
                     <div className="container-fluid">
@@ -33,9 +39,7 @@ export default class Header extends React.Component {
                                 <span className="icon-bar"></span>
                                 <span className="icon-bar"></span>
                             </button>
-                            <a className="navbar-brand" href="#">SOFTESTATE
-                                <small>{this.props.user ? ' (' + this.props.user.customer + ')' : '' }</small>
-                            </a>
+                            <a className="navbar-brand" href="#"> AIA-Mali</a>
                         </div>
                         <div className="collapse navbar-collapse navbar-ex1-collapse">
                             {headerItems}

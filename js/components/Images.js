@@ -19,10 +19,12 @@ export default class Images extends React.Component {
             pauseOnHover: true
         };
 
-        var images = this.props.media.edges.map(function(edge){
-            return <div key={edge.node.id}><img src={edge.node.uri} /></div>
+        console.log(this.props)
+        if(this.props.media)
+            var images = this.props.media.edges.map(function(edge){
+                return <div key={edge.node.id}><img src={edge.node.uri} /></div>
 
-        });
+            });
 
         return (
             <div className="">
