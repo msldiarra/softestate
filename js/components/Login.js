@@ -1,5 +1,6 @@
 import React from 'react';
 import Auth from './AuthService';
+import RegisterForm from './registration/RegisterForm'
 
 class Login extends React.Component {
 
@@ -31,6 +32,14 @@ class Login extends React.Component {
             });
     }
 
+    register(e) {
+
+        e.preventDefault();
+
+        this.context.router.replace('/register')
+
+    }
+
     render() {
         return (
             <div>
@@ -53,7 +62,14 @@ class Login extends React.Component {
                     {this.state.authenticationError && (
                         <p>Mauvais paramètres d'authentification</p>
                     )}
+                    <br />
+                    <hr />
+                    <br />
+                    <button className="btn btn-default btn-block btn-lg" onClick={this.register.bind(this)}>
+                        Créez un compte
+                    </button>
                 </form>
+
                 <br/>
                 <footer className="text-center">&copy;2016 UL- L'Usine Logicielle SARL</footer>
                 <br/>
