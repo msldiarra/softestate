@@ -5,6 +5,7 @@ import Route from 'react-router/lib/Route';
 import AuthenticatedApp from '../components/AuthenticatedApp';
 import Dashboard from '../components/Dashboard';
 import Login from '../components/Login';
+import Register from '../components/registration/RegisterForm';
 import NewOwner from '../components/NewOwner';
 import NewProperty from '../components/NewProperty';
 import PropertyDetails from '../components/PropertyDetails';
@@ -59,4 +60,5 @@ export default  <Route>
 
                     </Route>
                     <Route path="login" component={Login}  />
+                    <Route path="register" component={Register} />
                 </Route>
