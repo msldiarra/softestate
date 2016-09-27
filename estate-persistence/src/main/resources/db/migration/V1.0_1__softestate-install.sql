@@ -196,7 +196,7 @@ CREATE TABLE IF NOT EXISTS login (
   id SERIAL PRIMARY KEY,
   login VARCHAR(100) NOT NULL,
   password VARCHAR(100) NOT NULL,
-  enabled bit(1) NOT NULL DEFAULT '1'
+  enabled boolean NOT NULL DEFAULT true
 );
 
 

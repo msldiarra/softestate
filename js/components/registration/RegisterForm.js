@@ -36,11 +36,11 @@ class RegisterForm extends React.Component {
                 phone: email,
                 firstName: "yo",
                 lastName: "yo",
-                enabled: 1
+                enabled: true
             });
 
             let onSuccess = (response) => {
-                console.log('user added successfully')
+                console.log('user added successfully !!!')
             };
 
             let onFailure = (transaction) => console.log("error adding user");

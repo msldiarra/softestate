@@ -905,7 +905,7 @@ var AddUserMutation = exports.AddUserMutation  = mutationWithClientMutationId({
     login: {type: new GraphQLNonNull(GraphQLString)},
     password: {type: new GraphQLNonNull(GraphQLString)},
     phone: {type: new GraphQLNonNull(GraphQLString)},
-    enabled: {type: GraphQLInt}
+    enabled: {type: GraphQLBoolean}
   },
   outputFields: {
     user: {
