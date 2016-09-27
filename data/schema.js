@@ -37,10 +37,9 @@ import {
     RentSummary,
     Media
 
-}from './database';
+} from './database';
 import _ from 'underscore';
 import sanitize from 'sanitize-filename';
-
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -92,7 +91,6 @@ var {nodeInterface, nodeField} = nodeDefinitions(
 /**
  * Define your own types here
  */
-
 
 export const userType = new GraphQLObjectType({
   name: 'User',
@@ -898,6 +896,39 @@ var AddAppMessageMutation = exports.AddAppMessageMutation = mutationWithClientMu
   }
 });
 
+var AddUserMutation = exports.AddUserMutation  = mutationWithClientMutationId({
+  name: 'AddUser',
+  description: 'Function to add a user',
+  inputFields: {
+    firstName: {type: GraphQLString},
+    lastName: {type: GraphQLString},
+    login: {type: new GraphQLNonNull(GraphQLString)},
+    password: {type: new GraphQLNonNull(GraphQLString)},
+    phone: {type: new GraphQLNonNull(GraphQLString)},
+    enabled: {type: GraphQLInt}
+  },
+  outputFields: {
+    user: {
+      type: userType,
+      resolve: (obj) => {
+        console.log("In AddUserMutation output field viewer : " + JSON.stringify(obj));
+        return {}
+      }
+    }
+  },
+  mutateAndGetPayload: (input) => {
+
+    delete input.clientMutationId;
+    console.log("input : " + JSON.stringify(input));
+
+    return DB.models.user.create(input)
+        .then(r => {
+          console.log("response from create user : " + JSON.stringify(r));
+          return Database.models.user.findOne({where: {login: input.login}})
+        })
+  }
+});
+
 var mutationType = new GraphQLObjectType({
   name: 'Mutation',
   fields: () => ({
@@ -908,6 +939,7 @@ var mutationType = new GraphQLObjectType({
     attachPropertyMediaMutation: AttachMediaMutation,
     editPropertyMutation: EditPropertyMutation,
     deletePropertyMutation: DeletePropertyMutation,
+    addUserMutation: AddUserMutation
   })
 });
 

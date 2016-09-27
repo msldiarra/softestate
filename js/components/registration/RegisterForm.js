@@ -2,6 +2,8 @@ import React from 'react'
 import Relay from 'react-relay'
 import crypto from 'crypto';
 
+import AddUserMutation from './AddUserMutation'
+
 class RegisterForm extends React.Component {
 
     constructor(props) {
@@ -10,8 +12,7 @@ class RegisterForm extends React.Component {
 
     onAddEvent(e) {
 
-        e.preventDefault()
-
+        e.preventDefault();
 
         let login =  this.refs.registerFormEventName.value;
         let password =  this.refs.registerFormPassword.value;
@@ -27,28 +28,29 @@ class RegisterForm extends React.Component {
 
         if(login && password && email && (password == confirmPassword && email == confirmEmail)) {
 
-
             console.log("adding user ...");
 
-            {/*let addUserMutation = new AddUserMutation({*/}
-                {/*viewer: null,*/}
-                {/*login: login,*/}
-                {/*password: crypto.createHash("sha256").update(password).digest("base64"),*/}
-                {/*email: email*/}
-            {/*});*/}
+            let addUserMutation = new AddUserMutation({
+                login: login,
+                password: crypto.createHash("sha256").update(password).digest("base64"),
+                phone: email,
+                firstName: "yo",
+                lastName: "yo",
+                enabled: 1
+            });
 
-            // var onSuccess = (response) => {
-            //     console.log('user added successfully')
-            // }
-            //
-            // var onFailure = (transaction) => console.log("error adding user");
-            //
-            // Relay.Store.commitUpdate(addUserMutation, {onSuccess, onFailure})
+            let onSuccess = (response) => {
+                console.log('user added successfully')
+            };
+
+            let onFailure = (transaction) => console.log("error adding user");
+
+            Relay.Store.commitUpdate(addUserMutation, {onSuccess, onFailure})
         }
-
     }
 
     render() {
+
         return  <form data-toggle="validator" role="form" className="form-registration form-horizontal" name="registerForm" onSubmit={this.onAddEvent.bind(this)}>
                     <h2 className="form-signin-heading text-center cursive">SOFTESTATE</h2>
                     <hr/>

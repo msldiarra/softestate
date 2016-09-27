@@ -48,6 +48,21 @@ type AddPropertyPayload {
   clientMutationId: String!
 }
 
+input AddUserInput {
+  firstName: String
+  lastName: String
+  login: String!
+  password: String!
+  phone: String!
+  enabled: Int
+  clientMutationId: String!
+}
+
+type AddUserPayload {
+  user: User
+  clientMutationId: String!
+}
+
 type AppMessage implements Node {
   id: ID!
   text: String
@@ -168,6 +183,7 @@ type Mutation {
   attachPropertyMediaMutation(input: AttachMediaInput!): AttachMediaPayload
   editPropertyMutation(input: EditPropertyInput!): EditPropertyPayload
   deletePropertyMutation(input: DeletePropertyInput!): DeletePropertyPayload
+  addUserMutation(input: AddUserInput!): AddUserPayload
 }
 
 interface Node {
