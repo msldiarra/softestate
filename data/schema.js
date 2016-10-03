@@ -41,6 +41,8 @@ import {
 import _ from 'underscore';
 import sanitize from 'sanitize-filename';
 
+require("babel-polyfill");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -905,7 +907,8 @@ var AddUserMutation = exports.AddUserMutation  = mutationWithClientMutationId({
     login: {type: new GraphQLNonNull(GraphQLString)},
     password: {type: new GraphQLNonNull(GraphQLString)},
     phone: {type: new GraphQLNonNull(GraphQLString)},
-    enabled: {type: GraphQLBoolean}
+    enabled: {type: GraphQLBoolean},
+    customer: {type: GraphQLString}
   },
   outputFields: {
     user: {
@@ -916,16 +919,20 @@ var AddUserMutation = exports.AddUserMutation  = mutationWithClientMutationId({
       }
     }
   },
-  mutateAndGetPayload: (input) => {
+  mutateAndGetPayload: async (input) => {
 
     delete input.clientMutationId;
-    console.log("input : " + JSON.stringify(input));
 
-    return DB.models.user.create(input)
-        .then(r => {
-          console.log("response from create user : " + JSON.stringify(r));
-          return Database.models.user.findOne({where: {login: input.login}})
-        })
+    let login = await DB.models.login.create({login: input.login, password: input.password});
+    let contact = await DB.models.contact.create({first_name: input.firstName, last_name: input.lastName});
+    let contactInfo = await DB.models['contact_info'].create({phone: input.phone});
+    let customer = await DB.models.customer.create({name: input.customer, reference: input.customer});
+
+    await DB.models['customer_contact'].create({customer_id: customer.id, contact_id: contact.id});
+    await DB.models['contact_login'].create({contact_id: contact.id, login_id: login.id});
+    await DB.models['contact_contact_info'].create({contact_info_id: contactInfo.id, contact_id: contact.id});
+
+    return {login, contact, contactInfo, customer}
   }
 });
 

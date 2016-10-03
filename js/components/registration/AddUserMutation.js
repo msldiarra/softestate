@@ -45,7 +45,8 @@ class AddUserMutation extends Relay.Mutation {
             login: this.props.login,
             password: this.props.password,
             phone: this.props.phone,
-            enabled: this.props.enabled
+            enabled: this.props.enabled,
+            customer: this.props.customer
         };
     }
 }

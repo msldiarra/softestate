@@ -62,6 +62,7 @@
   "devDependencies": {
     "babel-cli": "6.5.1",
     "babel-jest": "^9.0.3",
+    "babel-polyfill": "^6.5.0",
     "jest": "^0.1.40",
     "react-addons-test-utils": "^15.3.1"
   },

@@ -55,6 +55,7 @@ input AddUserInput {
   password: String!
   phone: String!
   enabled: Boolean
+  customer: String
   clientMutationId: String!
 }
 

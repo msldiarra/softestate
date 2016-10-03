@@ -36,7 +36,8 @@ class RegisterForm extends React.Component {
                 phone: email,
                 firstName: "yo",
                 lastName: "yo",
-                enabled: true
+                enabled: true,
+                customer:"test"
             });
 
             let onSuccess = (response) => {
