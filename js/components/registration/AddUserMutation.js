@@ -33,7 +33,7 @@ class AddUserMutation extends Relay.Mutation {
             // {
             //     type: 'FIELDS_CHANGE',
             //     fieldIDs: {
-            //         viewer: "1"
+            //         viewer: this.props.viewer
             //     }
             // }
         ]
@@ -47,6 +47,7 @@ class AddUserMutation extends Relay.Mutation {
             phone: this.props.phone,
             enabled: this.props.enabled,
             customer: this.props.customer
+
         };
     }
 }

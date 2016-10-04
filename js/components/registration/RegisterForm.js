@@ -1,6 +1,7 @@
 import React from 'react'
 import Relay from 'react-relay'
 import crypto from 'crypto';
+import Auth from './AuthService'
 
 import AddUserMutation from './AddUserMutation'
 
@@ -19,12 +20,7 @@ class RegisterForm extends React.Component {
         let confirmPassword =  this.refs.registerFormConfirmPassword.value;
         let email =  this.refs.registerFormEmail.value;
         let confirmEmail = this.refs.registerFormConfirmEmail.value;
-
-        console.log("login : " + JSON.stringify(login));
-        console.log("password : " + JSON.stringify(password));
-        console.log("confirmPassword : " + JSON.stringify(confirmPassword));
-        console.log("email : " + JSON.stringify(email));
-        console.log("confirmEmail : " + JSON.stringify(confirmEmail));
+        let customer = this.refs.registerFormCustomerName.value;
 
         if(login && password && email && (password == confirmPassword && email == confirmEmail)) {
 
@@ -37,11 +33,12 @@ class RegisterForm extends React.Component {
                 firstName: "yo",
                 lastName: "yo",
                 enabled: true,
-                customer:"test"
+                customer: customer,
+                viewer: null
             });
 
             let onSuccess = (response) => {
-                console.log('user added successfully !!!')
+               this.goToDashboard();
             };
 
             let onFailure = (transaction) => console.log("error adding user");
@@ -50,11 +47,26 @@ class RegisterForm extends React.Component {
         }
     }
 
+    goToDashboard() {
+        this.context.router.replace('/')
+    }
+
+    goToConnectPage(e) {
+        e.preventDefault();
+
+       this.goToConnectPage()
+    }
+
     render() {
 
         return  <form data-toggle="validator" role="form" className="form-registration form-horizontal" name="registerForm" onSubmit={this.onAddEvent.bind(this)}>
                     <h2 className="form-signin-heading text-center cursive">SOFTESTATE</h2>
                     <hr/>
+                    <div className="form-group">
+                        <label htmlFor="registerFormCustomerName" className="control-label">Name</label>
+                        <input ref="registerFormCustomerName" id="registerFormCustomerName" type="text"
+                               className="form-control" placeholder="name" required />
+                    </div>
                     <div className="form-group">
                         <label htmlFor="registerFormEventName" className="control-label">Login</label>
                         <input ref="registerFormEventName" id="registerFormEventName" type="text"
@@ -85,8 +97,17 @@ class RegisterForm extends React.Component {
                     <div className="form-group">
                         <button className="btn btn-default btn-block btn-lg" type="submit">Inscrivez-vous</button>
                     </div>
+                    <hr />
+                    <h3>Vous avez déjà un compte ?</h3>
+                    <div className="form-group">
+                        <button className="btn btn-default btn-block btn-lg" onClick={this.goToConnectPage.bind(this)}>Connectez-vous</button>
+                    </div>
                 </form>
     }
+}
+
+RegisterForm.contextTypes = {
+    router: React.PropTypes.object.isRequired
 }
 
 export default RegisterForm

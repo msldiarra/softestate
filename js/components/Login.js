@@ -33,11 +33,8 @@ class Login extends React.Component {
     }
 
     register(e) {
-
         e.preventDefault();
-
         this.context.router.replace('/register')
-
     }
 
     render() {
