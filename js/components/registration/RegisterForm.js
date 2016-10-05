@@ -1,7 +1,7 @@
 import React from 'react'
 import Relay from 'react-relay'
 import crypto from 'crypto';
-import Auth from './AuthService'
+import Auth from '../AuthService'
 
 import AddUserMutation from './AddUserMutation'
 
@@ -54,7 +54,7 @@ class RegisterForm extends React.Component {
     goToConnectPage(e) {
         e.preventDefault();
 
-       this.goToConnectPage()
+        this.context.router.replace('/login');
     }
 
     render() {
