@@ -71,7 +71,7 @@ class PropertyDetails extends React.Component {
                                 </a>
                             </div>
                         </h2>
-                        <h4>A partir de {property.price}  {property.contract_type==1? 'FCFA / mois' : ''} </h4><br/>
+                        <h4>{property.price ? 'A partir de ' + property.price + ' ' + property.contract_type==1? ' FCFA / mois' : '' : ''} </h4><br/>
                         <dl>
                             <dt></dt>
                             <dd>
@@ -113,7 +113,7 @@ export default Relay.createContainer(PropertyDetails, {
         viewer: () => Relay.QL`
           fragment on User {
                 id,
-                properties(reference: $reference, first: 10) {
+                properties(reference: $reference, first: 1) {
                   edges {
                     node {
                       id

@@ -7,7 +7,7 @@ export default class Images extends React.Component {
 
     render() {
 
-        let imageCount = this.props.media.edges.length;
+        let imageCount = this.props.media? this.props.media.edges.length : 0;
 
         const settings = {
             dots: true,
@@ -19,10 +19,10 @@ export default class Images extends React.Component {
             pauseOnHover: true
         };
 
-        var images = this.props.media.edges.map(function(edge){
+        var images = this.props.media? this.props.media.edges.map(function(edge){
             return <div key={edge.node.id}><img src={edge.node.uri} /></div>
 
-        });
+        }) : '';
 
         return (
             <div className="">

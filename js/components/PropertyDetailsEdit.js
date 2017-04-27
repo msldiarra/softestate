@@ -65,8 +65,11 @@ class PropertyDetailsEdit extends React.Component {
 
         var onSuccess = () => this.context.router.push('/property/' + property.reference);
 
-        var onFailure = (transaction) => this.setState({message : "Désolé, nous avons rencontré un problème lors de l'enregistrement." +
-        " Contactez l'administrateur"});
+        var onFailure = (transaction) => {
+            console.log(transaction.getError());
+            this.setState({message : "Désolé, nous avons rencontré un problème lors de l'enregistrement." +
+            " Contactez l'administrateur" });
+        }
 
         Relay.Store.commitUpdate(editPropertyMutation, {onSuccess, onFailure})
 
@@ -75,7 +78,11 @@ class PropertyDetailsEdit extends React.Component {
     onMediaInsert(file, uri) {
 
         var onSuccess = (response) => this.setState({message: "Nouvelle image ajoutée avec succes!"});
-        var onFailure = (transaction) => this.setState({message: transaction});
+        var onFailure = (transaction) => {
+            console.log(transaction.getError());
+            this.setState({message: "Désolé, nous avons rencontré un problème lors de l'enregistrement." +
+            " Contactez l'administrateur"});
+        }
 
         Relay.Store.commitUpdate(
             new AttachMediaMutation({

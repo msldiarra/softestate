@@ -133,9 +133,10 @@ export const userType = new GraphQLObjectType({
           var term;
 
           if(args.reference) {
-            term = {where: {reference: args.reference }}
+            //term = {where: {reference: args.reference }}
+            term = " AND reference = '" +args.reference + "'"  ;
           } else {
-            term =  {}
+            term = ''
           }
 
           return connectionFromPromisedArray(DB.query('SELECT property.* FROM property' +
@@ -143,7 +144,7 @@ export const userType = new GraphQLObjectType({
               '(SELECT property_id FROM owner_property op ' +
               ' INNER JOIN customer_owner co ON co.owner_id = op.owner_id' +
               ' INNER JOIN customer c ON c.id = co.customer_id' +
-              ' WHERE c.name = \'AIA-Mali SARL\')', {type: DB.QueryTypes.SELECT}), args)
+              ' WHERE c.name = \'AIA-Mali SARL\') ' + term, {type: DB.QueryTypes.SELECT}), args)
         }
 
       },
@@ -353,13 +354,19 @@ const propertyType = new GraphQLObjectType({
             if(property_location) return property_location.get('city');
           })
       }},
-      owner: { type: ownerType, resolve(property) { return property.getOwners().then( owners => owners[0]) }},
+      //owner: { type: ownerType, resolve(property) { return property.getOwners().then( owners => owners[0]) }},
+      owner: { type: ownerType, resolve(property) { return DB.models.owner_property.findOne({where :{property_id: property.id }})
+        .then(owner_property =>
+             DB.models.owner.findOne({where:  {id: owner_property.owner_id}}))
+      } },
       media: {
         type: mediaConnection,
         description: "A property's collection of images",
         args: connectionArgs,
         resolve: (property, args) => {
-          if(property.rowCount > 0 ) return connectionFromPromisedArray(property.getMedia(), args)
+          return connectionFromPromisedArray(DB.models.property.findOne({where:  {id: property.id}})
+                  .then(property => property.getMedia()) ,
+              args)
         }
       }
     }
@@ -707,7 +714,6 @@ var EditPropertyMutation = exports.EditPropertyMutation = mutationWithClientMuta
     }
   },
   mutateAndGetPayload: ({viewerId, name, reference, propertyType, contractType, description, mediaNames, price, floorCount, roomCount, size, district, city}) => {
-
 
     var sanitizedMediaNames = _.map(mediaNames, name => {
       return sanitize(name.replace(/[`~!@#$%^&*()_|+\-=÷¿?;:'",<>\{\}\[\]\\\/]/gi, '') )

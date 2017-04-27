@@ -1,12 +1,12 @@
 import Sequelize from 'sequelize';
 
 export const DB = new Sequelize(
-    'estate',
-    'estate',
+    'softestate',
+    'postgres',
     '1234',
     {
-      dialect: 'postgres',
-      host: 'localhost'
+        dialect: 'postgres',
+        host: 'localhost'
     }
 )
 
@@ -206,7 +206,8 @@ Property.hasOne(PropertyFloorCount, {as: 'PropertyFloorCount', foreignKey: 'prop
 Property.hasOne(PropertySize, {as: 'PropertySize', foreignKey: 'property_id' });
 Property.hasOne(PropertyRoomCount, {as: 'PropertyRoomCount', foreignKey: 'property_id' });
 Property.hasOne(PropertyPropertyContract, {as: 'PropertyPropertyContract', foreignKey: 'property_id' });
-Property.belongsToMany(Media, {through: PropertyMedia, foreignKey: 'property_id' });
+Property.belongsToMany(Media, {as: 'Media',through: PropertyMedia, foreignKey: 'property_id' });
+
 Media.belongsToMany(Property, {through: PropertyMedia, foreignKey: 'media_id' });
 
 /*
