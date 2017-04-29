@@ -1,7 +1,6 @@
 import React from 'react'
 import Relay from 'react-relay'
 import EditPropertyMutation from './EditPropertyMutation'
-import AddAppMessageMutation from './AddAppMessageMutation'
 import AppMessage from './AppMessage';
 import SearchComponent from './SearchComponent';
 import AttachMedia from './AttachMedia';
@@ -16,7 +15,7 @@ class PropertyDetailsEdit extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {propertyType : 0,  contractType : 0, ownerRef: '', message : "", mediaNames: [], editorState: EditorState.createEmpty()} ;
+        this.state = {type_id : 0,  contractType : 0, ownerRef: '', message : "", mediaNames: [], editorState: EditorState.createEmpty()} ;
     }
 
 
@@ -32,7 +31,7 @@ class PropertyDetailsEdit extends React.Component {
         var property = this.props.viewer.properties.edges[0].node;
 
         var name = this.refs.name.value;
-        var propertyType =  this.state.propertyType;
+        var type_id =  this.state.type_id;
         var contractType =  this.state.contractType;
         var description =  this.state.editorState.getCurrentContent().getPlainText();
         var size = this.refs.size.value;
@@ -50,7 +49,7 @@ class PropertyDetailsEdit extends React.Component {
             viewerId: UserService.getUserId(),
             name: name,
             reference: property.reference,
-            propertyType: propertyType,
+            propertyType: type_id,
             contractType: contractType,
             description: description,
             size: size,
@@ -79,7 +78,6 @@ class PropertyDetailsEdit extends React.Component {
 
         var onSuccess = (response) => this.setState({message: "Nouvelle image ajoutée avec succes!"});
         var onFailure = (transaction) => {
-            console.log(transaction.getError());
             this.setState({message: "Désolé, nous avons rencontré un problème lors de l'enregistrement." +
             " Contactez l'administrateur"});
         }
@@ -102,7 +100,7 @@ class PropertyDetailsEdit extends React.Component {
     }
 
     handlePropertyType(e) {
-        this.setState({ propertyType : e.target.value });
+        this.setState({ type_id : e.target.value });
     }
 
     handleContractType(e) {
@@ -117,8 +115,7 @@ class PropertyDetailsEdit extends React.Component {
 
         var property = this.props.viewer.properties.edges[0].node;
 
-        this.setState({ propertyType : property.type_id });
-
+        this.setState({ type_id : property.type_id });
         this.setState({ contractType : property.contract_type });
 
     }
@@ -176,15 +173,15 @@ class PropertyDetailsEdit extends React.Component {
                                 <div className="col-md-12">
                                     <label className="radio-inline control-label">
                                         <input type="radio" id="apartment" value="1" name="propertyType" onChange={this.handlePropertyType.bind(this)}
-                                        checked={this.state.propertyType == 1? true : false} /> Appartement
+                                        checked={this.state.type_id == 1? true : false} /> Appartement
                                     </label>
                                     <label className="radio-inline control-label">
                                         <input type="radio" id="house" value="2" name="propertyType" onChange={this.handlePropertyType.bind(this)}
-                                               checked={this.state.propertyType == 2? true : false}/> Villa
+                                               checked={this.state.type_id == 2? true : false}/> Villa
                                     </label>
                                     <label className="radio-inline control-label">
                                         <input type="radio" id="land" value="3" name="propertyType" onChange={this.handlePropertyType.bind(this)}
-                                               checked={this.state.propertyType == 3? true : false}/> Terrain
+                                               checked={this.state.type_id == 3? true : false}/> Terrain
                                     </label>
                                 </div>
                             </div>

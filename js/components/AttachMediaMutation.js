@@ -57,4 +57,3 @@ export default class AttachMediaMutation extends Relay.Mutation {
         };
     }
 }
-

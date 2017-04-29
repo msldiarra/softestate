@@ -1,7 +1,6 @@
 import React from 'react'
 import Relay from 'react-relay'
 import AddPropertyMutation from './AddPropertyMutation'
-import AddAppMessageMutation from './AddAppMessageMutation'
 import AttachMediaMutation from './AttachMediaMutation'
 import AppMessage from './AppMessage';
 import SearchComponent from './SearchComponent';

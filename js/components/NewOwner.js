@@ -133,9 +133,6 @@ export default Relay.createContainer(NewOwner, {
         viewer: () => Relay.QL`
           fragment on User {
                id
-               message {
-                  text
-               },
                ${AddOwnerMutation.getFragment('viewer')}
           }
     `,

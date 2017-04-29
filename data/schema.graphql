@@ -1,14 +1,3 @@
-input AddAppMessageInput {
-  viewerId: Int!
-  text: String!
-  clientMutationId: String!
-}
-
-type AddAppMessagePayload {
-  user: User
-  clientMutationId: String!
-}
-
 input AddOwnerInput {
   viewerId: Int!
   company: String!
@@ -46,11 +35,6 @@ input AddPropertyInput {
 type AddPropertyPayload {
   user: User
   clientMutationId: String!
-}
-
-type AppMessage implements Node {
-  id: ID!
-  text: String
 }
 
 input AttachMediaInput {
@@ -164,10 +148,9 @@ type Mutation {
   addOwnerMutation(input: AddOwnerInput!): AddOwnerPayload
   editOwnerMutation(input: EditOwnerInput!): EditOwnerPayload
   addPropertyMutation(input: AddPropertyInput!): AddPropertyPayload
-  addAppMessageMutation(input: AddAppMessageInput!): AddAppMessagePayload
-  attachPropertyMediaMutation(input: AttachMediaInput!): AttachMediaPayload
   editPropertyMutation(input: EditPropertyInput!): EditPropertyPayload
   deletePropertyMutation(input: DeletePropertyInput!): DeletePropertyPayload
+  attachPropertyMediaMutation(input: AttachMediaInput!): AttachMediaPayload
 }
 
 interface Node {
@@ -181,8 +164,6 @@ type Owner implements Node {
   type: String
   type_id: Int
   contact: Contact
-  rentSummary: RentSummary
-  sellSummary: SellSummary
   properties(after: String, first: Int, before: String, last: Int): PropertiesConnection
 }
 
@@ -247,20 +228,6 @@ type Query {
   viewer(userID: Int!): User
 }
 
-type RentSummary implements Node {
-  id: ID!
-  apartmentCount: Int
-  houseCount: Int
-  landCount: Int
-}
-
-type SellSummary implements Node {
-  id: ID!
-  apartmentCount: Int
-  houseCount: Int
-  landCount: Int
-}
-
 type User implements Node {
   id: ID!
   customer: String
@@ -268,5 +235,4 @@ type User implements Node {
   contact: Contact
   owners(after: String, first: Int, before: String, last: Int, search: String!): OwnersConnection
   properties(after: String, first: Int, before: String, last: Int, reference: String): PropertiesConnection
-  message: AppMessage
 }

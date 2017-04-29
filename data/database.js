@@ -128,8 +128,7 @@ export const Owner = DB.define('owner', {
 );
 
 export const OwnerType = DB.define('owner_type', {
-        label: Sequelize.STRING
-    } , {timestamps: false, freezeTableName: true}
+        label: Sequelize.STRING  } , {timestamps: false, freezeTableName: true}
 );
 
 export const OwnerContact = DB.define('owner_contact', {
