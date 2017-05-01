@@ -12,10 +12,10 @@ export default class Header extends React.Component {
             headerItems =
                 <ul className="nav navbar-nav navbar-right">
                     <li data-toggle="collapse" data-target=".navbar-collapse">
-                        <Link to="/newowner">NOUVEAU CLIENT</Link>
+                        <Link to="/admin/newowner">NOUVEAU CLIENT</Link>
                     </li>
                     <li data-toggle="collapse" data-target=".navbar-collapse">
-                        <Link to="/newproperty">NOUVEAU BIEN</Link>
+                        <Link to="/admin/newproperty">NOUVEAU BIEN</Link>
                     </li>
                     <li><a href="" onClick={this.props.onLogout}>DÉCONNEXION</a></li>
                 </ul>

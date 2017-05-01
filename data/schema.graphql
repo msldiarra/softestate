@@ -212,7 +212,7 @@ type Property implements Node {
   floor_count: Float
   room_count: Float
   price: Int
-  district: String
+  location: String
   city: String
   owner: Owner
   media(after: String, first: Int, before: String, last: Int): MediasConnection
@@ -243,5 +243,5 @@ type Viewer implements Node {
   customer: String
   contact: Contact
   owners(after: String, first: Int, before: String, last: Int, search: String!): OwnersConnection
-  properties(after: String, first: Int, before: String, last: Int, reference: String): PropertiesConnection
+  properties(after: String, first: Int, before: String, last: Int, reference: String, city: String): PropertiesConnection
 }

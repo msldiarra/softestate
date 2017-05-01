@@ -56,9 +56,21 @@ function getAnonymousParams(params, route){
     }
 }
 
+// ToDo : refactor all this
+function getAnonymousDashboardParams(params, route){
+
+    return {
+        ...params,
+        reference:'',
+        city: 'Bamako',
+        viewerId: 0
+    }
+}
+
 export default  <Route>
                     <Route path="/" component={AnonymousApp} queries={RouteHome.queries} prepareParams={getAnonymousParams} >
-                        <IndexRoute component={Dashboard} queries={RouteHome.queries} prepareParams={getAnonymousParams} />
+                        <IndexRoute component={Dashboard} queries={RouteHome.queries} prepareParams={getAnonymousDashboardParams} />
+                        <Route path="properties/:city" component={Dashboard} queries={RouteHome.queries} prepareParams={getAnonymousParams} />
                         <Route path="property/:reference" component={PropertyDetails} queries={RouteHome.queries} prepareParams={getAnonymousParams} />
                     </Route>
                     <Route path="/admin" component={AuthenticatedApp} queries={RouteHome.queries} prepareParams={getParams} >

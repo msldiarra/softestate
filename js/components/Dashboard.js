@@ -11,7 +11,7 @@ class Dashboard extends React.Component {
                 <div className="page-header row">
 
                 </div>
-                <Properties customer={this.props.viewer} />
+                <Properties customer={this.props.viewer} refrence={this.props.relay.variables.reference} city={this.props.relay.variables.city} />
                 <br/>
                 <footer className="text-center">&copy;2017 UL- L'Usine Logicielle</footer>
                 <br/>
@@ -20,13 +20,19 @@ class Dashboard extends React.Component {
     }
 }
 
+Dashboard.contextTypes = {
+    router: React.PropTypes.object.isRequired,
+};
+
 export default Relay.createContainer(Dashboard, {
 
+    initialVariables: {reference: "", city :""},
+
     fragments: {
-        viewer: () => Relay.QL`
+        viewer: ({reference, city}) => Relay.QL`
           fragment on Viewer {
                id
-               ${Properties.getFragment('customer')}
+               ${Properties.getFragment('customer', {reference, city})}
           }
     `,
     }

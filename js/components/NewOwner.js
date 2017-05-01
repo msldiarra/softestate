@@ -125,7 +125,7 @@ export default Relay.createContainer(NewOwner, {
     prepareVariables: prevVariables => {
         return {
             ...prevVariables,
-            viewerId: UserService.getUserId() + "",
+            viewerId: UserService.getUserId(),
         };
     },
 

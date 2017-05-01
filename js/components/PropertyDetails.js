@@ -79,7 +79,7 @@ class PropertyDetails extends React.Component {
                                 {property.size? <div><label>Superficie:</label> {property.size} m²</div> : ''}
                                 {property.room_count ? <div><label>Nombre de chambres:</label> {property.room_count}</div>:''}
                                 {property.floor_count ? <div><label>Nombre de niveau :</label> {property.floor_count}</div> : ''}
-                                {property.district ?<div>{property.district}, {property.city}</div> : ''}
+                                {property.location ?<div>{property.location}, {property.city}</div> : ''}
                             </dd>
                         </dl>
                         <h3>Description</h3>
@@ -127,8 +127,7 @@ export default Relay.createContainer(PropertyDetails, {
                       room_count
                       price
                       description
-                      district
-                      city
+                      location
                       media(first: 10) {
                         edges {
                             node {

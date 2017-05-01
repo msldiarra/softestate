@@ -257,7 +257,7 @@ PropertyDetailsEdit.contextTypes = {
 export default Relay.createContainer(PropertyDetailsEdit, {
 
     initialVariables: {reference: ''},
-    
+
     fragments: {
         viewer: () => Relay.QL`
           fragment on Viewer {
@@ -270,8 +270,7 @@ export default Relay.createContainer(PropertyDetailsEdit, {
                       name
                       type_id
                       contract_type
-                      district
-                      city
+                      location
                       size
                       floor_count
                       room_count

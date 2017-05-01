@@ -971,7 +971,7 @@
               "deprecationReason": null
             },
             {
-              "name": "district",
+              "name": "location",
               "description": null,
               "args": [],
               "type": {
@@ -1516,6 +1516,16 @@
                 },
                 {
                   "name": "reference",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "city",
                   "description": null,
                   "type": {
                     "kind": "SCALAR",

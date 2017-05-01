@@ -124,7 +124,7 @@ class NewProperty extends React.Component {
                             <div className="form-group">
                                 <label htmlFor="name" className="col-md-12">Propriétaire</label>
                                 <div className="col-md-12">
-                                    <SearchComponent userID={UserService.getUserId()}
+                                    <SearchComponent viewerId={UserService.getUserId()}
                                                      search="" placeHolder="Entrer le nom du Propriétaire"
                                                      onOwnerEnter={this.onOwnerEnter.bind(this)}
                                                      defaultValue=""

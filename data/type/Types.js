@@ -203,9 +203,12 @@ export const propertyType = new GraphQLObjectType({
                     if(property_price) return property_price.get('price');
                 })
             }},
-            district: { type: GraphQLString, resolve(property) { return DB.models.property_location.findOne({where :{property_id: property.id } })
-                .then(property_location => {
-                    if(property_location) return property_location.get('district');
+            location: { type: GraphQLString, resolve(property) { return DB.models.property.findOne({where :{id: property.id } })
+                .then(property => {
+                    if(property) {
+                        var locations = property.getLocations();
+                        return (locations.length > 0) ? locations[0].get('city') : null;
+                    }
                 })
             }},
             city: { type: GraphQLString, resolve(property) { return DB.models.property_location.findOne({where :{property_id: property.id } })
@@ -307,28 +310,39 @@ export const viewerType = new GraphQLObjectType({
                     reference: {
                         name: 'reference',
                         type: GraphQLString
+                    },
+                    city: {
+                        name: 'city',
+                        type: GraphQLString
                     }
                 },
                 resolve: (_, args) => {
 
-                    var term;
+                    var term ='',
+                        city_term = '',
+                        city_where_term = '';
 
-                    if(args.reference) {
-                        //term = {where: {reference: args.reference }}
-                        term = " AND reference = '" +args.reference + "'"  ;
-                    } else {
-                        term = ''
+                    if(args.reference) { term = " AND reference = '" +args.reference + "'" ; }
+                    if(args.city) {
+                        city_term = " INNER JOIN property_location pl ON pl.property_id = p.id" +
+                               " INNER JOIN location l ON l.id = pl.location_id ";
+                        city_where_term = " AND LOWER(l.city) = LOWER('" +args.city + "')";
+
                     }
 
-                    return connectionFromPromisedArray(DB.query('SELECT property.* FROM property' +
-                        ' WHERE id in ' +
+
+                    return connectionFromPromisedArray(DB.query('SELECT p.* FROM property p ' +
+                        city_term +
+                        ' WHERE p.id in ' +
                         '(SELECT property_id FROM owner_property op ' +
                         ' INNER JOIN customer_owner co ON co.owner_id = op.owner_id' +
                         ' INNER JOIN customer c ON c.id = co.customer_id' +
-                        ' WHERE c.name = \'AIA-Mali SARL\') ' + term, {type: DB.QueryTypes.SELECT}), args)
+                        ' WHERE c.name = \'AIA-Mali SARL\') ' + term
+                        + city_where_term,
+                        {type: DB.QueryTypes.SELECT}), args)
                 }
 
-            },
+            }
         }
     },
     interfaces: [nodeInterface]

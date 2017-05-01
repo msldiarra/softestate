@@ -21,13 +21,13 @@ export default class Property extends React.Component {
                                 <Link to={pathname + "/property/" +  this.props.property.reference}>
                                     <div style={{maxHeight: '250px', overflowY: 'hidden'}}><img src={this.props.property.media.edges[0].node.uri} alt={''}/></div>
                                 </Link> :
-                                <Link to={pathname != '/' ? pathname: '' + "/property/" +  this.props.property.reference}>
+                                <Link to={pathname + "/property/" +  this.props.property.reference}>
                                     <div style={{maxHeight: '250px', overflowY: 'hidden'}}><img src='/defaults/default.jpg' alt={''}/></div>
                                 </Link>
                             }
                                 <div className="row" style={{height:'100px'}}>
                                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        {property.district? <h5>{property.district}, {property.city}</h5> : ''}
+                                        {property.location? <h5>{property.location}, {property.city}</h5> : ''}
                                     </div>
                                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         <a className="cblack" href={pathname + "/property/"  + this.props.property.reference }><h4>{this.props.property.name}</h4></a>

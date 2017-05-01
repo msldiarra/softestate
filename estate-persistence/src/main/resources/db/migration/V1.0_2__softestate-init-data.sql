@@ -39,6 +39,28 @@ INSERT INTO owner_company_name (owner_id, name) VALUES (3, 'Kone Immobilier SA')
 
 INSERT INTO customer_owner VALUES  (1,1), (2,1), (3,1);
 
+INSERT INTO location (country, district, city) VALUES
+  ('Mali', 'Bamako', 'Bamako'),
+  ('Mali', 'Sikasso', 'Sikasso'),
+  ('Mali', 'Mopti', 'Mopti'),
+  ('Mali', 'Sikasso', 'Koutiala'),
+  ('Mali', 'Kayes', 'Kayes'),
+  ('Mali', 'Ségou', 'Ségou'),
+  ('Mali', 'Kayes', 'Nioro du Sahel'),
+  ('Mali', 'Ségou', 'Niono'),
+  ('Mali', 'Ségou', 'Markala'),
+  ('Mali', 'Ségou', 'Kolondiéba'),
+  ('Mali', 'Koulikoro', 'Kati'),
+  ('Mali', 'Gao', 'Gao'),
+  ('Mali', 'Koulikoro', 'Kolokani'),
+  ('Mali', 'Gao', 'Ménaka'),
+  ('Mali', 'Sikasso', 'Bougouni'),
+  ('Mali', 'Tombouctou', 'Niafunké'),
+  ('Mali', 'Koulikoro', 'Banamba'),
+  ('Mali', 'Ségou', 'Macina'),
+  ('Mali', 'Koulikoro', 'Nara'),
+  ('Mali', 'Kayes', 'Bafoulabé'),
+  ('Mali', 'Kayes', 'Bafoulabé');
 
 -- Properties
 INSERT INTO Property (name, reference, type_id) VALUES
@@ -47,6 +69,14 @@ INSERT INTO Property (name, reference, type_id) VALUES
   ('Grand duplex en bord de fleuve', '0003', 1),
   ('2 pièces meublé au calme', '0004', 2),
   ('Terrain de 1ha à Nyamana', '0005', 3);
+
+
+INSERT INTO property_location (property_id, location_id) VALUES
+  (1, 1),
+  (2, 1),
+  (3, 1),
+  (4, 1),
+  (5, 1);
 
 INSERT INTO property_property_contract (property_id, property_contract_id) VALUES
   (1, 1),

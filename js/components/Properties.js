@@ -33,12 +33,12 @@ class Properties extends React.Component {
 
 export default Relay.createContainer(Properties, {
 
-    initialVariables: {reference: ""},
+    initialVariables: {reference: "", city :""},
 
     fragments: {
         customer: () => Relay.QL`
           fragment on Viewer {
-            properties(reference: $reference, first: 100) {
+            properties(reference: $reference, city: $city, first: 100) {
               edges {
                 node {
                   id
@@ -51,8 +51,7 @@ export default Relay.createContainer(Properties, {
                   room_count
                   price
                   description
-                  district
-                  city
+                  location
                   media(first: 20) {
                     edges {
                         node {

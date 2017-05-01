@@ -65,7 +65,7 @@ export default class AddPropertyMutation extends Relay.Mutation {
     // this mutation is used.
     static fragments = {
         viewer: () => Relay.QL`
-          fragment on User {
+          fragment on Viewer {
             id
           }
     `,
