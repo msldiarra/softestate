@@ -235,7 +235,7 @@ export default Relay.createContainer(NewProperty, {
 
     fragments: {
         viewer: () => Relay.QL`
-          fragment on User {
+          fragment on Viewer {
                id,
                ${AddPropertyMutation.getFragment('viewer')}
                ${SearchComponent.getFragment('viewer')}

@@ -131,7 +131,7 @@ export default Relay.createContainer(NewOwner, {
 
     fragments: {
         viewer: () => Relay.QL`
-          fragment on User {
+          fragment on Viewer {
                id
                ${AddOwnerMutation.getFragment('viewer')}
           }

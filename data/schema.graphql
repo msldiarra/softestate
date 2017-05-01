@@ -10,7 +10,7 @@ input AddOwnerInput {
 }
 
 type AddOwnerPayload {
-  user: User
+  viewer: Viewer
   clientMutationId: String!
 }
 
@@ -33,7 +33,7 @@ input AddPropertyInput {
 }
 
 type AddPropertyPayload {
-  user: User
+  viewer: Viewer
   clientMutationId: String!
 }
 
@@ -45,7 +45,7 @@ input AttachMediaInput {
 }
 
 type AttachMediaPayload {
-  user: User
+  viewer: Viewer
   clientMutationId: String!
 }
 
@@ -77,7 +77,7 @@ input DeletePropertyInput {
 
 type DeletePropertyPayload {
   deletedPropertyID: String
-  user: User
+  viewer: Viewer
   clientMutationId: String!
 }
 
@@ -93,7 +93,7 @@ input EditOwnerInput {
 }
 
 type EditOwnerPayload {
-  user: User
+  viewer: Viewer
   clientMutationId: String!
 }
 
@@ -116,7 +116,7 @@ input EditPropertyInput {
 }
 
 type EditPropertyPayload {
-  user: User
+  viewer: Viewer
   clientMutationId: String!
 }
 
@@ -225,13 +225,22 @@ type PropertyType implements Node {
 
 type Query {
   node(id: ID!): Node
-  viewer(userID: Int!): User
+  viewer(viewerId: Int): Viewer
 }
 
 type User implements Node {
   id: ID!
+  firstName: String
+  lastName: String
+  login: String
+  email: String
+  enabled: Boolean
+}
+
+type Viewer implements Node {
+  id: ID!
+  user: User
   customer: String
-  credentials: Login
   contact: Contact
   owners(after: String, first: Int, before: String, last: Int, search: String!): OwnersConnection
   properties(after: String, first: Int, before: String, last: Int, reference: String): PropertiesConnection

@@ -62,7 +62,7 @@ class PropertyDetailsEdit extends React.Component {
             mediaNames: mediaNames
         });
 
-        var onSuccess = () => this.context.router.push('/property/' + property.reference);
+        var onSuccess = () => this.context.router.push('/admin/property/' + property.reference);
 
         var onFailure = (transaction) => {
             console.log(transaction.getError());
@@ -260,7 +260,7 @@ export default Relay.createContainer(PropertyDetailsEdit, {
     
     fragments: {
         viewer: () => Relay.QL`
-          fragment on User {
+          fragment on Viewer {
                 id,
                 properties(reference: $reference, first: 10) {
                   edges {

@@ -3,6 +3,7 @@ import React from 'react';
 import IndexRoute from 'react-router/lib/IndexRoute';
 import Route from 'react-router/lib/Route';
 import AuthenticatedApp from '../components/AuthenticatedApp';
+import AnonymousApp from '../components/AnonymousApp';
 import Dashboard from '../components/Dashboard';
 import Login from '../components/Login';
 import NewOwner from '../components/NewOwner';
@@ -16,7 +17,7 @@ class RouteHome extends Relay.Route {
     static queries = {
         viewer: (Component, vars) => Relay.QL`
           query {
-            viewer(userID: $userID) {
+            viewer(viewerId: $viewerId) {
                  ${Component.getFragment('viewer', vars)}
             }
           }
@@ -24,7 +25,7 @@ class RouteHome extends Relay.Route {
     };
 
     static paramDefinitions = {
-        userID: {required: true},
+        viewerId: {required: true},
     };
 
     static routeName = 'AppHomeRoute';
@@ -33,7 +34,7 @@ class RouteHome extends Relay.Route {
 function requireAuth(nextState, replace) {
     if(!JSON.parse(localStorage.getItem('user'))) {
         replace({
-            pathname: '/login',
+            pathname: '/',
             state: { nextPathname: nextState.location.pathname }
         })
     }
@@ -43,12 +44,24 @@ function getParams(params, route){
 
     return {
         ...params,
-        userID: JSON.parse(localStorage.getItem('user')).id
+        viewerId: (JSON.parse(localStorage.getItem('user')).id)
+    }
+}
+
+function getAnonymousParams(params, route){
+
+    return {
+        ...params,
+        viewerId: 0
     }
 }
 
 export default  <Route>
-                    <Route path="/" component={AuthenticatedApp} queries={RouteHome.queries} prepareParams={getParams} >
+                    <Route path="/" component={AnonymousApp} queries={RouteHome.queries} prepareParams={getAnonymousParams} >
+                        <IndexRoute component={Dashboard} queries={RouteHome.queries} prepareParams={getAnonymousParams} />
+                        <Route path="property/:reference" component={PropertyDetails} queries={RouteHome.queries} prepareParams={getAnonymousParams} />
+                    </Route>
+                    <Route path="/admin" component={AuthenticatedApp} queries={RouteHome.queries} prepareParams={getParams} >
                         <IndexRoute component={Dashboard} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />
                         <Route path="newowner" component={NewOwner} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />
                         <Route path="newproperty" component={NewProperty} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />

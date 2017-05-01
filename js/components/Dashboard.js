@@ -13,7 +13,7 @@ class Dashboard extends React.Component {
                 </div>
                 <Properties customer={this.props.viewer} />
                 <br/>
-                <footer className="text-center">&copy;2016 UL- L'Usine Logicielle SARL</footer>
+                <footer className="text-center">&copy;2017 UL- L'Usine Logicielle</footer>
                 <br/>
             </div>
         );
@@ -24,7 +24,7 @@ export default Relay.createContainer(Dashboard, {
 
     fragments: {
         viewer: () => Relay.QL`
-          fragment on User {
+          fragment on Viewer {
                id
                ${Properties.getFragment('customer')}
           }

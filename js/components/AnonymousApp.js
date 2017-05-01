@@ -1,9 +1,8 @@
 import React from 'react';
 import Relay from 'react-relay';
-import Header from './Header';
-import AuthService from './AuthService';
+import Header from './AnonymousHeader';
 
-class AuthenticatedApp extends React.Component {
+class AnonymousApp extends React.Component {
 
     static contextTypes = {
         router: React.PropTypes.object.isRequired
@@ -11,14 +10,13 @@ class AuthenticatedApp extends React.Component {
 
     constructor() {
         super();
-        this.state = {user: JSON.parse(localStorage.getItem('user'))};
     }
 
     render() {
 
         return (
             <div>
-                <Header user={this.state.user} onLogout={this.logout.bind(this)}/>
+                <Header />
                 <div className="content min-height">
                     <div className="container">
                         {this.props.children}
@@ -27,16 +25,9 @@ class AuthenticatedApp extends React.Component {
             </div>);
     }
 
-
-    logout(e) {
-        e.preventDefault();
-        AuthService.logout();
-        this.context.router.replace('login')
-    }
-
 }
 
-export default Relay.createContainer(AuthenticatedApp, {
+export default Relay.createContainer(AnonymousApp, {
     fragments: {
         viewer: () => Relay.QL`
             fragment on Viewer {

@@ -61,7 +61,7 @@ export default Relay.createContainer(OwnerDetails, {
 
     fragments: {
         viewer: () => Relay.QL`
-          fragment on User {
+          fragment on Viewer {
                 id,
                 owners(search: $search, first: 1) {
                   edges {

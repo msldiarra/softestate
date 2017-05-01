@@ -34,7 +34,7 @@ class Auth {
     }
 
     getUserId() {
-        return JSON.parse(localStorage.getItem('user')).id
+        return JSON.parse(localStorage.getItem('user'))? JSON.parse(localStorage.getItem('user')).id : undefined;
     }
 
 

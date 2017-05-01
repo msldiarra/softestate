@@ -1,7 +1,7 @@
 import {  GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLInt } from 'graphql';
 import {  mutationWithClientMutationId } from 'graphql-relay';
 import { DB } from '../database';
-import {userType} from '../type/Types'
+import {viewerType} from '../type/Types'
 import sanitize from 'sanitize-filename';
 
 export default mutationWithClientMutationId({
@@ -13,8 +13,8 @@ export default mutationWithClientMutationId({
     },
     outputFields: {
 
-        user: {
-            type: userType,
+        viewer: {
+            type: viewerType,
             resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}}),
         }
     },

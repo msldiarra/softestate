@@ -128,11 +128,11 @@ class SearchComponent extends React.Component {
 
 export default Relay.createContainer(SearchComponent, {
 
-    initialVariables: {userID: 1, search: ""},
+    initialVariables: {viewerID: 1, search: ""},
 
     fragments: {
         viewer: () => Relay.QL`
-          fragment on User {
+          fragment on Viewer {
                 id,
                 owners(search: $search, first: 10) {
                   edges {

@@ -25,7 +25,7 @@ export default class AttachMediaMutation extends Relay.Mutation {
     getFatQuery() {
         return Relay.QL`
           fragment on AttachMediaPayload {
-              user
+              viewer
           }
     `;
     }
@@ -35,7 +35,7 @@ export default class AttachMediaMutation extends Relay.Mutation {
             {
                 type: 'FIELDS_CHANGE',
                 fieldIDs: {
-                    user: this.props.viewer.id
+                    viewer: this.props.viewer.id
                 }
             }
         ]
@@ -43,7 +43,7 @@ export default class AttachMediaMutation extends Relay.Mutation {
 
     static fragments = {
         viewer: () => Relay.QL`
-          fragment on User {
+          fragment on Viewer {
             id
           }
     `,

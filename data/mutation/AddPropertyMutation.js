@@ -1,7 +1,7 @@
 import {  GraphQLFloat, GraphQLList, GraphQLInt,  GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
 import {  mutationWithClientMutationId } from 'graphql-relay';
 import { DB }from '../database';
-import {userType} from '../type/Types'
+import {viewerType} from '../type/Types'
 import _ from 'lodash';
 
 
@@ -25,8 +25,8 @@ export default mutationWithClientMutationId({
         mediaNames: { type: new GraphQLList(GraphQLString) }
     },
     outputFields: {
-        user: {
-            type: userType,
+        viewer: {
+            type: viewerType,
             resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}}),
         }
     },

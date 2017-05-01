@@ -46,23 +46,19 @@
               "description": null,
               "args": [
                 {
-                  "name": "userID",
+                  "name": "viewerId",
                   "description": null,
                   "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "Int",
-                      "ofType": null
-                    }
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
                   },
                   "defaultValue": null
                 }
               ],
               "type": {
                 "kind": "OBJECT",
-                "name": "User",
+                "name": "Viewer",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -158,6 +154,11 @@
             {
               "kind": "OBJECT",
               "name": "User",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "Viewer",
               "ofType": null
             }
           ]
@@ -1255,7 +1256,7 @@
         {
           "kind": "OBJECT",
           "name": "User",
-          "description": "A realestate agency customer",
+          "description": "A user credentials",
           "fields": [
             {
               "name": "id",
@@ -1274,7 +1275,7 @@
               "deprecationReason": null
             },
             {
-              "name": "customer",
+              "name": "firstName",
               "description": null,
               "args": [],
               "type": {
@@ -1286,12 +1287,105 @@
               "deprecationReason": null
             },
             {
-              "name": "credentials",
+              "name": "lastName",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "login",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "email",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "enabled",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "Node",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "Viewer",
+          "description": "Application viewer",
+          "fields": [
+            {
+              "name": "id",
+              "description": "The ID of an object",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "user",
               "description": null,
               "args": [],
               "type": {
                 "kind": "OBJECT",
-                "name": "Login",
+                "name": "User",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "customer",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -1835,12 +1929,12 @@
           "description": null,
           "fields": [
             {
-              "name": "user",
+              "name": "viewer",
               "description": null,
               "args": [],
               "type": {
                 "kind": "OBJECT",
-                "name": "User",
+                "name": "Viewer",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -1997,12 +2091,12 @@
           "description": null,
           "fields": [
             {
-              "name": "user",
+              "name": "viewer",
               "description": null,
               "args": [],
               "type": {
                 "kind": "OBJECT",
-                "name": "User",
+                "name": "Viewer",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -2229,12 +2323,12 @@
           "description": null,
           "fields": [
             {
-              "name": "user",
+              "name": "viewer",
               "description": null,
               "args": [],
               "type": {
                 "kind": "OBJECT",
-                "name": "User",
+                "name": "Viewer",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -2461,12 +2555,12 @@
           "description": null,
           "fields": [
             {
-              "name": "user",
+              "name": "viewer",
               "description": null,
               "args": [],
               "type": {
                 "kind": "OBJECT",
-                "name": "User",
+                "name": "Viewer",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -2579,12 +2673,12 @@
               "deprecationReason": null
             },
             {
-              "name": "user",
+              "name": "viewer",
               "description": null,
               "args": [],
               "type": {
                 "kind": "OBJECT",
-                "name": "User",
+                "name": "Viewer",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -2685,12 +2779,12 @@
           "description": null,
           "fields": [
             {
-              "name": "user",
+              "name": "viewer",
               "description": null,
               "args": [],
               "type": {
                 "kind": "OBJECT",
-                "name": "User",
+                "name": "Viewer",
                 "ofType": null
               },
               "isDeprecated": false,

@@ -40,7 +40,7 @@ export default class EditPropertyMutation extends Relay.Mutation {
     getFatQuery() {
         return Relay.QL`
           fragment on EditPropertyPayload {
-              user
+              viewer
           }
     `;
     }
@@ -54,7 +54,7 @@ export default class EditPropertyMutation extends Relay.Mutation {
             {
                 type: 'FIELDS_CHANGE',
                 fieldIDs: {
-                    user: this.props.viewer.id
+                    viewer: this.props.viewer.id
                 }
             }/*,
             {
@@ -77,7 +77,7 @@ export default class EditPropertyMutation extends Relay.Mutation {
     // this mutation is used.
     static fragments = {
         viewer: () => Relay.QL`
-          fragment on User {
+          fragment on Viewer {
             id
           }
     `,

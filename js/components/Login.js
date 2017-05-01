@@ -25,7 +25,7 @@ class Login extends React.Component {
                 if (location.state && location.state.nextPathname) {
                     this.context.router.replace(location.state.nextPathname)
                 } else {
-                    this.context.router.replace('/')
+                    this.context.router.replace('/admin')
                 }
 
             });
@@ -55,7 +55,7 @@ class Login extends React.Component {
                     )}
                 </form>
                 <br/>
-                <footer className="text-center">&copy;2016 UL- L'Usine Logicielle SARL</footer>
+                <footer className="text-center">&copy;2017 UL- L'Usine Logicielle SARL</footer>
                 <br/>
             </div>
         );

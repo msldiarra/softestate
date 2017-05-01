@@ -11,7 +11,7 @@ class PropertyDetails extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { message : "" } ;
+        this.state = { message : "", canEdit: UserService.getUserId() != undefined? true: false} ;
     }
 
     deleteProperty(e) {
@@ -61,15 +61,16 @@ class PropertyDetails extends React.Component {
                     <div className="col-md-4">
                         <h2 className="row">
                             <div className="col-md-6 col-xs-6 col-sm-6">{property.name}</div>
-                            <div className="pull-right padding-right-15">
-                                <a href={'/#/property/' + property.reference + '/edit'}>
-                                    <div className="circle text-center"><i className="fa fa-pencil" aria-hidden="true" /></div>
-                                </a>
-                                &nbsp;
-                                <a href="#" onClick={this.deleteProperty.bind(this)}>
-                                    <div className="circle text-center"><i className="fa fa-trash" aria-hidden="true" /></div>
-                                </a>
-                            </div>
+                            {this.state.canEdit?
+                                <div className="pull-right padding-right-15">
+                                    <a href={'/#/admin/property/' + property.reference + '/edit'}>
+                                        <div className="circle text-center"><i className="fa fa-pencil" aria-hidden="true" /></div>
+                                    </a>
+                                    &nbsp;
+                                    <a href="#" onClick={this.deleteProperty.bind(this)}>
+                                        <div className="circle text-center"><i className="fa fa-trash" aria-hidden="true" /></div>
+                                    </a>
+                                </div>: ''}
                         </h2>
                         <h4>{property.price ? 'A partir de ' + property.price + ' ' + property.contract_type==1? ' FCFA / mois' : '' : ''} </h4><br/>
                         <dl>
@@ -111,7 +112,7 @@ export default Relay.createContainer(PropertyDetails, {
 
     fragments: {
         viewer: () => Relay.QL`
-          fragment on User {
+          fragment on Viewer {
                 id,
                 properties(reference: $reference, first: 1) {
                   edges {

@@ -18,7 +18,7 @@ export default class DeletePropertyMutation extends Relay.Mutation {
         return Relay.QL`
           fragment on DeletePropertyPayload {
               deletedPropertyID
-              user {
+              viewer {
                 properties
               }
 
@@ -30,18 +30,18 @@ export default class DeletePropertyMutation extends Relay.Mutation {
         return [
             {
                 type: 'RANGE_DELETE',
-                parentName: 'user',
+                parentName: 'viewer',
                 parentID: this.props.viewer.id,
                 connectionName: 'properties',
                 deletedIDFieldName: 'deletedPropertyID',
-                pathToConnection: ['user', 'properties']
+                pathToConnection: ['viewer', 'properties']
             }
         ]
     }
 
     static fragments = {
         viewer: () => Relay.QL`
-          fragment on User {
+          fragment on Viewer {
             id
           }
     `,

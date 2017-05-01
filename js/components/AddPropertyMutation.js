@@ -40,7 +40,7 @@ export default class AddPropertyMutation extends Relay.Mutation {
     getFatQuery() {
         return Relay.QL`
           fragment on AddPropertyPayload {
-              user
+              viewer
           }
     `;
     }
@@ -54,7 +54,7 @@ export default class AddPropertyMutation extends Relay.Mutation {
             {
                 type: 'FIELDS_CHANGE',
                 fieldIDs: {
-                    user: this.props.viewer.id
+                    viewer: this.props.viewer.id
                 }
             }
         ]

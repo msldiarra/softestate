@@ -27,7 +27,7 @@ export default Relay.createContainer(Owners, {
 
     fragments: {
         customer: () => Relay.QL`
-          fragment on User {
+          fragment on Viewer {
             owners(search: $search, first: 10) {
               edges {
                 node {

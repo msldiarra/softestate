@@ -1,6 +1,7 @@
 import { GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLFloat } from 'graphql';
 import { connectionArgs, connectionFromPromisedArray, globalIdField, nodeDefinitions, fromGlobalId, connectionDefinitions} from 'graphql-relay';
 import { DB, User, Contact, Login, ContactInfo, Customer, Owner, Property, PropertyType, OwnerType, Media }from '../database';
+import { Viewer, getViewer } from '../store/UserStore';
 
 
 
@@ -17,6 +18,7 @@ export const {nodeInterface, nodeField} = nodeDefinitions(
         if (type === 'PropertyType') { return DB.models.property_type.findOne({where: {id: id}}); }
         if (type === 'Media') { return DB.models.media.findOne({where: {id: id}}); }
         if (type === 'OwnerType') { return DB.models.owner_type.findOne({where: {id: id}}); }
+        if (type === 'Viewer') { return getViewer(id)}
         else { return null; }
     },
     (obj) => {
@@ -30,6 +32,7 @@ export const {nodeInterface, nodeField} = nodeDefinitions(
         else if (obj instanceof PropertyType.Instance) { return propertyTypeType; }
         else if (obj instanceof Media.Instance) { return mediaType; }
         else if (obj instanceof OwnerType.Instance) { return ownerTypeType; }
+        else if (obj instanceof Viewer) { return viewerType; }
         else {
             return null;
         }
@@ -243,12 +246,43 @@ export const propertyTypeType = new GraphQLObjectType({
 
 export const userType = new GraphQLObjectType({
     name: 'User',
-    description: 'A realestate agency customer',
+    description: 'A user credentials',
     fields: () => {
         return {
-            id: globalIdField('User'),
+            id: globalIdField('UserType'),
+            firstName: {
+                type: GraphQLString,
+                resolve: (obj) => obj.firstName
+            },
+            lastName: {
+                type: GraphQLString,
+                resolve: (obj) => obj.lastName
+            },
+            login: {
+                type: GraphQLString,
+                resolve: (obj) => obj.login
+            },
+            email: {
+                type: GraphQLString,
+                resolve: (obj) => obj.email
+            },
+            enabled: {
+                type: GraphQLBoolean,
+                resolve: (obj) => obj.enabled
+            }
+        }
+    },
+    interfaces: [nodeInterface]
+});
+
+export const viewerType = new GraphQLObjectType({
+    name: 'Viewer',
+    description: 'Application viewer',
+    fields: () => {
+        return {
+            id: globalIdField('Viewer'),
+            user: { type:  userType, resolve: (obj) => obj},
             customer: { type: GraphQLString, resolve(user) { return user.customer} },
-            credentials: { type: loginType, resolve(user) { return DB.models.login.findOne({where: {login: user.login}}) } },
             contact: { type: contactType, resolve(user) { return DB.models.contact.findOne({where: {id: user.id}}) } },
             owners: {
                 type: ownerConnection,
