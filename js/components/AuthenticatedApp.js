@@ -31,7 +31,7 @@ class AuthenticatedApp extends React.Component {
     logout(e) {
         e.preventDefault();
         AuthService.logout();
-        this.context.router.replace('login')
+        this.context.router.replace('/')
     }
 
 }
