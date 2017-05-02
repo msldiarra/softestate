@@ -3,7 +3,7 @@ html, body {
 }
 
 body {
-    background: #fff; font-family: 'Open Sans', sans-serif;
+    background: #fafafa; font-family: 'Open Sans', sans-serif;
     color: #333;
     padding-top:15px;
     line-height:14px;
@@ -247,7 +247,6 @@ a {
 
 .page-header {
     border:none !important;
-    background-color:#fff !important;
     margin-bottom: 0px !important;
     margin-top: 80px !important;
     padding-left: 0px !important;
@@ -336,11 +335,43 @@ li:hover {  }
 
 img {
     width: 100%; /* you can use % */
-    height: auto;
+    height: 100%;
 }
 .spacer {
     margin-bottom:40px;
 }
+
+
+@media only screen and (max-width: 768px){
+    .item-container {height: 130px; padding:5px 0 5px 5px; margin-bottom: 10px; background-color: #fff}
+    .item {height: 120px; }
+    .property-image, .property-image div {height: 120px; padding:0 !important;}
+    .property-details {height: 120px;}
+}
+
+@media only screen and (min-width: 768px){
+    .item-container {height: 130px; padding:5px 0 5px 5px; margin-bottom: 10px; background-color: #fff;}
+    .item {height: 120px; }
+    .property-image, .property-image div {height: 120px; padding:0 !important}
+    .property-details {height: 120px;}
+}
+
+    /* Medium devices (desktops, 992px and up) */
+@media only screen and (min-width: 992px){
+    .item-container {height: 150px; padding:5px 0 5px 5px; margin-bottom: 10px; background-color: #fff;}
+    .item {height: 140px; }
+    .property-image, .property-image div {height: 140px; padding:0 !important}
+    .property-details {height: 140px; }
+}
+
+    /* Large devices (large desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+    .item-container {height: 160px; padding:5px 0 5px 5px; margin-bottom: 10px; background-color: #fff;}
+    .item {height: 150px; }
+    .property-image, .property-image div {height: 150px; padding:0}
+    .property-details {height: 150px;}
+}
+
 
 dd { line-height: 1.85714285714286; font-size: 18px;}
 dd label {

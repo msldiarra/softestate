@@ -60,7 +60,6 @@ class PropertyDetails extends React.Component {
                     </div>
                     <div className="col-md-4">
                         <h2 className="row">
-                            <div className="col-md-6 col-xs-6 col-sm-6">{property.name}</div>
                             {this.state.canEdit?
                                 <div className="pull-right padding-right-15">
                                     <a href={'/#/admin/property/' + property.reference + '/edit'}>
@@ -82,8 +81,6 @@ class PropertyDetails extends React.Component {
                                 {property.location ?<div>{property.location}, {property.city}</div> : ''}
                             </dd>
                         </dl>
-                        <h3>Description</h3>
-                        {property.description ? <p style={{paddingRight: '15px'}}>{property.description}</p> : <p>...</p>}
                     </div>
                 </div>)
 

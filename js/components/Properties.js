@@ -1,6 +1,6 @@
 import React from 'react';
 import Relay from 'react-relay';
-import Property from './Property'
+import Property from './PropertyNew'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 class Properties extends React.Component {
