@@ -29,15 +29,14 @@ class NewProperty extends React.Component {
 
         e.preventDefault();
 
-        var name = this.refs.name.value;
+        var name = new Chance().word({length: 12});
         var reference =  new Chance().word({length: 12});
         var propertyType =  this.state.propertyType;
         var contractType =  this.state.contractType;
-        var description =  this.state.editorState.getCurrentContent().getPlainText();
+        var description =  ''
         var size = this.refs.size.value;
         var floorCount = this.refs.floorCount.value;
         var roomCount = this.refs.roomCount.value;
-        var district = this.refs.district.value;
         var city = this.refs.city.value;
         var price = this.refs.price.value;
         var owner = this.state.ownerRef;
@@ -56,7 +55,6 @@ class NewProperty extends React.Component {
             floorCount: floorCount,
             roomCount: roomCount,
             price: price,
-            district: district,
             city: city,
             ownerRef: owner,
             mediaNames: mediaNames
@@ -106,8 +104,6 @@ class NewProperty extends React.Component {
     }
 
     render() {
-
-        const text = this.state.message;
         return (
             <div className="">
                 <div className="page-header col-md-6 center-block row">
@@ -132,18 +128,6 @@ class NewProperty extends React.Component {
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-12">Titre pour la propriété</label>
-                                <div className="col-md-12">
-                                    <input type="text" ref="name" id="name"  className="form-control" placeholder="Saisissez un titre pour la propriété" />
-                                </div>
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="name" className="col-md-12">Quartier</label>
-                                <div className="col-md-12">
-                                    <input ref="district" id="district" type="text" className="form-control" placeholder="Saisissez le quartier ou se trouve le bien" />
-                                </div>
-                            </div>
-                            <div className="form-group">
                                 <label htmlFor="name" className="col-md-12">Ville</label>
                                 <div className="col-md-12">
                                     <input ref="city" id="city" type="text" className="form-control" placeholder="Saisissez la ville ou se trouve le bien" />
@@ -153,7 +137,7 @@ class NewProperty extends React.Component {
                                 <label htmlFor="type" className="col-md-12">Type de bien</label>
                                 <div className="col-md-12">
                                     <label className="radio-inline control-label">
-                                        <input type="radio" id="apartment" value="1" name="propertyType" onClick={this.handlePropertyType.bind(this)} /> Appartement
+                                        <input type="radio" id="apartment" value="1" name="propertyType" onClick={this.handlePropertyType.bind(this)} /> Appart.
                                     </label>
                                     <label className="radio-inline control-label">
                                         <input type="radio" id="house" value="2" name="propertyType" onClick={this.handlePropertyType.bind(this)} /> Villa
@@ -181,9 +165,12 @@ class NewProperty extends React.Component {
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-12">Prix</label>
+                                <label htmlFor="size" className="col-md-12">Prix</label>
                                 <div className="col-md-12">
-                                    <input type="text" ref="price" id="price" className="form-control" placeholder="Mensualité ou prix de vente" />
+                                    <div className="input-group col-md-12">
+                                        <span className="input-group-addon">FCFA</span>
+                                        <input type="text" ref="price" id="price" className="form-control" placeholder="Mensualité ou prix de vente" />
+                                    </div>
                                 </div>
                             </div>
                             <div className="form-group">
@@ -199,22 +186,18 @@ class NewProperty extends React.Component {
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-12">Superficie totale</label>
+                                <label htmlFor="size" className="col-md-12">Superficie totale</label>
                                 <div className="col-md-12">
-                                    <input type="text" ref="size" id="size" className="form-control" placeholder="Superficie totale du bien" />
+                                    <div className="input-group col-md-12">
+                                        <span className="input-group-addon">m2</span>
+                                        <input type="text" ref="size" id="size" className="form-control" placeholder="Superficie totale du bien" />
+                                    </div>
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-12">Description</label>
-                                <div className="col-md-12">
-                                    <RichEditor onEditDescription={this.onEditDescription.bind(this)} proprtyDescription=""
-                                                placeholder="Décrivez le bien de manière à le mettre en valeur" />
-                                </div>
-                            </div>
-                            <div className="form-group">
-                                <div className="col-md-3">&nbsp;</div>
-                                <div className="col-md-12">
-                                    <inupt type="s" className="btn btn-primary" onClick={this.onAddProperty.bind(this)}>Enregistrer la nouvelle propriétée</inupt>
+                                <br/>
+                                <div className="col-md-12 text-center">
+                                    <inupt type="submit" className="btn btn-primary" onClick={this.onAddProperty.bind(this)}>Enregistrer la nouvelle propriétée</inupt>
                                 </div>
                             </div>
                         </div>
@@ -222,6 +205,8 @@ class NewProperty extends React.Component {
                 </form>
             </div>
         );
+
+        const text = this.state.message;
 
     }
 }

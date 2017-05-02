@@ -17,7 +17,7 @@
 
 CREATE TABLE IF NOT EXISTS property (
   id SERIAL PRIMARY KEY,
-  name VARCHAR(100) NOT NULL,
+  name VARCHAR(100) NOT NULL DEFAULT md5(random()::text),
   reference VARCHAR(15) NOT NULL UNIQUE,
   type_id INTEGER NOT NULL,
   enabled BIT(1) NOT NULL DEFAULT '1',

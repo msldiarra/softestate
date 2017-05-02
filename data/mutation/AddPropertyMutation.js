@@ -10,7 +10,6 @@ export default mutationWithClientMutationId({
     name: 'AddProperty',
     inputFields: {
         viewerId: { type: new GraphQLNonNull(GraphQLInt) },
-        name: { type: new GraphQLNonNull(GraphQLString) },
         reference: { type: new GraphQLNonNull(GraphQLString) },
         propertyType: { type: new GraphQLNonNull(GraphQLInt) },
         contractType: { type: new GraphQLNonNull(GraphQLInt) },
@@ -19,8 +18,7 @@ export default mutationWithClientMutationId({
         floorCount: { type: GraphQLInt },
         roomCount: { type: GraphQLInt },
         size: { type: GraphQLFloat },
-        district: { type: GraphQLString},
-        city: { type: GraphQLString },
+        location: { type: GraphQLString },
         ownerRef: { type: new GraphQLNonNull(GraphQLString) },
         mediaNames: { type: new GraphQLList(GraphQLString) }
     },
@@ -30,7 +28,7 @@ export default mutationWithClientMutationId({
             resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}}),
         }
     },
-    mutateAndGetPayload: ({viewerId, name, reference, propertyType, contractType, description, ownerRef, mediaNames, price, floorCount, roomCount, size, district, city}) => {
+    mutateAndGetPayload: ({viewerId, name, reference, propertyType, contractType, description, ownerRef, mediaNames, price, floorCount, roomCount, size, location}) => {
 
         var sanitizedMediaNames = _.map(mediaNames, name => {
             return sanitize(name.replace(/[`~!@#$%^&*()_|+\-=÷¿?;:'",<>\{\}\[\]\\\/]/gi, '') )
@@ -40,7 +38,6 @@ export default mutationWithClientMutationId({
         return DB.models.owner.findOne({where: {reference: ownerRef}})
             .then((owner) =>
                 owner.createProperty({
-                        name: name,
                         reference: reference,
                         type_id: propertyType
                     }
@@ -87,11 +84,13 @@ export default mutationWithClientMutationId({
                     });
                 }
 
-                if(district && city) {
+                if(location) {
+
+                    let location_id = DB.models.location.findOne({where: {city: location}}).get('id');
+
                     property.createPropertyLocation({
                         property_id: property.id,
-                        district: district,
-                        city: city
+                        location_id: location_id
                     });
                 }
 

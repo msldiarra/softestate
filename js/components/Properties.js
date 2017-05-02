@@ -7,6 +7,8 @@ class Properties extends React.Component {
 
     render() {
 
+        let city = this.props.relay.variables.city? this.props.relay.variables.city.toUpperCase() : '';
+
         var properties = <div className="row">
                 <div className="page-header col-xs-10 col-sm-10 col-md-6 center-block text-center opacity-54">
                     <h1>Aucune propriété publiée pour le moment. Revenez bientôt!</h1>
@@ -19,11 +21,18 @@ class Properties extends React.Component {
                 return <Property key={edge.node.id} property={edge.node}/>
 
             });
+
         }
 
         return (
             <div className="">
                 <ReactCSSTransitionGroup transitionName="example" transitionAppear={true} transitionAppearTimeout={500} transitionEnterTimeout={0} transitionLeaveTimeout={0}>
+                    {city?
+                        <div className="page-header">
+                            <h3>{city}</h3>
+                        </div>
+                        : ''
+                    }
                     <div className="row">{properties}</div>
                 </ReactCSSTransitionGroup>
             </div>

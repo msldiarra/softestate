@@ -11,7 +11,6 @@ export default mutationWithClientMutationId({
     name: 'EditProperty',
     inputFields: {
         viewerId: { type: new GraphQLNonNull(GraphQLInt) },
-        name: { type: new GraphQLNonNull(GraphQLString) },
         reference: { type: new GraphQLNonNull(GraphQLString) },
         propertyType: { type: new GraphQLNonNull(GraphQLInt) },
         contractType: { type: new GraphQLNonNull(GraphQLInt) },
@@ -20,8 +19,7 @@ export default mutationWithClientMutationId({
         floorCount: { type: GraphQLInt },
         roomCount: { type: GraphQLInt },
         size: { type: GraphQLFloat },
-        district: { type: GraphQLString},
-        city: { type: GraphQLString },
+        location: { type: GraphQLString },
         ownerRef: { type: new GraphQLNonNull(GraphQLString) },
         mediaNames: { type: new GraphQLList(GraphQLString) }
     },
@@ -31,7 +29,7 @@ export default mutationWithClientMutationId({
             resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}}),
         }
     },
-    mutateAndGetPayload: ({viewerId, name, reference, propertyType, contractType, description, mediaNames, price, floorCount, roomCount, size, district, city}) => {
+    mutateAndGetPayload: ({viewerId, reference, propertyType, contractType, description, mediaNames, price, floorCount, roomCount, size, location}) => {
 
         var sanitizedMediaNames = _.map(mediaNames, name => {
             return sanitize(name.replace(/[`~!@#$%^&*()_|+\-=÷¿?;:'",<>\{\}\[\]\\\/]/gi, '') )
@@ -40,7 +38,6 @@ export default mutationWithClientMutationId({
         return DB.models.property.findOne({where: {reference: reference}})
             .then((property) =>
                 property.updateAttributes({
-                        name: name,
                         reference: reference,
                         type_id: propertyType
                     }
@@ -103,15 +100,16 @@ export default mutationWithClientMutationId({
                         });
 
 
-                if(district) {
+                if(location) {
+
+                    let location_id = DB.models.location.findOne({where: {city: location}}).get('id');
 
                     DB.models.property_location.findOne({where: {property_id: property.id}})
                         .then(property_location => {
-                            if (property_location) property_location.updateAttributes({district: district, city: city})
+                            if (property_location) property_location.updateAttributes({location_id: location_id})
                             else property.createPropertyLocation({
                                 property_id: property.id,
-                                district: district,
-                                city: city
+                                location_id: location_id,
                             });
                         });
                 }

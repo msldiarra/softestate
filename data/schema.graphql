@@ -16,7 +16,6 @@ type AddOwnerPayload {
 
 input AddPropertyInput {
   viewerId: Int!
-  name: String!
   reference: String!
   propertyType: Int!
   contractType: Int!
@@ -25,8 +24,7 @@ input AddPropertyInput {
   floorCount: Int
   roomCount: Int
   size: Float
-  district: String
-  city: String
+  location: String
   ownerRef: String!
   mediaNames: [String]
   clientMutationId: String!
@@ -99,7 +97,6 @@ type EditOwnerPayload {
 
 input EditPropertyInput {
   viewerId: Int!
-  name: String!
   reference: String!
   propertyType: Int!
   contractType: Int!
@@ -108,8 +105,7 @@ input EditPropertyInput {
   floorCount: Int
   roomCount: Int
   size: Float
-  district: String
-  city: String
+  location: String
   ownerRef: String!
   mediaNames: [String]
   clientMutationId: String!

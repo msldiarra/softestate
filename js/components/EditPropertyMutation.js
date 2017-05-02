@@ -15,7 +15,6 @@ export default class EditPropertyMutation extends Relay.Mutation {
     getVariables() {
         return {
             viewerId: this.props.viewerId,
-            name: this.props.name,
             reference: this.props.reference,
             propertyType: this.props.propertyType,
             contractType: this.props.contractType,
@@ -24,8 +23,7 @@ export default class EditPropertyMutation extends Relay.Mutation {
             floorCount: this.props.floorCount,
             roomCount: this.props.roomCount,
             price: this.props.price,
-            district: this.props.district,
-            city: this.props.city,
+            location: this.props.city,
             ownerRef: this.props.ownerRef,
             mediaNames: this.props.mediaNames
         };

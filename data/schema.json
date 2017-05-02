@@ -2155,20 +2155,6 @@
               "defaultValue": null
             },
             {
-              "name": "name",
-              "description": null,
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
               "name": "reference",
               "description": null,
               "type": {
@@ -2261,17 +2247,7 @@
               "defaultValue": null
             },
             {
-              "name": "district",
-              "description": null,
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "city",
+              "name": "location",
               "description": null,
               "type": {
                 "kind": "SCALAR",
@@ -2387,20 +2363,6 @@
               "defaultValue": null
             },
             {
-              "name": "name",
-              "description": null,
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
               "name": "reference",
               "description": null,
               "type": {
@@ -2493,17 +2455,7 @@
               "defaultValue": null
             },
             {
-              "name": "district",
-              "description": null,
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "city",
+              "name": "location",
               "description": null,
               "type": {
                 "kind": "SCALAR",
