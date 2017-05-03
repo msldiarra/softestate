@@ -28,7 +28,7 @@ export default mutationWithClientMutationId({
             resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}}),
         }
     },
-    mutateAndGetPayload: ({viewerId, name, reference, propertyType, contractType, description, ownerRef, mediaNames, price, floorCount, roomCount, size, location}) => {
+    mutateAndGetPayload: ({viewerId, reference, propertyType, contractType, description, ownerRef, mediaNames, price, floorCount, roomCount, size, location}) => {
 
         var sanitizedMediaNames = _.map(mediaNames, name => {
             return sanitize(name.replace(/[`~!@#$%^&*()_|+\-=÷¿?;:'",<>\{\}\[\]\\\/]/gi, '') )
@@ -86,12 +86,9 @@ export default mutationWithClientMutationId({
 
                 if(location) {
 
-                    let location_id = DB.models.location.findOne({where: {city: location}}).get('id');
-
-                    property.createPropertyLocation({
-                        property_id: property.id,
-                        location_id: location_id
-                    });
+                    DB.models.location.findOne({where: {city: location}}).then(
+                        (location) => property.addLocation(location)
+                    );
                 }
 
                 return property;

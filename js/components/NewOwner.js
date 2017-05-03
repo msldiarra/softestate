@@ -36,7 +36,7 @@ class NewOwner extends React.Component {
             phone: phone
         });
 
-        var onSuccess = () => this.context.router.push('/owner/' + reference);
+        var onSuccess = () => this.context.router.push('/admin/owner/' + reference);
 
         var onFailure = (transaction) => this.setState({message : "Désolé, nous avons rencontré un problème lors de l'enregistrement." +
         " Contactez l'administrateur"});

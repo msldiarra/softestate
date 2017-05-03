@@ -25,7 +25,7 @@ class RouteHome extends Relay.Route {
     };
 
     static paramDefinitions = {
-        viewerId: {required: true},
+        viewerId: {required: false},
     };
 
     static routeName = 'AppHomeRoute';

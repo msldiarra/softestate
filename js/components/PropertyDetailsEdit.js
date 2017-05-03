@@ -148,7 +148,7 @@ class PropertyDetailsEdit extends React.Component {
                             <div className="form-group">
                                 <label htmlFor="name" className="col-md-12">Ville</label>
                                 <div className="col-md-12">
-                                    <input ref="city" id="city" type="text" defaultValue={property.city} className="form-control" placeholder="Saisissez la ville ou se trouve le bien" />
+                                    <input ref="city" id="city" type="text" defaultValue={property.location} className="form-control" placeholder="Saisissez la ville ou se trouve le bien" />
                                 </div>
                             </div>
                             <div className="form-group">

@@ -7,7 +7,13 @@ import { Viewer, getViewer } from '../store/UserStore';
 
 export const {nodeInterface, nodeField} = nodeDefinitions(
     (globalId) => {
+
         let {type, id} = fromGlobalId(globalId);
+
+        console.log("globalId of " + type + " : " + globalId)
+        console.log("id of " + type + " : " + id)
+
+
         if (type === 'User') { return DB.models.user.findOne({where: {id: id}}); }
         if (type === 'Contact') { return DB.models.contact.findOne({where: {id: id}}); }
         if (type === 'ContactInfo') { return DB.models.contact_info.findOne({where: {id: id}}); }
@@ -22,7 +28,11 @@ export const {nodeInterface, nodeField} = nodeDefinitions(
         else { return null; }
     },
     (obj) => {
-        if (obj instanceof User.Instance) { return userType; }
+
+        console.log("in interface obj: " + JSON.stringify(obj))
+
+        
+        if (obj instanceof User.Instance) { return viewerType; }
         else if (obj instanceof Contact.Instance) { return contactType; }
         else if (obj instanceof Login.Instance) { return loginType; }
         else if (obj instanceof ContactInfo.Instance) { return contactInfoType; }
@@ -203,11 +213,10 @@ export const propertyType = new GraphQLObjectType({
                     if(property_price) return property_price.get('price');
                 })
             }},
-            location: { type: GraphQLString, resolve(property) { return DB.models.property.findOne({where :{id: property.id } })
-                .then(property => {
-                    if(property) {
-                        var locations = property.getLocations();
-                        return (locations.length > 0) ? locations[0].get('city') : null;
+            location: { type: GraphQLString, resolve(property) { return DB.models.property_location.findOne({where :{property_id: property.id } })
+                .then(property_location => {
+                    if(property_location) {
+                        return DB.models.location.findOne({where :{id: property_location.location_id } }).get('city')
                     }
                 })
             }},

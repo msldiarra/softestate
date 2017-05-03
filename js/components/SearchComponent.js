@@ -89,7 +89,7 @@ class SearchComponent extends React.Component {
             const fullName = edge.node.contact ? edge.node.contact.first_name+' '+edge.node.contact.last_name: "...";
             tabIndex++;
 
-            return <li key={edge.node.id} data-owner-id={edge.node.id}  data-owner-reference={edge.node.reference} tabIndex={tabIndex} className="row"
+            return <li key={edge.node.id} data-owner-id={edge.node.id}  data-owner-reference={edge.node.reference} tabIndex={tabIndex} className="col-md-12 col-lg-12 col-xs-12"
                        onClick={this.handleClick.bind(this)}  onKeyDown={this.handlePressEnter.bind(this)} >
                         <div>Réf : {edge.node.reference} - <b>{fullName}</b></div>
                     </li>
@@ -100,28 +100,26 @@ class SearchComponent extends React.Component {
 
         return (
         <div  ref="area" className="row">
-            <div>
-            <div className="input-group col-md-12">
-                        <span className="input-group-addon" aria-hidden="true" id="basic-addon1">
-                            <i className="fa fa-search"></i>
-                        </span>
-                <input ref="searchInput"
-                       type="text"
-                       className="form-control"
-                       placeholder={placeHolder}
-                       aria-describedby="basic-addon1"
-                       onChange={this.handleSearch.bind(this)}
-                       autoComplete="off"
-                       tabIndex="1"
-                       defaultValue={this.props.defaultValue}
-                />
-            </div>
-            </div>
-            <div className="autocomplete col-md-12 col-lg-12 col-xs-12" style={{visibility :  visibility}}>
-                <ul id="owners" tabIndex="1">
-                    {owners}
-                </ul>
-            </div>
+                <div className="input-group col-md-12">
+                    <span className="input-group-addon" aria-hidden="true" id="basic-addon1">
+                        <i className="fa fa-search"></i>
+                    </span>
+                    <input ref="searchInput"
+                           type="text"
+                           className="form-control"
+                           placeholder={placeHolder}
+                           aria-describedby="basic-addon1"
+                           onChange={this.handleSearch.bind(this)}
+                           autoComplete="off"
+                           tabIndex="1"
+                           defaultValue={this.props.defaultValue}
+                    />
+                </div>
+                <div className="autocomplete col-md-12 col-lg-12 col-xs-12 row" style={{visibility :  visibility}}>
+                    <ul id="owners" tabIndex="1" className="col-md-12 col-lg-12 col-xs-12">
+                        {owners}
+                    </ul>
+                </div>
         </div>)
     }
 }

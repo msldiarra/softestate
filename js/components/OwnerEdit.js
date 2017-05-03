@@ -38,7 +38,7 @@ class OwnerEdit extends React.Component {
             phone: phone
         });
 
-        var onSuccess = () => this.context.router.push('/owner/' + reference);
+        var onSuccess = () => this.context.router.push('/admin/owner/' + reference);
 
         var onFailure = (transaction) => this.setState({message : "Désolé, nous avons rencontré un problème lors de l'enregistrement." +
         " Contactez l'administrateur"});
@@ -116,7 +116,7 @@ class OwnerEdit extends React.Component {
                             <div className="form-group">
                                 <div className="col-md-3">&nbsp;</div>
                                 <div className="col-md-12">
-                                    <inupt type="s" className="btn btn-primary" onClick={this.onAddOwner.bind(this)}>Enregistrer nouveau client</inupt>
+                                    <inupt type="s" className="btn btn-primary" onClick={this.onAddOwner.bind(this)}>Enregistrer les  modifications</inupt>
                                 </div>
                             </div>
                         </div>

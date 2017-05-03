@@ -60,7 +60,7 @@ class NewProperty extends React.Component {
             mediaNames: mediaNames
         });
 
-        var onSuccess = () => this.context.router.push('/property/' + reference);
+        var onSuccess = () => this.context.router.push('/admin/property/' + reference);
 
         var onFailure = (transaction) => this.setState({message : "Désolé, nous avons rencontré un problème lors de l'enregistrement." +
         " Contactez l'administrateur"});

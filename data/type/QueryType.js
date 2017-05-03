@@ -2,7 +2,7 @@ import { GraphQLNonNull, GraphQLObjectType, GraphQLInt} from 'graphql'
 import { connectionArgs } from 'graphql-relay';
 import {viewerType, nodeField} from './Types'
 import {DB} from '../database'
-import { Viewer, registerViewer, getViewer } from '../store/UserStore';
+import { VIEWER_ID, registerViewer, getViewer } from '../store/UserStore';
 
 
 
@@ -17,10 +17,14 @@ export default new GraphQLObjectType({
             resolve: (root, {viewerId}) => { return DB.models.user.findOne({where: {id: viewerId}})
                 .then(response => {
 
-                    if(response) return response.id
-                    else return 'qksdhjqslhddqhmsdqsdkjmls';
-                    /*registerViewer(response)
-                    return getViewer(response.id)*/
+                    if(response) {
+                        registerViewer(response)
+                        return getViewer(response.id)
+                    }
+
+                    else {
+                        return 'me'
+                    }
                 })
             }
         }

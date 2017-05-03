@@ -2,7 +2,7 @@ import {DB} from '../database'
 
 export class Viewer extends Object {}
 
-const VIEWER_ID = 'djklshdqdlhkhzemodih';
+export const VIEWER_ID = 'me';
 
 var viewer = new Viewer();
 viewer.id = VIEWER_ID;

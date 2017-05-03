@@ -299,8 +299,8 @@ a {
 
 .bold {font-weight: 800;}
 
-.autocomplete { margin-top: 55px; z-index: 999; position: absolute;}
-.autocomplete ul {list-style-type: none; border: 1px solid #ccc; padding-bottom:15px; border-radius: 3px; background: #fff; }
+.autocomplete { z-index: 999; position: relative; padding-left:0;}
+.autocomplete ul {position: absolute; list-style-type: none; border: 1px solid #ccc; padding-bottom:15px; border-radius: 3px; background: #fff; }
 .autocomplete ul li {
     width:100%;
     min-height:40px;
