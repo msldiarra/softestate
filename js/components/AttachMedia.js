@@ -11,6 +11,7 @@ export default class AttachMedia extends React.Component {
 
         const file = this.refs.fileInput.files.item(0);
         const uri = '/images/' + file.name;
+        this.refs.fileName.value = file.name;
 
         this.props.onMediaInsert(file, uri);
         this.props.onAddMedia(file.name);
@@ -21,16 +22,17 @@ export default class AttachMedia extends React.Component {
 
         return (
             <div className="row">
-                <div className="col-md-12 col-lg-12 col-xs-12">
-                    <div className="input-group col-md-12">
-                         <input ref="fileInput"
-                                type="file"
-                                multiple
-                                onChange={this.onMediaInsert.bind(this)}
-                        />
+                    <div className="input-group">
+                        <label className="input-group-btn">
+                            <span className="btn btn-default">
+                                Ajouter une photo&hellip; <input ref="fileInput"
+                                                                 type="file"
+                                                                 multiple
+                                                                 onChange={this.onMediaInsert.bind(this)} style={{display: 'none'}}/>
+                            </span>
+                        </label>
+                        <input type="text" ref="fileName" className="form-control" readOnly />
                     </div>
-                </div>
-
             </div>)
     }
 }

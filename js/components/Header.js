@@ -34,7 +34,7 @@ export default class Header extends React.Component {
                                 <span className="icon-bar"></span>
                             </button>
                             <a className="navbar-brand" href={'/#/admin'}>
-                                <small>{this.props.user ? 'SFTST (' + this.props.user.customer + ')' : 'SOFTESTATE' }</small>
+                                <small>{this.props.user ? 'SFST (' + this.props.user.customer + ')' : 'SOFTESTATE' }</small>
                             </a>
                         </div>
                         <div className="collapse navbar-collapse navbar-ex1-collapse">

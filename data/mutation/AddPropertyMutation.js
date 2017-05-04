@@ -1,8 +1,9 @@
 import {  GraphQLFloat, GraphQLList, GraphQLInt,  GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
 import {  mutationWithClientMutationId } from 'graphql-relay';
 import { DB }from '../database';
-import {viewerType} from '../type/Types'
+import {viewerType} from '../type/Types';
 import _ from 'lodash';
+import sanitize from 'sanitize-filename';
 
 
 

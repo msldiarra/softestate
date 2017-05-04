@@ -17,12 +17,14 @@ class NewProperty extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {propertyType : 0,  contractType : 0, ownerRef: '', message : "", mediaNames: [], editorState: EditorState.createEmpty()} ;
-    }
-
-    onEditDescription(editorState){
-
-        this.setState({editorState});
+        this.state = {propertyType : 0,
+            contractType : 0,
+            ownerRef: '',
+            message : "",
+            mediaNames: [],
+            floorCount: 1,
+            roomCount: 1,
+        } ;
     }
 
     onAddProperty(e) {
@@ -35,8 +37,8 @@ class NewProperty extends React.Component {
         var contractType =  this.state.contractType;
         var description =  ''
         var size = this.refs.size.value;
-        var floorCount = this.refs.floorCount.value;
-        var roomCount = this.refs.roomCount.value;
+        var floorCount = this.state.floorCount;
+        var roomCount = this.state.roomCount;
         var city = this.refs.city.value;
         var price = this.refs.price.value;
         var owner = this.state.ownerRef;
@@ -91,12 +93,32 @@ class NewProperty extends React.Component {
         this.setState({mediaNames: names});
     }
 
-    handlePropertyType(e) {
-        this.setState({ propertyType : e.target.value });
+    changePropertyType(e) {
+        this.setState({propertyType: e.target.value});
     }
 
-    handleContractType(e) {
-        this.setState({ contractType : e.target.value });
+    changeContractType(e) {
+        this.setState({contractType: e.target.value});
+    }
+
+    onDecrementFloor(e) {
+        var value = parseInt(this.state.floorCount) - 1;
+        this.setState({floorCount: value});
+    }
+
+    onIncrementFloor(e) {
+        var value = parseInt(this.state.floorCount) + 1;
+        this.setState({floorCount: value});
+    }
+
+    onDecrementRoom(e) {
+        var value = parseInt(this.state.roomCount) - 1;
+        this.setState({roomCount: value});
+    }
+
+    onIncrementRoom(e) {
+        var value = parseInt(this.state.roomCount) + 1;
+        this.setState({roomCount: value});
     }
 
     onOwnerEnter(reference) {
@@ -104,6 +126,9 @@ class NewProperty extends React.Component {
     }
 
     render() {
+        const text = this.state.message;
+
+
         return (
             <div className="">
                 <div className="page-header col-md-6 center-block row">
@@ -118,7 +143,6 @@ class NewProperty extends React.Component {
                     <div className="page-content row">
                         <div className="col-md-6 center-block">
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-12">Propriétaire</label>
                                 <div className="col-md-12">
                                     <SearchComponent viewerId={UserService.getUserId()}
                                                      search="" placeHolder="Entrer le nom du Propriétaire"
@@ -128,76 +152,83 @@ class NewProperty extends React.Component {
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-12">Ville</label>
                                 <div className="col-md-12">
                                     <input ref="city" id="city" type="text" className="form-control" placeholder="Saisissez la ville ou se trouve le bien" />
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="type" className="col-md-12">Type de bien</label>
-                                <div className="col-md-12">
-                                    <label className="radio-inline control-label">
-                                        <input type="radio" id="apartment" value="1" name="propertyType" onClick={this.handlePropertyType.bind(this)} /> Appart.
-                                    </label>
-                                    <label className="radio-inline control-label">
-                                        <input type="radio" id="house" value="2" name="propertyType" onClick={this.handlePropertyType.bind(this)} /> Villa
-                                    </label>
-                                    <label className="radio-inline control-label">
-                                        <input type="radio" id="land" value="3" name="propertyType" onClick={this.handlePropertyType.bind(this)} /> Terrain
-                                    </label>
+                                <div className="btn-group btn-group-justified col-md-12" role="group" >
+                                    <div className="btn-group" role="group">
+                                        <button onClick={this.changePropertyType.bind(this)} type="button" className={"btn btn-default " + (this.state.propertyType ==  1? "active" : "")} value="1">Appart.</button>
+                                    </div>
+                                    <div className="btn-group" role="group">
+                                        <button onClick={this.changePropertyType.bind(this)} type="button" className={"btn btn-default " + (this.state.propertyType ==  2? "active" : "")} value="2">Villa</button>
+                                    </div>
+                                    <div className="btn-group" role="group">
+                                        <button onClick={this.changePropertyType.bind(this)} type="button" className={"btn btn-default " + (this.state.propertyType ==  3? "active" : "")} value="3">Terrain</button>
+                                    </div>
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="type" className="col-md-12">Type de contrat</label>
-                                <div className="col-md-12">
-                                    <label className="radio-inline control-label">
-                                        <input type="radio" id="rent" value="1" name="contractType" onClick={this.handleContractType.bind(this)} /> Location
-                                    </label>
-                                    <label className="radio-inline control-label">
-                                        <input type="radio" id="sell" value="2" name="contractType" onClick={this.handleContractType.bind(this)} /> Vente
-                                    </label>
+                                <div className="btn-group btn-group-justified col-md-12" role="group" >
+                                    <div className="btn-group" role="group">
+                                        <button onClick={this.changeContractType.bind(this)} type="button" className={"btn btn-default " + (this.state.contractType ==  1? "active" : "")} value="1">Location</button>
+                                    </div>
+                                    <div className="btn-group" role="group">
+                                        <button onClick={this.changeContractType.bind(this)} type="button" className={"btn btn-default " + (this.state.contractType ==  2? "active" : "")} value="2">Vente</button>
+                                    </div>
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-12">Ajouter une image</label>
                                 <div className="col-md-12">
                                     <AttachMedia viewer={this.props.viewer} onAddMedia={this.onAddMedia.bind(this)} onMediaInsert={this.onMediaInsert.bind(this)}/>
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="size" className="col-md-12">Prix</label>
                                 <div className="col-md-12">
                                     <div className="input-group col-md-12">
-                                        <span className="input-group-addon">FCFA</span>
-                                        <input type="text" ref="price" id="price" className="form-control" placeholder="Mensualité ou prix de vente" />
+                                        <span className="input-group-addon">Prix en CFA</span>
+                                        <input type="text" ref="price" id="price" className="form-control" placeholder="Loyer ou prix de vente" />
                                     </div>
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-12">Nombre de niveau</label>
                                 <div className="col-md-12">
-                                    <input type="text" ref="floorCount" id="floorCount" className="form-control" placeholder="Si appartement ou villa indiquez le nombre d'étages" />
-                                </div>
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="name" className="col-md-12">Nombre de chambres</label>
-                                <div className="col-md-12">
-                                    <input type="text" ref="roomCount" id="roomCount" className="form-control" placeholder="Nombre total de chambre(s) du bien" />
-                                </div>
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="size" className="col-md-12">Superficie totale</label>
-                                <div className="col-md-12">
-                                    <div className="input-group col-md-12">
-                                        <span className="input-group-addon">m2</span>
-                                        <input type="text" ref="size" id="size" className="form-control" placeholder="Superficie totale du bien" />
+                                    <div className="input-group col-xs-12">
+                                        <input type="text" ref="size" id="size" className="form-control" style={{width:'70%'}} placeholder="Superficie totale du bien" />
+                                        <select className="form-control text-center" style={{width:'30%', fontWeight:'600'}} >
+                                            <option value="1" style={{fontWeight:'600'}} >m²</option>
+                                            <option value="2" style={{fontWeight:'600'}} >ha</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
                             <div className="form-group">
-                                <br/>
-                                <div className="col-md-12 text-center">
-                                    <inupt type="submit" className="btn btn-primary" onClick={this.onAddProperty.bind(this)}>Enregistrer la nouvelle propriétée</inupt>
+                                <div className="col-md-12">
+                                    <button type="button" className="btn btn-default" >
+                                        <i className="fa fa-building" /> <b>{this.state.floorCount}</b> étage
+                                    </button>
+                                    <div className="col-xs-6 pull-right">
+                                        <button type="button" onClick={this.onDecrementFloor.bind(this)} className="btn btn-default"> <i className="fa fa-minus" /> </button>
+                                        <button type="button" onClick={this.onIncrementFloor.bind(this)} className="btn btn-default"> <i className="fa fa-plus" /> </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <div className="col-md-12">
+                                    <button type="button" className="btn btn-default" >
+                                        <i className="fa fa-bed" /> <b>{this.state.roomCount}</b> chambres
+                                    </button>
+                                    <div className="col-xs-6 pull-right">
+                                        <button type="button" onClick={this.onDecrementRoom.bind(this)} className="btn btn-default"> <i className="fa fa-minus" /> </button>
+                                        <button type="button" onClick={this.onIncrementRoom.bind(this)} className="btn btn-default"> <i className="fa fa-plus" /> </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <br/>
+                            <div className="form-group">
+                                <div className="col-md-12">
+                                    <inupt type="submit" style={{width:'100%'}}className="btn btn-primary" onClick={this.onAddProperty.bind(this)}><b>Enregistrer la nouvelle propriétée</b></inupt>
                                 </div>
                             </div>
                         </div>
@@ -205,9 +236,6 @@ class NewProperty extends React.Component {
                 </form>
             </div>
         );
-
-        const text = this.state.message;
-
     }
 }
 
