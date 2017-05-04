@@ -95,7 +95,7 @@ class NewOwner extends React.Component {
                             </div>
                             <div className="form-group">
                                 <div className="col-md-12">
-                                    <input ref="company" id="name" type="text" className="form-control" placeholder="Nom de la société" />
+                                    <input ref="company" id="company" type="text" className="form-control" placeholder="Nom de la société" />
                                 </div>
                             </div>
                             <div className="form-group">

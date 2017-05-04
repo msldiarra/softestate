@@ -10,20 +10,35 @@ class OwnerEdit extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {type: 0, message: '' };
+        this.state = {type: 0, message: ''};
+    }
+
+    computeName(names) {
+
+        let name = names? names.split(" "): [];
+        var lastName = name[name.length - 1];
+        var firstName = "";
+
+        for(var i=0; i < name.length - 1; i++) {
+            firstName = firstName.concat(" ", name[i]);
+        }
+
+        return [firstName, lastName];
     }
 
     onAddOwner(e) {
 
         e.preventDefault();
 
+        let names = this.computeName(this.refs.name.value);
+
         var owner = this.props.viewer.owners.edges[0].node;
 
 
         var company = this.refs.company.value;
         var reference =  owner.reference;
-        var firstName =  this.refs.firstName.value;
-        var lastName =  this.refs.lastName.value;
+        var firstName =  names[0];
+        var lastName =  names[1];
         var phone =  this.refs.phone.value;
         var type =  this.state.type;
 
@@ -53,7 +68,6 @@ class OwnerEdit extends React.Component {
     componentDidMount() {
 
         var owner = this.props.viewer.owners.edges[0].node;
-
         this.setState({ type : owner.type_id });
     }
 
@@ -77,46 +91,38 @@ class OwnerEdit extends React.Component {
                     <div className="page-content row">
                         <div className="col-md-6 center-block">
                             <div className="form-group">
-                                <label htmlFor="type" className="col-md-12">Type de client</label>
-                                <div className="col-md-12">
-                                    <label className="radio-inline control-label">
-                                        <input type="radio" id="individual" value="1" name="type" onClick={this.handleType.bind(this)}
-                                               checked={this.state.type == 1 ? true : false} /> individu
-                                    </label>
-                                    <label className="radio-inline control-label">
-                                        <input type="radio" id="company" value="2" name="type" onClick={this.handleType.bind(this)}
-                                               checked={this.state.type == 2 ? true : false} /> entreprise
-                                    </label>
+                                <div className="btn-group btn-group-justified col-md-12" role="group" >
+                                    <div className="btn-group" role="group">
+                                        <button onClick={this.handleType.bind(this)} type="button" className={"btn btn-default " + (this.state.type ==  1? "active" : "")} value="1" >
+                                            Une personne
+                                        </button>
+                                    </div>
+                                    <div className="btn-group" role="group">
+                                        <button onClick={this.handleType.bind(this)} type="button" className={"btn btn-default " + (this.state.type ==  2? "active" : "")} value="2" >
+                                            Une entreprise
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-12">Nom de la société</label>
                                 <div className="col-md-12">
-                                    <input ref="company" id="name" type="text" className="form-control" placeholder="nom de la société" defaultValue={owner.company} />
+                                    <input ref="company" id="company" type="text" className="form-control" placeholder="nom de la société" defaultValue={owner.company} />
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-12">Prénom du contact</label>
                                 <div className="col-md-12">
-                                    <input ref="firstName" id="first_name" type="text" className="form-control" placeholder="Ex: Mamadou Lamine" defaultValue={owner.contact.first_name} />
+                                    <input ref="name" id="name" type="text" className="form-control" placeholder="Ex: Mamadou Lamine" defaultValue={owner.contact.first_name+' '+owner.contact.last_name} />
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-12">Nom du contact</label>
-                                <div className="col-md-12">
-                                    <input ref="lastName" id="last_name" type="text" className="form-control" placeholder="Ex: DIARRA" defaultValue={owner.contact.last_name} />
-                                </div>
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="name" className="col-md-12">Numéro du contact</label>
                                 <div className="col-md-12">
                                     <input ref="phone" id="phone" type="text" className="form-control" placeholder="Ex: 0022373034603" defaultValue={owner.contact.info.phone} />
                                 </div>
                             </div>
+                            <br/>
                             <div className="form-group">
-                                <div className="col-md-3">&nbsp;</div>
                                 <div className="col-md-12">
-                                    <inupt type="s" className="btn btn-primary" onClick={this.onAddOwner.bind(this)}>Enregistrer les  modifications</inupt>
+                                    <inupt type="submit" style={{width:'100%'}}className="btn btn-primary" onClick={this.onAddOwner.bind(this)}><b>Enregistrer les modifications</b></inupt>
                                 </div>
                             </div>
                         </div>
