@@ -23,7 +23,7 @@ class NewProperty extends React.Component {
             message : "",
             mediaNames: [],
             floorCount: 1,
-            roomCount: 1,
+            roomCount: 1
         } ;
     }
 
@@ -133,7 +133,7 @@ class NewProperty extends React.Component {
             <div className="">
                 <div className="page-header col-md-6 center-block row">
                     <h3>
-                        <span className="col-md-12"><i className="fa fa-home" aria-hidden="true" /> Nouveau bien</span>
+                        <span className="col-md-12"><i className="fa fa-home" aria-hidden="true" /> Nouvelle propriété</span>
                     </h3>
                 </div>
 
@@ -228,7 +228,7 @@ class NewProperty extends React.Component {
                             <br/>
                             <div className="form-group">
                                 <div className="col-md-12">
-                                    <inupt type="submit" style={{width:'100%'}}className="btn btn-primary" onClick={this.onAddProperty.bind(this)}><b>Enregistrer la nouvelle propriétée</b></inupt>
+                                    <inupt type="submit" style={{width:'100%'}}className="btn btn-primary" onClick={this.onAddProperty.bind(this)}><b>Enregistrer la nouvelle propriété</b></inupt>
                                 </div>
                             </div>
                         </div>
