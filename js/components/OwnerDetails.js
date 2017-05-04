@@ -22,20 +22,25 @@ class OwnerDetails extends React.Component {
             ownerDisplay = (
                 <div className="row padding-25">
                     <div className="col-md-8 center-block">
-                        <h3 className="row">
-                            <div className="col-md-8 col-xs-8 col-sm-8"><i className="fa fa-user" aria-hidden="true" /> Client {owner.reference}</div>
+                        <h4 className="row">
+                            <div className="col-md-8 col-xs-8 col-sm-8"><i className="fa fa-user" aria-hidden="true" /> Client</div>
                             <div className="pull-right padding-right-15">
                                 <a href={'/#/admin/owner/' + owner.reference + '/edit'}>
                                     <div className="circle text-center"><i className="fa fa-pencil" aria-hidden="true" /></div>
                                 </a>
                             </div>
-                        </h3>
-                        <dl>
+                        </h4>
+
+                        <hr/>
+                        <dl className="row" >
                             <dt></dt>
                             <dd>
-                                <div><label>Société: </label> {owner.company}</div>
+                                {owner.company ?
+                                    <div><label>Société: </label> {owner.company}</div> :
+                                    ""
+                                }
                                 <div><label>Nom: </label> {owner.contact.first_name + ' ' + owner.contact.last_name}</div>
-                                <div><label>Contact: </label> {owner.contact.info.phone}</div>
+                                <div><label>Téléphone: </label> {owner.contact.info.phone}</div>
                             </dd>
                         </dl>
                     </div>

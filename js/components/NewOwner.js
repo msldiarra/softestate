@@ -14,14 +14,29 @@ class NewOwner extends React.Component {
         this.state = {type: 0, message: '' };
     }
 
+    computeName(names) {
+
+        let name = names? names.split(" "): [];
+        var lastName = name[name.length - 1];
+        var firstName = "";
+
+        for(var i=0; i < name.length - 1; i++) {
+            firstName = firstName.concat(" ", name[i]);
+        }
+
+        return [firstName, lastName];
+    }
+
     onAddOwner(e) {
 
         e.preventDefault();
 
+        let names = this.computeName(this.refs.name.value);
+
         var company = this.refs.company.value;
         var reference =  new Chance().word({length: 12});
-        var firstName =  this.refs.firstName.value;
-        var lastName =  this.refs.lastName.value;
+        var firstName =  names[0];
+        var lastName =  names[1];
         var phone =  this.refs.phone.value;
         var type =  this.state.type;
 
@@ -65,44 +80,38 @@ class NewOwner extends React.Component {
                     <div className="page-content row">
                         <div className="col-md-6 center-block">
                             <div className="form-group">
-                                <label htmlFor="type" className="col-md-12">Type de client</label>
-                                <div className="col-md-12">
-                                    <label className="radio-inline control-label">
-                                        <input type="radio" id="individual" value="1" name="type" onClick={this.handleType.bind(this)} /> individu
-                                    </label>
-                                    <label className="radio-inline control-label">
-                                        <input type="radio" id="company" value="2" name="type" onClick={this.handleType.bind(this)} /> entreprise
-                                    </label>
+                                <div className="btn-group btn-group-justified col-md-12" role="group" >
+                                    <div className="btn-group" role="group">
+                                        <button onClick={this.handleType.bind(this)} type="button" className={"btn btn-default " + (this.state.type ==  1? "active" : "")} value="1" >
+                                            Une personne
+                                        </button>
+                                    </div>
+                                    <div className="btn-group" role="group">
+                                        <button onClick={this.handleType.bind(this)} type="button" className={"btn btn-default " + (this.state.type ==  2? "active" : "")} value="2" >
+                                            Une entreprise
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-12">Nom de la société</label>
                                 <div className="col-md-12">
-                                    <input ref="company" id="name" type="text" className="form-control" placeholder="nom de la société" />
+                                    <input ref="company" id="name" type="text" className="form-control" placeholder="Nom de la société" />
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-12">Prénom du contact</label>
                                 <div className="col-md-12">
-                                    <input ref="firstName" id="first_name" type="text" className="form-control" placeholder="Ex: Mamadou Lamine" />
+                                    <input ref="name" id="name" type="text" className="form-control" placeholder="Ex: Mamadou DIARRA" />
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-12">Nom du contact</label>
-                                <div className="col-md-12">
-                                    <input ref="lastName" id="last_name" type="text" className="form-control" placeholder="Ex: DIARRA" />
-                                </div>
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="name" className="col-md-12">Numéro du contact</label>
                                 <div className="col-md-12">
                                     <input ref="phone" id="phone" type="text" className="form-control" placeholder="Ex: 0022373034603" />
                                 </div>
                             </div>
+                            <br/>
                             <div className="form-group">
-                                <div className="col-md-3">&nbsp;</div>
                                 <div className="col-md-12">
-                                    <inupt type="s" className="btn btn-primary" onClick={this.onAddOwner.bind(this)}>Enregistrer nouveau client</inupt>
+                                    <inupt type="submit" style={{width:'100%'}}className="btn btn-primary" onClick={this.onAddOwner.bind(this)}><b>Enregistrer le nouveau client</b></inupt>
                                 </div>
                             </div>
                         </div>
