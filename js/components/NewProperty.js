@@ -37,6 +37,7 @@ class NewProperty extends React.Component {
         var contractType =  this.state.contractType;
         var description =  ''
         var size = this.refs.size.value;
+        var unit = this.refs.unit.value;
         var floorCount = this.state.floorCount;
         var roomCount = this.state.roomCount;
         var city = this.refs.city.value;
@@ -54,6 +55,7 @@ class NewProperty extends React.Component {
             contractType: contractType,
             description: description,
             size: size,
+            sizeUnit: unit,
             floorCount: floorCount,
             roomCount: roomCount,
             price: price,
@@ -196,9 +198,9 @@ class NewProperty extends React.Component {
                                 <div className="col-md-12">
                                     <div className="input-group col-xs-12">
                                         <input type="text" ref="size" id="size" className="form-control" style={{width:'70%'}} placeholder="Superficie totale du bien" />
-                                        <select className="form-control text-center" style={{width:'30%', fontWeight:'600'}} >
-                                            <option value="1" style={{fontWeight:'600'}} >m²</option>
-                                            <option value="2" style={{fontWeight:'600'}} >ha</option>
+                                        <select ref="unit" className="form-control text-center" style={{width:'30%', fontWeight:'600'}} >
+                                            <option value="m²" style={{fontWeight:'600'}} >m²</option>
+                                            <option value="ha" style={{fontWeight:'600'}} >ha</option>
                                         </select>
                                     </div>
                                 </div>

@@ -75,7 +75,7 @@ class PropertyDetails extends React.Component {
                         <dl>
                             <dt></dt>
                             <dd>
-                                {property.size? <div><label>Superficie:</label> {property.size} m²</div> : ''}
+                                {property.size? <div><label>Superficie:</label> {property.size} {property.size_unit}</div> : ''}
                                 {property.room_count ? <div><label>Nombre de chambres:</label> {property.room_count}</div>:''}
                                 {property.floor_count ? <div><label>Nombre de niveau :</label> {property.floor_count}</div> : ''}
                                 {property.location ?<div>{property.location}</div> : ''}
@@ -120,6 +120,7 @@ export default Relay.createContainer(PropertyDetails, {
                       type_label
                       contract_type
                       size
+                      size_unit
                       floor_count
                       room_count
                       price

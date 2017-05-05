@@ -5,7 +5,7 @@ INSERT INTO contact_type (label) VALUES ('CUSTOMER'), ('OWNER');
 INSERT INTO property_contract (label) VALUES ('RENT'), ('SELL');
 INSERT INTO owner_type (label) VALUES ('INDIVIDUAL'), ('COMPANY'); -- particulier
 
-
+INSERT INTO size_unit VALUES (1, 'm²'), (2, 'ha');
 
 --- Customer 1
 

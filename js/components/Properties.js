@@ -56,6 +56,7 @@ export default Relay.createContainer(Properties, {
                   type_label
                   contract_type
                   size
+                  size_unit
                   floor_count
                   room_count
                   price

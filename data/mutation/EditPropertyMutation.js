@@ -19,6 +19,7 @@ export default mutationWithClientMutationId({
         floorCount: { type: GraphQLInt },
         roomCount: { type: GraphQLInt },
         size: { type: GraphQLFloat },
+        sizeUnit: { type: GraphQLString },
         location: { type: GraphQLString },
         ownerRef: { type: new GraphQLNonNull(GraphQLString) },
         mediaNames: { type: new GraphQLList(GraphQLString) }
@@ -29,7 +30,7 @@ export default mutationWithClientMutationId({
             resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}}),
         }
     },
-    mutateAndGetPayload: ({viewerId, reference, propertyType, contractType, description, mediaNames, price, floorCount, roomCount, size, location}) => {
+    mutateAndGetPayload: ({viewerId, reference, propertyType, contractType, description, mediaNames, price, floorCount, roomCount, size, sizeUnit, location}) => {
 
         var sanitizedMediaNames = _.map(mediaNames, name => {
             return sanitize(name.replace(/[`~!@#$%^&*()_|+\-=÷¿?;:'",<>\{\}\[\]\\\/]/gi, '') )
@@ -92,10 +93,14 @@ export default mutationWithClientMutationId({
                 if(size)
                     DB.models.property_size.findOne({where: {property_id: property.id}})
                         .then(property_size => {
-                            if(property_size) property_size.updateAttributes({size: size})
+                            if(property_size) property_size.updateAttributes({
+                                size: size,
+                                size_unit_id: (sizeUnit == 'ha')? 2: 1
+                                })
                             else property.createPropertySize({
                                 property_id: property.id,
-                                size: size
+                                size: size,
+                                size_unit_id: (sizeUnit == 'ha')? 2: 1
                             });
                         });
 

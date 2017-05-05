@@ -42,6 +42,7 @@ class PropertyDetailsEdit extends React.Component {
         var contractType =  this.state.contractType;
         var description =  ''; //this.state.editorState.getCurrentContent().getPlainText();
         var size = this.refs.size.value;
+        var unit = this.refs.unit.value;
         var floorCount = this.state.floorCount;
         var roomCount = this.state.roomCount;
         var price = this.refs.price.value;
@@ -58,6 +59,7 @@ class PropertyDetailsEdit extends React.Component {
             contractType: contractType,
             description: description,
             size: size,
+            sizeUnit: unit,
             floorCount: floorCount,
             roomCount: roomCount,
             price: price,
@@ -141,8 +143,8 @@ class PropertyDetailsEdit extends React.Component {
 
         this.setState({ type_id : property.type_id });
         this.setState({ contractType : property.contract_type });
-        this.setState({ floorCount : property.floor_count });
-        this.setState({ roomCount : property.room_count });
+        this.setState({ floorCount : property.floor_count? property.floor_count : 0});
+        this.setState({ roomCount : property.room_count? property.room_count: 0 });
 
     }
 
@@ -166,7 +168,6 @@ class PropertyDetailsEdit extends React.Component {
                     <div className="page-content row">
                         <div className="col-md-6 center-block">
                             <div className="form-group">
-                                <label htmlFor="name" className="col-md-12">Propriétaire</label>
                                 <div className="col-md-12">
                                     <SearchComponent userID={UserService.getUserId()}
                                                      search="" placeHolder="Entrer le nom du Propriétaire"
@@ -220,9 +221,9 @@ class PropertyDetailsEdit extends React.Component {
                                 <div className="col-md-12">
                                     <div className="input-group col-xs-12">
                                         <input type="text" ref="size" id="size" defaultValue={property.size} className="form-control" style={{width:'70%'}} placeholder="Superficie totale du bien" />
-                                        <select className="form-control text-center" style={{width:'30%', fontWeight:'600'}} >
-                                            <option value="1" style={{fontWeight:'600'}} >m²</option>
-                                            <option value="2" style={{fontWeight:'600'}} >ha</option>
+                                        <select ref="unit" defaultValue={property.size_unit} className="form-control text-center" style={{width:'30%', fontWeight:'600'}} >
+                                            <option value="m²" style={{fontWeight:'600'}} >m²</option>
+                                            <option value="ha" style={{fontWeight:'600'}} >ha</option>
                                         </select>
                                     </div>
                                 </div>
@@ -286,6 +287,7 @@ export default Relay.createContainer(PropertyDetailsEdit, {
                       contract_type
                       location
                       size
+                      size_unit
                       floor_count
                       room_count
                       price

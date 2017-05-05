@@ -194,8 +194,16 @@ export const propertyType = new GraphQLObjectType({
                 })
             }},
             size: { type: GraphQLInt, resolve(property) { return DB.models.property_size.findOne({where :{property_id: property.id } })
-                .then(property_floor_count => {
-                    if(property_floor_count) return property_floor_count.get('size');
+                .then(property_size => {
+                    if(property_size) return property_size.get('size');
+                })
+            }},
+            size_unit: { type: GraphQLString, resolve(property) { return DB.models.property_size.findOne({where :{property_id: property.id } })
+                .then(property_size => {
+                    if(property_size) return DB.models.size_unit.findOne({where :{id: property_size.size_unit_id } })
+                        .then(size_unit => {
+                            if(size_unit) return size_unit.get('unit');
+                    })
                 })
             }},
             floor_count: { type: GraphQLFloat, resolve(property) { return DB.models.property_floor_count.findOne({where :{property_id: property.id } })

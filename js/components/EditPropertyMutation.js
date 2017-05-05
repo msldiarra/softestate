@@ -20,6 +20,7 @@ export default class EditPropertyMutation extends Relay.Mutation {
             contractType: this.props.contractType,
             description: this.props.description,
             size: this.props.size,
+            sizeUnit: this.props.sizeUnit,
             floorCount: this.props.floorCount,
             roomCount: this.props.roomCount,
             price: this.props.price,

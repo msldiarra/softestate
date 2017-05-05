@@ -935,6 +935,18 @@
               "deprecationReason": null
             },
             {
+              "name": "size_unit",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "floor_count",
               "description": null,
               "args": [],
@@ -2247,6 +2259,16 @@
               "defaultValue": null
             },
             {
+              "name": "sizeUnit",
+              "description": null,
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
               "name": "location",
               "description": null,
               "type": {
@@ -2450,6 +2472,16 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Float",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "sizeUnit",
+              "description": null,
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               },
               "defaultValue": null

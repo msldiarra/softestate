@@ -24,6 +24,7 @@ input AddPropertyInput {
   floorCount: Int
   roomCount: Int
   size: Float
+  sizeUnit: String
   location: String
   ownerRef: String!
   mediaNames: [String]
@@ -105,6 +106,7 @@ input EditPropertyInput {
   floorCount: Int
   roomCount: Int
   size: Float
+  sizeUnit: String
   location: String
   ownerRef: String!
   mediaNames: [String]
@@ -205,6 +207,7 @@ type Property implements Node {
   contract_type: Int
   description: String
   size: Int
+  size_unit: String
   floor_count: Float
   room_count: Float
   price: Int

@@ -97,7 +97,13 @@ CREATE TABLE IF NOT EXISTS property_room_count (
 CREATE TABLE IF NOT EXISTS property_size (
   id SERIAL PRIMARY KEY,
   property_id INTEGER NOT NULL,
-  size INTEGER NOT NULL
+  size INTEGER NOT NULL,
+  size_unit_id INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS size_unit (
+  id SERIAL PRIMARY KEY,
+  unit VARCHAR(20) NOT NULL
 );
 
 
@@ -298,7 +304,8 @@ ALTER TABLE property_room_count
 ADD CONSTRAINT fk_property_room_count_property FOREIGN KEY (property_id) REFERENCES property (id) ON DELETE CASCADE;
 
 ALTER TABLE property_size
-ADD CONSTRAINT fk_property_size_property FOREIGN KEY (property_id) REFERENCES property (id) ON DELETE CASCADE;
+ADD CONSTRAINT fk_property_size_property FOREIGN KEY (property_id) REFERENCES property (id) ON DELETE CASCADE,
+ADD CONSTRAINT fk_property_size_size_unit FOREIGN KEY (size_unit_id) REFERENCES size_unit (id) ON DELETE CASCADE;
 
 ALTER TABLE property_location
 ADD CONSTRAINT fk_property_location_property FOREIGN KEY (property_id) REFERENCES property (id) ON DELETE CASCADE;

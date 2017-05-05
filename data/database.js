@@ -83,7 +83,13 @@ export const PropertyDescription = DB.define('property_description', {
 
 export const PropertySize = DB.define('property_size', {
         property_id: Sequelize.INTEGER,
-        size: Sequelize.FLOAT
+        size: Sequelize.FLOAT,
+        size_unit_id: Sequelize.INTEGER,
+    } , {timestamps: false, freezeTableName: true}
+);
+
+export const SizeUnit = DB.define('size_unit', {
+        unit: Sequelize.INTEGER,
     } , {timestamps: false, freezeTableName: true}
 );
 
@@ -206,6 +212,7 @@ Owner.hasOne(SellSummary, {as: 'SellSummary', foreignKey: 'owner_id' } );
 Property.belongsToMany(Owner, { through: OwnerProperty, foreignKey: 'property_id' });
 Property.hasOne(PropertyDescription, {as: 'PropertyDescription', foreignKey: 'property_id' });
 Property.hasOne(PropertyPrice, {as: 'PropertyPrice', foreignKey: 'property_id' });
+Property.hasOne(PropertySize, {as: 'PropertySize', foreignKey: 'property_id' });
 Property.hasOne(PropertyFloorCount, {as: 'PropertyFloorCount', foreignKey: 'property_id' });
 Property.hasOne(PropertySize, {as: 'PropertySize', foreignKey: 'property_id' });
 Property.hasOne(PropertyRoomCount, {as: 'PropertyRoomCount', foreignKey: 'property_id' });
