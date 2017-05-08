@@ -25,7 +25,8 @@ input AddPropertyInput {
   roomCount: Int
   size: Float
   sizeUnit: String
-  location: String
+  city: String
+  neighborhood: String
   ownerRef: String!
   mediaNames: [String]
   clientMutationId: String!
@@ -107,7 +108,8 @@ input EditPropertyInput {
   roomCount: Int
   size: Float
   sizeUnit: String
-  location: String
+  city: String
+  neighborhood: String
   ownerRef: String!
   mediaNames: [String]
   clientMutationId: String!
@@ -116,6 +118,14 @@ input EditPropertyInput {
 type EditPropertyPayload {
   viewer: Viewer
   clientMutationId: String!
+}
+
+type Location implements Node {
+  id: ID!
+  country: String
+  city: String
+  neighborhood: String
+  searchTerms: String
 }
 
 type Login implements Node {
@@ -187,6 +197,16 @@ type PageInfo {
   endCursor: String
 }
 
+type PlacesConnection {
+  pageInfo: PageInfo!
+  edges: [PlacesEdge]
+}
+
+type PlacesEdge {
+  node: Location
+  cursor: String!
+}
+
 type PropertiesConnection {
   pageInfo: PageInfo!
   edges: [PropertiesEdge]
@@ -213,6 +233,7 @@ type Property implements Node {
   price: Int
   location: String
   city: String
+  neighborhood: String
   owner: Owner
   media(after: String, first: Int, before: String, last: Int): MediasConnection
 }
@@ -242,5 +263,6 @@ type Viewer implements Node {
   customer: String
   contact: Contact
   owners(after: String, first: Int, before: String, last: Int, search: String!): OwnersConnection
+  places(after: String, first: Int, before: String, last: Int, search: String!): PlacesConnection
   properties(after: String, first: Int, before: String, last: Int, reference: String, city: String): PropertiesConnection
 }

@@ -24,7 +24,8 @@ export default class EditPropertyMutation extends Relay.Mutation {
             floorCount: this.props.floorCount,
             roomCount: this.props.roomCount,
             price: this.props.price,
-            location: this.props.city,
+            city: this.props.city,
+            neighborhood: this.props.neighborhood,
             ownerRef: this.props.ownerRef,
             mediaNames: this.props.mediaNames
         };

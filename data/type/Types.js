@@ -60,7 +60,6 @@ export const contactInfoType =  new GraphQLObjectType({
     interfaces: () => [nodeInterface]
 })
 
-
 export const contactType = new GraphQLObjectType({
     name: 'Contact',
     fields: () => {
@@ -99,7 +98,6 @@ export const loginType =new GraphQLObjectType({
     },
     interfaces: () => [nodeInterface]
 });
-
 
 export const mediaType = new GraphQLObjectType({
     name: 'Media',
@@ -156,6 +154,20 @@ export const ownerType = new GraphQLObjectType({
     interfaces: () => [nodeInterface]
 });
 
+export const placeType = new GraphQLObjectType({
+    name: 'Location',
+    fields: () => {
+        return {
+            id: globalIdField('Place'),
+            country: { type: GraphQLString, resolve(place) { return place.country } },
+            city: { type: GraphQLString, resolve(place) { return place.city } },
+            neighborhood: { type: GraphQLString, resolve(place) { return place.neighborhood }},
+            searchTerms: { type: GraphQLString, resolve(place) { return place.searchTerms } },
+        }
+    },
+    interfaces: () => [nodeInterface]
+});
+
 export const ownerTypeType = new GraphQLObjectType({
     name: 'OwnerType',
     fields: () => {
@@ -166,7 +178,6 @@ export const ownerTypeType = new GraphQLObjectType({
     },
     interfaces: () => [nodeInterface]
 });
-
 
 export const propertyType = new GraphQLObjectType({
     name: 'Property',
@@ -230,7 +241,14 @@ export const propertyType = new GraphQLObjectType({
             }},
             city: { type: GraphQLString, resolve(property) { return DB.models.property_location.findOne({where :{property_id: property.id } })
                 .then(property_location => {
-                    if(property_location) return property_location.get('city');
+                    if(property_location) return DB.models.location.findOne({where :{id: property_location.location_id } }).get('city')
+                })
+            }},
+            neighborhood: { type: GraphQLString, resolve(property) { return DB.models.property_neighborhood.findOne({where :{property_id: property.id } })
+                .then(property_neighborhood => {
+                    if(property_neighborhood) {
+                        return DB.models.neighborhood.findOne({where :{id: property_neighborhood.neighborhood_id }}).get('name')
+                    }
                 })
             }},
             owner: { type: ownerType, resolve(property) { return DB.models.owner_property.findOne({where :{property_id: property.id }})
@@ -251,7 +269,6 @@ export const propertyType = new GraphQLObjectType({
     },
     interfaces: () => [nodeInterface]
 });
-
 
 export const propertyTypeType = new GraphQLObjectType({
     name: 'PropertyType',
@@ -319,6 +336,21 @@ export const viewerType = new GraphQLObjectType({
                     return connectionFromPromisedArray(DB.models.owner.findAll({where: {reference: {$like: term} }}), args)
                 }
             },
+            places: {
+                type: placeConnection,
+                description: "List of available locations",
+                args: {
+                    ...connectionArgs,
+                    search: {
+                        name: 'search',
+                        type: new GraphQLNonNull(GraphQLString)
+                    }
+                },
+                resolve: (_, args) => {
+                    var term = args.search? '%' + args.search + '%' : '';
+                    return connectionFromPromisedArray(DB.models.places.findAll({where: {search_terms: {$like: term} }}), args)
+                }
+            },
             properties : {
                 type: propertyConnection,
                 description: "An owner's collection of properties",
@@ -382,6 +414,12 @@ export const {connectionType: mediaConnection, edgeType : mediaEdge} =
     connectionDefinitions({
         name: 'Medias',
         nodeType: mediaType
+    });
+
+export const {connectionType: placeConnection} =
+    connectionDefinitions({
+        name: 'Places',
+        nodeType: placeType
     });
 
 

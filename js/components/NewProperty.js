@@ -4,6 +4,7 @@ import AddPropertyMutation from './AddPropertyMutation'
 import AttachMediaMutation from './AttachMediaMutation'
 import AppMessage from './AppMessage';
 import SearchComponent from './SearchComponent';
+import SearchLocation from './SearchLocation';
 import AttachMedia from './AttachMedia';
 import UserService from './AuthService'
 import {EditorState} from 'draft-js';
@@ -23,7 +24,10 @@ class NewProperty extends React.Component {
             message : "",
             mediaNames: [],
             floorCount: 1,
-            roomCount: 1
+            roomCount: 1,
+            city: '',
+            neighborhood: '',
+            location: '',
         } ;
     }
 
@@ -40,7 +44,8 @@ class NewProperty extends React.Component {
         var unit = this.refs.unit.value;
         var floorCount = this.state.floorCount;
         var roomCount = this.state.roomCount;
-        var city = this.refs.city.value;
+        var city = this.state.city;
+        var neighborhood = this.state.neighborhood;
         var price = this.refs.price.value;
         var owner = this.state.ownerRef;
         var mediaNames = this.state.mediaNames;
@@ -60,6 +65,7 @@ class NewProperty extends React.Component {
             roomCount: roomCount,
             price: price,
             city: city,
+            neighborhood: neighborhood,
             ownerRef: owner,
             mediaNames: mediaNames
         });
@@ -127,6 +133,13 @@ class NewProperty extends React.Component {
         this.setState({ownerRef: reference});
     }
 
+    onLocationEnter(location) {
+        this.setState({ location : location.neighborhood? location.city +', '+ location.neighborhood: location.city,
+            city: location.city,
+            neighborhood: location.neighborhood
+        });
+    }
+
     render() {
         const text = this.state.message;
 
@@ -155,7 +168,10 @@ class NewProperty extends React.Component {
                             </div>
                             <div className="form-group">
                                 <div className="col-md-12">
-                                    <input ref="city" id="city" type="text" className="form-control" placeholder="Saisissez la ville ou se trouve le bien" />
+                                    <SearchLocation search="" placeHolder="Entrer la ville ou le quartier"
+                                                     onLocationEnter={this.onLocationEnter.bind(this)}
+                                                     defaultValue=""
+                                        {...this.props} />
                                 </div>
                             </div>
                             <div className="form-group">
@@ -254,6 +270,7 @@ export default Relay.createContainer(NewProperty, {
                id,
                ${AddPropertyMutation.getFragment('viewer')}
                ${SearchComponent.getFragment('viewer')}
+               ${SearchLocation.getFragment('viewer')}
                ${AttachMediaMutation.getFragment('viewer')}
           }
     `,

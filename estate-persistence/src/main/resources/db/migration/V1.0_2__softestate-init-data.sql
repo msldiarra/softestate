@@ -60,9 +60,45 @@ INSERT INTO location (country, district, city) VALUES
   ('Mali', 'Ségou', 'Macina'),
   ('Mali', 'Koulikoro', 'Nara'),
   ('Mali', 'Kayes', 'Bafoulabé'),
-  ('Mali', 'Kayes', 'Bafoulabé');
+  ('Mali', 'Ségou', 'San'),
+  ('Mali', 'Koulikoro', 'Koulikoro'),
+  ('Mali', 'Mopti', 'Djenné'),
+  ('Mali', 'Ségou', 'Sokolo'),
+  ('Mali', 'Sikasso', 'Yorosso'),
+  ('Mali', 'Koulikoro', 'Kangaba'),
+  ('Mali', 'Kidal', 'Kidal'),
+  ('Mali', 'Tombouctou', 'Diré'),
+  ('Mali', 'Tombouctou', 'Goundam'),
+  ('Mali', 'Mopti', 'Douentza'),
+  ('Mali', 'Mopti', 'Ténenkou'),
+  ('Mali', 'Mopti', 'Bandiagara'),
+  ('Mali', 'Ségou', 'Kimparana'),
+  ('Mali', 'Kayes', 'Kita'),
+  ('Mali', 'Araouane', 'Tombouctou'),
+  ('Mali', 'Taoudeni', 'Tombouctou'),
+  ('Mali', 'Kidal', 'Tessalit');
+
+INSERT INTO neighborhood (name, location_id) VALUES
+  -- Quartiers de Bamako
+  -- Commune 1 : 9 quartiers
+  ('Banconi', 1), ('Boulkassombougou', 1), ('Djélibougou', 1), ('Doumanzana', 1), ('Fadjiguila', 1), ('Sotuba', 1), ('Korofina Nord', 1),
+  ('Korofina Sud', 1), ('Sikoroni', 1),
+  -- Commune 2: 11 quartiers
+  ('Niaréla', 1), ('Bagadadji', 1), ('Médina-coura', 1), ('Bozola', 1), ('Missira', 1), ('Hippodrome', 1), ('Quinzambougou', 1),
+  ('Bakaribougou', 1), ('TSF', 1), ('Zone industrielle', 1), ('Bougouba', 1),
+  -- Commune 3?
+  -- Commune 4: 8 quartiers
+  ('Taliko', 1), ('Lassa', 1), ('Sibiribougou', 1), ('Djikoroni-Para', 1), ('Sébénikoro', 1), ('Hamdallaye', 1), ('Lafiabougou', 1),
+  ('Kalabambougou', 1),
+  -- Commune 5: 8 quartiers
+  ('Badalabougou', 1), ('Sema I', 1), ('Quartier Mali', 1), ('Torokorobougou', 1), ('Baco-Djicoroni', 1), ('Sabalibougou', 1), ('Daoudabougou', 1),
+  ('Kalaban-Coura', 1),
+  -- Commune 6: 8 quartiers
+  ('Banankabougou', 1), ('Djanékéla', 1), ('Faladié', 1), ('Magnambougou', 1), ('Missabougou', 1), ('Niamakoro', 1), ('Sénou', 1),
+  ('Sogoniko', 1), ('Sokorodji', 1), ('Yirimadio', 1);
 
 -- Properties
+/*
 INSERT INTO Property (name, reference, type_id) VALUES
   ('Bel appart dans grand immeuble', '0001', 1),
   ('Villa luxeuse avec piscine', '0002', 1),
@@ -91,3 +127,4 @@ INSERT INTO owner_property VALUES
   (2, 3),
   (1, 4),
   (2, 5);
+  */

@@ -20,7 +20,8 @@ export default mutationWithClientMutationId({
         roomCount: { type: GraphQLInt },
         size: { type: GraphQLFloat },
         sizeUnit: { type: GraphQLString },
-        location: { type: GraphQLString },
+        city: { type: GraphQLString },
+        neighborhood: { type: GraphQLString },
         ownerRef: { type: new GraphQLNonNull(GraphQLString) },
         mediaNames: { type: new GraphQLList(GraphQLString) }
     },
@@ -30,7 +31,7 @@ export default mutationWithClientMutationId({
             resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}}),
         }
     },
-    mutateAndGetPayload: ({viewerId, reference, propertyType, contractType, description, ownerRef, mediaNames, price, floorCount, roomCount, size, sizeUnit, location}) => {
+    mutateAndGetPayload: ({viewerId, reference, propertyType, contractType, description, ownerRef, mediaNames, price, floorCount, roomCount, size, sizeUnit, city, neighborhood}) => {
 
         var sanitizedMediaNames = _.map(mediaNames, name => {
             return sanitize(name.replace(/[`~!@#$%^&*()_|+\-=÷¿?;:'",<>\{\}\[\]\\\/]/gi, '') )
@@ -89,10 +90,17 @@ export default mutationWithClientMutationId({
                     });
                 }
 
-                if(location) {
+                if(city) {
 
-                    DB.models.location.findOne({where: {city: location}}).then(
-                        (location) => property.addLocation(location)
+                    DB.models.location.findOne({where: {city: city}}).then(
+                        (city) => property.addLocation(city)
+                    );
+                }
+
+                if(neighborhood) {
+
+                    DB.models.neighborhood.findOne({where: {name: neighborhood}}).then(
+                        (neighborhood) => property.addNeighborhood(neighborhood)
                     );
                 }
 

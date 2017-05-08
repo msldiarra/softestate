@@ -119,9 +119,33 @@ export const Location = DB.define('location', {
     } , {timestamps: false, freezeTableName: true}
 );
 
+export const Neighborhood = DB.define('neighborhood', {
+        name: Sequelize.STRING,
+        location_id: Sequelize.INTEGER
+    } , {timestamps: false, freezeTableName: true}
+);
+
+
+
+export const Places = DB.define('places', {
+        country: Sequelize.STRING,
+        district: Sequelize.STRING,
+        city: Sequelize.STRING,
+        neighborhood: Sequelize.STRING,
+        search_terms: Sequelize.STRING
+    } , {timestamps: false, freezeTableName: true}
+);
+
+
 export const PropertyLocation = DB.define('property_location', {
         property_id: Sequelize.INTEGER,
         location_id: Sequelize.INTEGER
+    } , {timestamps: false, freezeTableName: true}
+);
+
+export const PropertyNeighborhood = DB.define('property_neighborhood', {
+        property_id: Sequelize.INTEGER,
+        neighborhood_id: Sequelize.INTEGER
     } , {timestamps: false, freezeTableName: true}
 );
 
@@ -219,9 +243,12 @@ Property.hasOne(PropertyRoomCount, {as: 'PropertyRoomCount', foreignKey: 'proper
 Property.hasOne(PropertyPropertyContract, {as: 'PropertyPropertyContract', foreignKey: 'property_id' });
 Property.belongsToMany(Media, {as: 'Media',through: PropertyMedia, foreignKey: 'property_id' });
 Property.belongsToMany(Location, {as: 'Locations', through: PropertyLocation,  foreignKey: 'property_id' });
+Property.belongsToMany(Neighborhood, {as: 'Neighborhoods', through: PropertyNeighborhood,  foreignKey: 'property_id' });
 
 
 Location.belongsToMany(Property, {as: 'Properties', through: PropertyLocation,  foreignKey: 'location_id' });
+
+Neighborhood.belongsToMany(Property, {as: 'Properties', through: PropertyNeighborhood,  foreignKey: 'neighborhood_id' });
 
 
 Media.belongsToMany(Property, {through: PropertyMedia, foreignKey: 'media_id' });

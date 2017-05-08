@@ -71,6 +71,12 @@ CREATE TABLE IF NOT EXISTS property_location (
   location_id INTEGER NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS property_neighborhood (
+  id SERIAL PRIMARY KEY,
+  property_id INTEGER NOT NULL,
+  neighborhood_id INTEGER NOT NULL
+);
+
 
 CREATE TABLE IF NOT EXISTS location (
   id SERIAL PRIMARY KEY,
@@ -238,6 +244,12 @@ CREATE VIEW Users AS
     LEFT JOIN contact_contact_info AS cci ON cci.contact_id = c.id
     LEFT JOIN contact_info AS ci ON ci.Id = cci.contact_info_id;
 
+CREATE VIEW Places AS
+  SELECT loc.id, loc.country, loc.district, loc.city, n.name AS neighborhood,
+    coalesce(loc.country, '') || ' ' || coalesce(loc.district, '') || ' ' || coalesce(loc.city, '') || ' ' || coalesce(n.name, '') as search_terms
+    FROM location AS loc
+    LEFT JOIN neighborhood AS n on n.location_id = loc.id;
+
 /*
 CREATE VIEW PropertyDetails AS
   SELECT p.id, p.name, pt.type as property_type, pt.type as contract_type, pd.description, op.owner_id
@@ -309,6 +321,9 @@ ADD CONSTRAINT fk_property_size_size_unit FOREIGN KEY (size_unit_id) REFERENCES 
 
 ALTER TABLE property_location
 ADD CONSTRAINT fk_property_location_property FOREIGN KEY (property_id) REFERENCES property (id) ON DELETE CASCADE;
+
+ALTER TABLE property_neighborhood
+ADD CONSTRAINT fk_property_neighborhood_property FOREIGN KEY (property_id) REFERENCES property (id) ON DELETE CASCADE;
 
 ALTER TABLE property_media
 ADD CONSTRAINT fk_property_media_property FOREIGN KEY (property_id) REFERENCES property (id) ON DELETE CASCADE,

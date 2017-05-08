@@ -20,7 +20,8 @@ export default mutationWithClientMutationId({
         roomCount: { type: GraphQLInt },
         size: { type: GraphQLFloat },
         sizeUnit: { type: GraphQLString },
-        location: { type: GraphQLString },
+        city: { type: GraphQLString },
+        neighborhood: { type: GraphQLString },
         ownerRef: { type: new GraphQLNonNull(GraphQLString) },
         mediaNames: { type: new GraphQLList(GraphQLString) }
     },
@@ -30,7 +31,7 @@ export default mutationWithClientMutationId({
             resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}}),
         }
     },
-    mutateAndGetPayload: ({viewerId, reference, propertyType, contractType, description, mediaNames, price, floorCount, roomCount, size, sizeUnit, location}) => {
+    mutateAndGetPayload: ({viewerId, reference, propertyType, contractType, description, mediaNames, price, floorCount, roomCount, size, sizeUnit, city, neighborhood}) => {
 
         var sanitizedMediaNames = _.map(mediaNames, name => {
             return sanitize(name.replace(/[`~!@#$%^&*()_|+\-=÷¿?;:'",<>\{\}\[\]\\\/]/gi, '') )
@@ -105,18 +106,41 @@ export default mutationWithClientMutationId({
                         });
 
 
-                if(location) {
+                if(city) {
 
-                    let location_id = DB.models.location.findOne({where: {city: location}}).get('id');
+                    DB.models.location.findOne({where: {city: city}})
+                        .then(location =>
 
-                    DB.models.property_location.findOne({where: {property_id: property.id}})
-                        .then(property_location => {
-                            if (property_location) property_location.updateAttributes({location_id: location_id})
-                            else property.createPropertyLocation({
-                                property_id: property.id,
-                                location_id: location_id,
-                            });
-                        });
+                        DB.models.property_location.findOne({where: {property_id: property.id}})
+                            .then(property_location => {
+                                if (property_location) {
+                                    property_location.updateAttributes({location_id: location.id})
+                                }
+                                else {
+                                    DB.models.location.findOne({where: {city: city}}).then(
+                                        (location) => property.addLocation(location));
+                                }
+                            }))
+                }
+
+                if(neighborhood) {
+
+                    DB.models.neighborhood.findOne({where: {name: neighborhood}})
+                        .then(location =>
+
+                        DB.models.property_neighborhood.findOne({where: {property_id: property.id}})
+                            .then(property_neighborhood => {
+
+                                if (property_neighborhood) {
+                                    property_neighborhood.updateAttributes({neighborhood_id: location.id})
+                                }
+                                else {
+                                    DB.models.neighborhood.findOne({where: {name: neighborhood}}).then(
+                                        (neighborhood) => property.addNeighborhood(neighborhood)
+                                    );
+                                }
+                            })
+                        )
                 }
 
                 return property;

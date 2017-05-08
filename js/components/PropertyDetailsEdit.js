@@ -3,6 +3,7 @@ import Relay from 'react-relay'
 import EditPropertyMutation from './EditPropertyMutation'
 import AppMessage from './AppMessage';
 import SearchComponent from './SearchComponent';
+import SearchLocation from './SearchLocation';
 import AttachMedia from './AttachMedia';
 import UserService from './AuthService'
 import ReactDOM from 'react-dom'
@@ -22,7 +23,10 @@ class PropertyDetailsEdit extends React.Component {
             message : "",
             mediaNames: [],
             floorCount: 1,
-            roomCount: 1
+            roomCount: 1,
+            city: '',
+            neighborhood: '',
+            location: '',
         } ;
     }
 
@@ -46,7 +50,8 @@ class PropertyDetailsEdit extends React.Component {
         var floorCount = this.state.floorCount;
         var roomCount = this.state.roomCount;
         var price = this.refs.price.value;
-        var city = this.refs.city.value;
+        var city = this.state.city;
+        var neighborhood = this.state.neighborhood;
         var owner = this.state.ownerRef;
         var mediaNames = this.state.mediaNames;
 
@@ -64,7 +69,8 @@ class PropertyDetailsEdit extends React.Component {
             roomCount: roomCount,
             price: price,
             ownerRef: owner,
-            location: city,
+            city: city,
+            neighborhood: neighborhood,
             mediaNames: mediaNames
         });
 
@@ -137,22 +143,31 @@ class PropertyDetailsEdit extends React.Component {
         this.setState({ownerRef: reference});
     }
 
+    onLocationEnter(location) {
+        this.setState({ location : location.neighborhood? location.city +', '+ location.neighborhood: location.city,
+            city: location.city,
+            neighborhood: location.neighborhood
+        });
+    }
+
     componentDidMount() {
 
         var property = this.props.viewer.properties.edges[0].node;
 
-        this.setState({ type_id : property.type_id });
-        this.setState({ contractType : property.contract_type });
-        this.setState({ floorCount : property.floor_count? property.floor_count : 0});
-        this.setState({ roomCount : property.room_count? property.room_count: 0 });
+        this.setState({
+            type_id : property.type_id ,
+            contractType : property.contract_type,
+            roomCount : property.room_count? property.room_count: 0,
+            city : property.city, 'neighborhood': property.neighborhood
+        });
 
     }
 
     render() {
 
         var property = this.props.viewer.properties.edges[0].node;
-
         const text = this.state.message;
+        let location = property.neighborhood? property.city +', '+ property.neighborhood: property.city
 
         return (
             <div className="">
@@ -178,7 +193,10 @@ class PropertyDetailsEdit extends React.Component {
                             </div>
                             <div className="form-group">
                                 <div className="col-md-12">
-                                    <input ref="city" id="city" type="text" defaultValue={property.location} className="form-control" placeholder="Saisissez la ville ou se trouve le bien" />
+                                    <SearchLocation search="" placeHolder="Entrer la ville ou le quartier"
+                                                    onLocationEnter={this.onLocationEnter.bind(this)}
+                                                    defaultValue={location}
+                                        {...this.props} />
                                 </div>
                             </div>
                             <div className="form-group">
@@ -285,7 +303,8 @@ export default Relay.createContainer(PropertyDetailsEdit, {
                       name
                       type_id
                       contract_type
-                      location
+                      city
+                      neighborhood
                       size
                       size_unit
                       floor_count
@@ -307,6 +326,7 @@ export default Relay.createContainer(PropertyDetailsEdit, {
                 },
                 ${EditPropertyMutation.getFragment('viewer')}
                 ${SearchComponent.getFragment('viewer')}
+                ${SearchLocation.getFragment('viewer')}
                 ${AttachMediaMutation.getFragment('viewer')}
           }
     `,
