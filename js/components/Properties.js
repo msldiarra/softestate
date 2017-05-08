@@ -5,6 +5,33 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 class Properties extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.state = { loading :  false} ;
+        this.onScroll = this.onScroll.bind(this)
+
+    }
+
+    onScroll() {
+        window.onscroll = () => {
+
+            if(!this.state.loading && (window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+                this.setState({loading: true}, () => {
+                    this.props.relay.setVariables({count: this.props.relay.variables.count + 5},
+                    (readyState) => {
+                        if (readyState.done) {
+                            this.setState({loading: false})
+                        }
+                    })
+                })
+            }
+        }
+    }
+
+    componentDidMount() {
+        this.onScroll();
+    }
+
     render() {
 
         let city = this.props.relay.variables.city? this.props.relay.variables.city.toUpperCase() : '';
@@ -34,6 +61,9 @@ class Properties extends React.Component {
                         : ''
                     }
                     <div className="row">{properties}</div>
+                    {this.state.loading &&
+                        <div className="text-center"><i className="fa fa-2x fa-spinner" /></div>
+                    }
                 </ReactCSSTransitionGroup>
             </div>
         );
@@ -42,12 +72,12 @@ class Properties extends React.Component {
 
 export default Relay.createContainer(Properties, {
 
-    initialVariables: {reference: "", city :""},
+    initialVariables: {reference: "", city :"", count: 15 },
 
     fragments: {
         customer: () => Relay.QL`
           fragment on Viewer {
-            properties(reference: $reference, city: $city, first: 100) {
+            properties(reference: $reference, city: $city, first: $count) {
               edges {
                 node {
                   id

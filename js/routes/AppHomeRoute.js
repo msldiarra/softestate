@@ -52,7 +52,7 @@ function getAnonymousParams(params, route){
 
     return {
         ...params,
-        viewerId: 0
+        viewerId: 1
     }
 }
 
@@ -63,7 +63,7 @@ function getAnonymousDashboardParams(params, route){
         ...params,
         reference:'',
         city: 'Bamako',
-        viewerId: 0
+        viewerId: 1
     }
 }
 
