@@ -55,9 +55,12 @@ class PropertyDetails extends React.Component {
         if(property)
             propertyDisplay = (
                 <div className="row padding-25">
-                    <div className="col-md-8">
-                        <Images media={property.media} />
-                    </div>
+                    {property.media ?
+                        <div className="col-md-8">
+                            <Images media={property.media}/>
+                        </div> :
+                        ''
+                    }
                     <div className="col-md-4">
                         <h2 className="row">
                             {this.state.canEdit?

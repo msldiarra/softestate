@@ -353,6 +353,7 @@ img {
 @media only screen and (min-width: 768px){
     .item-container {height: 130px; padding:5px 0 5px 5px; margin-bottom: 10px; background-color: #fff;}
     .item {height: 120px; }
+    .default-img {line-height: 120px; }
     .property-image, .property-image div {height: 120px; padding:0 !important}
     .property-details {height: 120px;}
 }
@@ -361,6 +362,7 @@ img {
 @media only screen and (min-width: 992px){
     .item-container {height: 150px; padding:5px 0 5px 5px; margin-bottom: 10px; background-color: #fff;}
     .item {height: 140px; }
+    .default-img {line-height: 140px; }
     .property-image, .property-image div {height: 140px; padding:0 !important}
     .property-details {height: 140px; }
 }
@@ -369,6 +371,7 @@ img {
 @media only screen and (min-width: 1200px) {
     .item-container {height: 160px; padding:5px 0 5px 5px; margin-bottom: 10px; background-color: #fff;}
     .item {height: 150px; }
+    .default-img {line-height: 150px; }
     .property-image, .property-image div {height: 150px; padding:0}
     .property-details {height: 150px;}
 }
