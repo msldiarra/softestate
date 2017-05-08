@@ -233,6 +233,8 @@ type Property implements Node {
   price: Int
   location: String
   city: String
+  agency: String
+  contact_phone: String
   neighborhood: String
   owner: Owner
   media(after: String, first: Int, before: String, last: Int): MediasConnection

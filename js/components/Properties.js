@@ -54,6 +54,7 @@ export default Relay.createContainer(Properties, {
                   reference
                   name
                   type_label
+                  type_id
                   contract_type
                   size
                   size_unit
@@ -62,6 +63,10 @@ export default Relay.createContainer(Properties, {
                   price
                   description
                   location
+                  city
+                  neighborhood
+                  agency
+                  contact_phone
                   media(first: 20) {
                     edges {
                         node {

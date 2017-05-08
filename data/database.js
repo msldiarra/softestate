@@ -213,11 +213,11 @@ export const SellSummary = DB.define('sell_summary', {
     } , {timestamps: false, freezeTableName: true}
 );
 
-Customer.belongsToMany(Contact, { through: CustomerContact, foreignKey: 'customer_id' });
+Customer.belongsToMany(Contact, {as: 'Contacts', through: CustomerContact, foreignKey: 'customer_id' });
 Customer.belongsToMany(Owner, { through: CustomerOwner, foreignKey: 'customer_id' });
 
 Contact.belongsToMany(Customer, { through: CustomerContact, foreignKey: 'contact_id' });
-Contact.belongsToMany(ContactInfo, {as: 'ContactInfo', through: ContactContactInfo, foreignKey: 'contact_id' });
+Contact.belongsToMany(ContactInfo, {as: 'ContactInfos', through: ContactContactInfo, foreignKey: 'contact_id' });
 Contact.belongsToMany(Login, { through: ContactLogin, foreignKey: 'contact_id' });
 Contact.belongsToMany(Owner, { through: OwnerContact, foreignKey: 'contact_id' });
 
@@ -225,15 +225,15 @@ ContactInfo.belongsToMany(Contact, { through: ContactContactInfo, foreignKey: 'c
 
 Login.belongsToMany(Contact, { through: ContactLogin, foreignKey: 'login_id' });
 
-Owner.belongsToMany(Customer, { through: CustomerOwner, foreignKey: 'owner_id' });
+Owner.belongsToMany(Customer, {as: 'Customers', through: CustomerOwner, foreignKey: 'owner_id' });
 Owner.belongsToMany(Contact, { through: OwnerContact, foreignKey: 'owner_id' });
-Owner.belongsToMany(Property, { through: OwnerProperty, foreignKey: 'owner_id' });
+Owner.belongsToMany(Property, { as: 'Properties', through: OwnerProperty, foreignKey: 'owner_id' });
 
 Owner.hasOne(OwnerCompanyName, { as:'OwnerCompanyName', foreignKey: 'owner_id' });
 Owner.hasOne(RentSummary, {as: 'RentSummary', foreignKey: 'owner_id' });
 Owner.hasOne(SellSummary, {as: 'SellSummary', foreignKey: 'owner_id' } );
 
-Property.belongsToMany(Owner, { through: OwnerProperty, foreignKey: 'property_id' });
+Property.belongsToMany(Owner, {as: 'Owners', through: OwnerProperty, foreignKey: 'property_id' });
 Property.hasOne(PropertyDescription, {as: 'PropertyDescription', foreignKey: 'property_id' });
 Property.hasOne(PropertyPrice, {as: 'PropertyPrice', foreignKey: 'property_id' });
 Property.hasOne(PropertySize, {as: 'PropertySize', foreignKey: 'property_id' });

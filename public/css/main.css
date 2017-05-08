@@ -345,6 +345,7 @@ img {
 @media only screen and (max-width: 768px){
     .item-container {height: 130px; padding:5px 0 5px 5px; margin-bottom: 10px; background-color: #fff}
     .item {height: 120px; }
+    .default-img {line-height: 120px; }
     .property-image, .property-image div {height: 120px; padding:0 !important;}
     .property-details {height: 120px;}
 }

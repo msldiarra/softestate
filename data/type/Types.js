@@ -244,6 +244,18 @@ export const propertyType = new GraphQLObjectType({
                     if(property_location) return DB.models.location.findOne({where :{id: property_location.location_id } }).get('city')
                 })
             }},
+            agency: { type: GraphQLString, resolve(property) { return DB.models.property.findOne({where :{id: property.id }})
+                .then(property => property.getOwners())
+                .then(owners => owners[0].getCustomers())
+                .then(customers => customers[0].name )
+            }},
+            contact_phone: { type: GraphQLString, resolve(property) { return DB.models.property.findOne({where :{id: property.id }})
+                .then(property => property.getOwners())
+                .then(owners => owners[0].getCustomers())
+                .then(customers => customers[0].getContacts() )
+                .then(contacts => contacts[0].getContactInfos() )
+                .then(contact_infos => contact_infos[0].phone )
+            }},
             neighborhood: { type: GraphQLString, resolve(property) { return DB.models.property_neighborhood.findOne({where :{property_id: property.id } })
                 .then(property_neighborhood => {
                     if(property_neighborhood) {
