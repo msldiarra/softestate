@@ -3,6 +3,7 @@ import Relay from 'react-relay';
 import Images from './Images'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import {Link} from 'react-router';
+import moment from 'moment';
 
 
 export default class Property extends React.Component {
@@ -53,8 +54,7 @@ export default class Property extends React.Component {
                                     <br/>
                                     <br/>
                                     <span className="grey">
-                                        <i className="fa fa-phone" />
-                                        {' '}{this.props.property.agency}
+                                        <i className="fa fa-clock-o" />{' '}{moment(this.props.property.date).locale('fr').fromNow()}
                                     </span>
                                     <br/>
                                     <br/>

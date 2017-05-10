@@ -1,8 +1,8 @@
-import { GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLFloat } from 'graphql';
+import { GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLFloat, GraphQLScalarType, GraphQLError, Kind } from 'graphql';
 import { connectionArgs, connectionFromPromisedArray, globalIdField, nodeDefinitions, fromGlobalId, connectionDefinitions} from 'graphql-relay';
 import { DB, User, Contact, Login, ContactInfo, Customer, Owner, Property, PropertyType, OwnerType, Media, Places }from '../database';
 import { Viewer, getViewer } from '../store/UserStore';
-
+import moment from 'moment';
 
 
 export const {nodeInterface, nodeField} = nodeDefinitions(
@@ -50,6 +50,35 @@ export const {nodeInterface, nodeField} = nodeDefinitions(
         }
     }
 );
+
+export const GraphQLMoment = new GraphQLScalarType({
+    name: 'Date',
+    serialize: function (value) {
+        let date = moment(value);
+        if(!date.isValid()) {
+            throw new GraphQLError('Field serialize error: value is an invalid Date');
+        }
+        return date.format();
+    },
+    parseValue: function (value) {
+        let date = moment(value);
+        if(!date.isValid()) {
+            throw new GraphQLError('Field parse error: value is an invalid Date');
+        }
+        return date;
+    },
+
+    parseLiteral: (ast) => {
+        if(ast.kind !== Kind.STRING) {
+            throw new GraphQLError('Query error: Can only parse strings to date but got: ' + ast.kind);
+        }
+        let date = moment(ast.value);
+        if(!date.isValid()) {
+            throw new GraphQLError('Query error: Invalid date');
+        }
+        return date;
+    }
+});
 
 export const contactInfoType =  new GraphQLObjectType({
     name: 'ContactInfo',
@@ -193,6 +222,7 @@ export const propertyType = new GraphQLObjectType({
             name: { type: GraphQLString, resolve(property) { return property.name } },
             reference: { type: GraphQLString, resolve(property) { return property.reference } },
             enabled: { type: GraphQLBoolean, resolve(property) { return property.enabled } },
+            date: { type: GraphQLMoment, resolve(property) { return GraphQLMoment.serialize(property.start_date)} },
             type_label: { type: GraphQLString, resolve(property) { return DB.models.property_type.findOne({where: {id: property.type_id}})
                 .then(property_type =>  {
                     if(property_type) return property_type.get('label')
@@ -415,7 +445,8 @@ export const viewerType = new GraphQLObjectType({
                         ' INNER JOIN customer_owner co ON co.owner_id = op.owner_id' +
                         ' INNER JOIN customer c ON c.id = co.customer_id' +
                         ' WHERE c.name = \'AIA-Mali SARL\') ' + term
-                        + city_where_term,
+                        + city_where_term
+                        + ' ORDER BY p.start_date DESC',
                         {type: DB.QueryTypes.SELECT}), args)
                 }
 

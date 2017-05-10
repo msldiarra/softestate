@@ -83,6 +83,7 @@ export default Relay.createContainer(Properties, {
                   id
                   reference
                   name
+                  date
                   type_label
                   type_id
                   contract_type

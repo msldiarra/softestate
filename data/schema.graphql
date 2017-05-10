@@ -68,6 +68,8 @@ type Customer implements Node {
   contacts: [Contact]
 }
 
+scalar Date
+
 input DeletePropertyInput {
   viewerId: Int!
   propertyId: String!
@@ -222,6 +224,7 @@ type Property implements Node {
   name: String
   reference: String
   enabled: Boolean
+  date: Date
   type_label: String
   type_id: Int
   contract_type: Int
