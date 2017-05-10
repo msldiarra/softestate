@@ -74,13 +74,6 @@ class SearchLocation extends React.Component {
         document.getElementById('root').removeEventListener('click', this.handleDocumentClick);
     }
 
-    componentDidUpdate() {
-
-        const ul = document.getElementById('owners');
-
-        (ul.getElementsByTagName('LI').length > 0 ) ? ul.getElementsByTagName('LI')[0].focus(): () => {};
-    }
-
     render() {
 
         var tabIndex = 2;
@@ -117,7 +110,7 @@ class SearchLocation extends React.Component {
                     />
                 </div>
                 <div className="autocomplete col-md-12 col-lg-12 col-xs-12 row" style={{visibility :  visibility}}>
-                    <ul id="owners" tabIndex="1" className="col-md-12 col-lg-12 col-xs-12">
+                    <ul id="places" tabIndex="1" className="col-md-12 col-lg-12 col-xs-12">
                         {places}
                     </ul>
                 </div>
@@ -133,7 +126,7 @@ export default Relay.createContainer(SearchLocation, {
         viewer: () => Relay.QL`
           fragment on Viewer {
                 id,
-                places(search: $search, first: 10) {
+                places(search: $search, first: 100) {
                   edges {
                     node {
                       id

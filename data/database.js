@@ -226,7 +226,7 @@ ContactInfo.belongsToMany(Contact, { through: ContactContactInfo, foreignKey: 'c
 Login.belongsToMany(Contact, { through: ContactLogin, foreignKey: 'login_id' });
 
 Owner.belongsToMany(Customer, {as: 'Customers', through: CustomerOwner, foreignKey: 'owner_id' });
-Owner.belongsToMany(Contact, { through: OwnerContact, foreignKey: 'owner_id' });
+Owner.belongsToMany(Contact, {as: 'Contacts', through: OwnerContact, foreignKey: 'owner_id' });
 Owner.belongsToMany(Property, { as: 'Properties', through: OwnerProperty, foreignKey: 'owner_id' });
 
 Owner.hasOne(OwnerCompanyName, { as:'OwnerCompanyName', foreignKey: 'owner_id' });

@@ -1,6 +1,6 @@
 import { GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLFloat } from 'graphql';
 import { connectionArgs, connectionFromPromisedArray, globalIdField, nodeDefinitions, fromGlobalId, connectionDefinitions} from 'graphql-relay';
-import { DB, User, Contact, Login, ContactInfo, Customer, Owner, Property, PropertyType, OwnerType, Media }from '../database';
+import { DB, User, Contact, Login, ContactInfo, Customer, Owner, Property, PropertyType, OwnerType, Media, Places }from '../database';
 import { Viewer, getViewer } from '../store/UserStore';
 
 
@@ -20,6 +20,7 @@ export const {nodeInterface, nodeField} = nodeDefinitions(
         if (type === 'Login') { return DB.models.login.findOne({where: {id: id}}); }
         if (type === 'Customer') { return DB.models.customer.findOne({where: {id: id}}); }
         if (type === 'Owner') { return DB.models.owner.findOne({where: {id: id}}); }
+        if (type === 'Plaes') { return DB.models.places.findOne({where: {id: id}}); }
         if (type === 'Property') { return DB.models.property.findOne({where: {id: id}}); }
         if (type === 'PropertyType') { return DB.models.property_type.findOne({where: {id: id}}); }
         if (type === 'Media') { return DB.models.media.findOne({where: {id: id}}); }
@@ -38,6 +39,7 @@ export const {nodeInterface, nodeField} = nodeDefinitions(
         else if (obj instanceof ContactInfo.Instance) { return contactInfoType; }
         else if (obj instanceof Customer.Instance) { return customerType; }
         else if (obj instanceof Owner.Instance) { return ownerType; }
+        else if (obj instanceof Places.Instance) { return placeTypeType; }
         else if (obj instanceof Property.Instance) { return propertyType; }
         else if (obj instanceof PropertyType.Instance) { return propertyTypeType; }
         else if (obj instanceof Media.Instance) { return mediaType; }
@@ -131,8 +133,8 @@ export const ownerType = new GraphQLObjectType({
             company: { type: GraphQLString,
                 resolve(owner) {
                     return DB.models.owner_company_name.findOne({where: {owner_id: owner.id}})
-                        .then(company_name => {
-                            return company_name? company_name.get('name') : '';
+                        .then(owner_company_name => {
+                            return owner_company_name? owner_company_name.get('name') : '';
                         });
                 }
             },
@@ -142,7 +144,11 @@ export const ownerType = new GraphQLObjectType({
                 }  )
             }},
             type_id: { type: GraphQLInt, resolve(owner) { return owner.type_id}},
-            contact: { type: contactType, resolve(owner) { return owner.getContacts().then( contacts => contacts ? contacts[0] : {} ) } },
+            contact: { type: contactType, resolve(owner) { return DB.models.owner_contact.findAll({where: {owner_id: owner.id}})
+                .then(owner_contact => {
+                    if(owner_contact.length > 0) return DB.models.contact.findAll({where: {id: owner_contact[0].contact_id}})
+                })
+                .then( contacts => contacts ? contacts[0] : {} ) } },
             properties : {
                 type: propertyConnection,
                 description: "An owner's collection of properties",
@@ -345,7 +351,17 @@ export const viewerType = new GraphQLObjectType({
                 },
                 resolve: (_, args) => {
                     var term = args.search? args.search + '%' : '';
-                    return connectionFromPromisedArray(DB.models.owner.findAll({where: {reference: {$like: term} }}), args)
+                    let where = term ? " WHERE o.reference like '"+ term + "' " +
+                            " OR ocn.name like '"+ term + "' " +
+                            " OR c.last_name like '"+ term + "' " :
+                        " WHERE o.reference like '' ";
+
+                    return connectionFromPromisedArray(DB.query('SELECT o.* FROM owner o' +
+                        ' LEFT JOIN owner_contact oc ON oc.owner_id = o.id' +
+                        ' LEFT JOIN owner_company_name ocn ON ocn.owner_id = o.id' +
+                        ' LEFT JOIN contact c ON c.id = oc.contact_id' +
+                        where,
+                        {type: DB.QueryTypes.SELECT}), args)
                 }
             },
             places: {

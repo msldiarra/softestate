@@ -3,7 +3,6 @@ import Relay from 'react-relay'
 import AddOwnerMutation from './AddOwnerMutation'
 import AppMessage from './AppMessage';
 import UserService from './AuthService';
-import Chance from 'chance';
 
 
 class NewOwner extends React.Component {
@@ -34,7 +33,7 @@ class NewOwner extends React.Component {
         let names = this.computeName(this.refs.name.value);
 
         var company = this.refs.company.value;
-        var reference =  new Chance().word({length: 12});
+        var reference =  this.refs.reference.value;
         var firstName =  names[0];
         var lastName =  names[1];
         var phone =  this.refs.phone.value;
@@ -96,6 +95,11 @@ class NewOwner extends React.Component {
                             <div className="form-group">
                                 <div className="col-md-12">
                                     <input ref="company" id="company" type="text" className="form-control" placeholder="Nom de la société" />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <div className="col-md-12">
+                                    <input ref="reference" id="reference" type="text" className="form-control" placeholder="Reference client" />
                                 </div>
                             </div>
                             <div className="form-group">

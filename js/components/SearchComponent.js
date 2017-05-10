@@ -12,6 +12,7 @@ class SearchComponent extends React.Component {
     }
 
     handleSearch(e) {
+        e.preventDefault();
         var searchedText = ReactDOM.findDOMNode(this.refs.searchInput).value
         this.setState({searchedText: searchedText, isVisible: true},
             () =>  this.props.relay.forceFetch({search: searchedText })
@@ -73,25 +74,18 @@ class SearchComponent extends React.Component {
         document.getElementById('root').removeEventListener('click', this.handleDocumentClick);
     }
 
-    componentDidUpdate() {
-
-        const ul = document.getElementById('owners');
-
-        (ul.getElementsByTagName('LI').length > 0 ) ? ul.getElementsByTagName('LI')[0].focus(): () => {};
-    }
-
     render() {
 
         var tabIndex = 2;
 
         var owners = this.props.viewer.owners.edges.map(function(edge){
 
-            const fullName = edge.node.contact ? edge.node.contact.first_name+' '+edge.node.contact.last_name: "...";
+            const fullName = edge.node.contact && edge.node.contact.first_name ? edge.node.contact.first_name+' '+edge.node.contact.last_name: "...";
             tabIndex++;
 
             return <li key={edge.node.id} data-owner-id={edge.node.id}  data-owner-reference={edge.node.reference} tabIndex={tabIndex} className="col-md-12 col-lg-12 col-xs-12"
                        onClick={this.handleClick.bind(this)}  onKeyDown={this.handlePressEnter.bind(this)} >
-                        <div>Réf : {edge.node.reference} - <b>{fullName}</b></div>
+                        <div><b>{fullName} (réf. : {edge.node.reference})</b></div>
                     </li>
         }.bind(this));
 

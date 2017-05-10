@@ -245,7 +245,7 @@ CREATE VIEW Users AS
     LEFT JOIN contact_info AS ci ON ci.Id = cci.contact_info_id;
 
 CREATE VIEW Places AS
-  SELECT loc.id, loc.country, loc.district, loc.city, n.name AS neighborhood,
+  SELECT ROW_NUMBER() OVER (ORDER BY loc.id ASC) AS id, loc.country, loc.district, loc.city, n.name AS neighborhood,
     coalesce(loc.country, '') || ' ' || coalesce(loc.district, '') || ' ' || coalesce(loc.city, '') || ' ' || coalesce(n.name, '') as search_terms
     FROM location AS loc
     LEFT JOIN neighborhood AS n on n.location_id = loc.id;
