@@ -269,5 +269,5 @@ type Viewer implements Node {
   contact: Contact
   owners(after: String, first: Int, before: String, last: Int, search: String!): OwnersConnection
   places(after: String, first: Int, before: String, last: Int, search: String!): PlacesConnection
-  properties(after: String, first: Int, before: String, last: Int, reference: String, city: String): PropertiesConnection
+  properties(after: String, first: Int, before: String, last: Int, reference: String, city: String, contract_type: Int): PropertiesConnection
 }

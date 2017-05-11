@@ -7,7 +7,7 @@ class Properties extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { loading :  false} ;
+        this.state = { loading :  false, contractType : 1} ;
         this.onScroll = this.onScroll.bind(this)
 
     }
@@ -26,6 +26,11 @@ class Properties extends React.Component {
                 })
             }
         }
+    }
+
+    changeContractType(value) {
+        this.setState({contractType: value},
+            () => {this.props.relay.setVariables({contractType: value})});
     }
 
     componentDidMount() {
@@ -52,19 +57,27 @@ class Properties extends React.Component {
         }
 
         return (
-            <div className="">
-                <ReactCSSTransitionGroup transitionName="example" transitionAppear={true} transitionAppearTimeout={500} transitionEnterTimeout={0} transitionLeaveTimeout={0}>
+            <div>
+                <div className="" style={{height:'60px', lineHeight:'60px', verticalAlign:'middle'}}>
                     {city?
-                        <div className="page-header">
-                            <h3>{city}</h3>
-                        </div>
+                        <div className="col-xs-4"><span className="font-passion-one">{city}</span></div>
                         : ''
                     }
-                    <div className="row">{properties}</div>
-                    {this.state.loading &&
-                        <div className="text-center"><i className="fa fa-2x fa-spinner" /></div>
-                    }
-                </ReactCSSTransitionGroup>
+                    <div className="form-group col-xs-8 pull-right" >
+                        <div className="btn-group btn-group-justified-custom" role="group" >
+                            <div className="btn-group" role="group">
+                                <button onClick={this.changeContractType.bind(this, 1)} type="button" className={"btn btn-default " + (this.state.contractType ==  1? "active" : "")} value="1">Location</button>
+                            </div>
+                            <div className="btn-group" role="group">
+                                <button onClick={this.changeContractType.bind(this, 2)} type="button" className={"btn btn-default " + (this.state.contractType ==  2? "active" : "")} value="2">Vente</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="row">{properties}</div>
+                {this.state.loading &&
+                    <div className="text-center"><i className="fa fa-2x fa-spinner" /></div>
+                }
             </div>
         );
     }
@@ -72,12 +85,12 @@ class Properties extends React.Component {
 
 export default Relay.createContainer(Properties, {
 
-    initialVariables: {reference: "", city :"", count: 15 },
+    initialVariables: {reference: "", city :"", contractType: 1, count: 15 },
 
     fragments: {
         customer: () => Relay.QL`
           fragment on Viewer {
-            properties(reference: $reference, city: $city, first: $count) {
+            properties(reference: $reference, city: $city, contract_type: $contractType, first: $count) {
               edges {
                 node {
                   id

@@ -250,8 +250,19 @@ a {
     margin-bottom: 0px !important;
     margin-top: 30px !important;
     padding-left: 0px !important;
+}
+
+.font-passion-one {
     color:#000;
     font-family: 'Passion One', cursive !important;
+    font-size: 25px;
+}
+
+.btn-group-justified-custom {
+    display: inline-table;
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
 }
 
 .example-appear {

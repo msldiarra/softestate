@@ -45,9 +45,7 @@ export default class Property extends React.Component {
 
         return (
             <div className="">
-                <ReactCSSTransitionGroup transitionName="example" transitionAppear={true} transitionAppearTimeout={500} transitionEnterTimeout={0} transitionLeaveTimeout={0}>
                     {propertyDisplay}
-                </ReactCSSTransitionGroup>
             </div>
         );
     }

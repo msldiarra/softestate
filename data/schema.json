@@ -1756,6 +1756,16 @@
                     "ofType": null
                   },
                   "defaultValue": null
+                },
+                {
+                  "name": "contract_type",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
                 }
               ],
               "type": {

@@ -424,18 +424,24 @@ export const viewerType = new GraphQLObjectType({
                     city: {
                         name: 'city',
                         type: GraphQLString
+                    },
+                    contract_type: {
+                        name: 'contract_type',
+                        type: GraphQLInt
                     }
                 },
                 resolve: (_, args) => {
 
-                    var term ='',
+                    var reference ='',
                         city_term = '',
+                        contract_type = '',
                         city_where_term = '';
 
-                    if(args.reference) { term = " AND reference = '" +args.reference + "'" ; }
+                    if(args.reference) { reference = " AND LOWER(reference) = LOWER('" +args.reference + "')" ; }
+                    if(args.contract_type) { contract_type = " AND ppc.property_contract_id = '" +args.contract_type + "'" ; }
                     if(args.city) {
                         city_term = " INNER JOIN property_location pl ON pl.property_id = p.id" +
-                               " INNER JOIN location l ON l.id = pl.location_id ";
+                                    " INNER JOIN location l ON l.id = pl.location_id ";
                         city_where_term = " AND LOWER(l.city) = LOWER('" +args.city + "')";
 
                     }
@@ -443,11 +449,14 @@ export const viewerType = new GraphQLObjectType({
 
                     return connectionFromPromisedArray(DB.query('SELECT p.* FROM property p ' +
                         city_term +
+                        ' LEFT JOIN property_property_contract ppc ON ppc.property_id = p.id' +
                         ' WHERE p.id in ' +
                         '(SELECT property_id FROM owner_property op ' +
-                        ' INNER JOIN customer_owner co ON co.owner_id = op.owner_id' +
-                        ' INNER JOIN customer c ON c.id = co.customer_id' +
-                        ' WHERE c.name = \'AIA-Mali SARL\') ' + term
+                        ' LEFT JOIN customer_owner co ON co.owner_id = op.owner_id' +
+                        ' LEFT JOIN customer c ON c.id = co.customer_id' +
+                        ' WHERE c.name = \'AIA-Mali SARL\') '
+                        + reference
+                        + contract_type
                         + city_where_term
                         + ' ORDER BY p.start_date DESC',
                         {type: DB.QueryTypes.SELECT}), args)
