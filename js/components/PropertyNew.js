@@ -27,9 +27,9 @@ export default class Property extends React.Component {
                                 :
                                 <div className="default-img" style={{overflowY: 'hidden', verticalAlign:'middle', textAlign:'center'}} >
                                     {this.props.property.type_id != 3 ?
-                                        <i className="fa fa-2x fa-home" />
+                                        <i className="fa fa-2x fa-home grey" />
                                         :
-                                        <i className="fa fa-2x fa-map-pin" />
+                                        <i className="fa fa-2x fa-map-pin grey" />
                                     }
                                 </div>
                             }
