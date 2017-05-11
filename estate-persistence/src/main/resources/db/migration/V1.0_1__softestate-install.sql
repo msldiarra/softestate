@@ -244,11 +244,28 @@ CREATE VIEW Users AS
     LEFT JOIN contact_contact_info AS cci ON cci.contact_id = c.id
     LEFT JOIN contact_info AS ci ON ci.Id = cci.contact_info_id;
 
+
 CREATE VIEW Places AS
-  SELECT ROW_NUMBER() OVER (ORDER BY loc.id ASC) AS id, loc.country, loc.district, loc.city, n.name AS neighborhood,
-    coalesce(loc.country, '') || ' ' || coalesce(loc.district, '') || ' ' || coalesce(loc.city, '') || ' ' || coalesce(n.name, '') as search_terms
+  SELECT ROW_NUMBER() OVER (ORDER BY location.id ASC) AS id, country, district, city, neighborhood, search_terms FROM (
+
+    SELECT loc.id,
+      loc.country,
+      loc.district,
+      loc.city,
+      n.name                     AS neighborhood,
+      COALESCE(n.name, loc.city) AS search_terms
     FROM location AS loc
-    LEFT JOIN neighborhood AS n on n.location_id = loc.id;
+      LEFT JOIN neighborhood AS n ON n.location_id = loc.id
+    UNION
+    SELECT
+      loc.id,
+      loc.country,
+      loc.district,
+      loc.city,
+      null                     AS name,
+      loc.city AS search_terms
+    FROM location AS loc
+  ) AS location;
 
 /*
 CREATE VIEW PropertyDetails AS

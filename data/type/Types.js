@@ -405,8 +405,11 @@ export const viewerType = new GraphQLObjectType({
                     }
                 },
                 resolve: (_, args) => {
-                    var term = args.search? '%' + args.search + '%' : '';
-                    return connectionFromPromisedArray(DB.models.places.findAll({where: {search_terms: {$like: term} }}), args)
+                    var term = args.search? args.search + '%' : '';
+                    return connectionFromPromisedArray(DB.models.places.findAll({
+                        where: {search_terms: {$like: term} },
+                        order: '"city"'
+                    }), args)
                 }
             },
             properties : {
