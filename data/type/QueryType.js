@@ -14,18 +14,8 @@ export default new GraphQLObjectType({
         viewer: {
             type: viewerType,
             args: { viewerId: { name: 'viewerId', type: GraphQLInt} },
-            resolve: (root, {viewerId}) => { return DB.models.user.findOne({where: {id: viewerId}})
-                .then(response => {
-
-                    if(response) {
-                        registerViewer(response)
-                        return getViewer(response.id)
-                    }
-
-                    else {
-                        return 'me'
-                    }
-                })
+            resolve: (root, {viewerId}) => {
+                return {id: 'me'}
             }
         }
     })

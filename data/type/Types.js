@@ -1,7 +1,7 @@
 import { GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLFloat, GraphQLScalarType, GraphQLError, Kind } from 'graphql';
 import { connectionArgs, connectionFromPromisedArray, globalIdField, nodeDefinitions, fromGlobalId, connectionDefinitions} from 'graphql-relay';
 import { DB, User, Contact, Login, ContactInfo, Customer, Owner, Property, PropertyType, OwnerType, Media, Places }from '../database';
-import { Viewer, getViewer } from '../store/UserStore';
+import { Viewer,  } from '../store/UserStore';
 import moment from 'moment';
 
 
@@ -25,7 +25,7 @@ export const {nodeInterface, nodeField} = nodeDefinitions(
         if (type === 'PropertyType') { return DB.models.property_type.findOne({where: {id: id}}); }
         if (type === 'Media') { return DB.models.media.findOne({where: {id: id}}); }
         if (type === 'OwnerType') { return DB.models.owner_type.findOne({where: {id: id}}); }
-        if (type === 'Viewer') { return getViewer(id)}
+        if (type === 'Viewer') { return {id: id} }
         else { return null; }
     },
     (obj) => {
@@ -33,7 +33,7 @@ export const {nodeInterface, nodeField} = nodeDefinitions(
         console.log("in interface obj: " + JSON.stringify(obj))
 
         
-        if (obj instanceof User.Instance) { return viewerType; }
+        if (obj instanceof User.Instance) { return userType; }
         else if (obj instanceof Contact.Instance) { return contactType; }
         else if (obj instanceof Login.Instance) { return loginType; }
         else if (obj instanceof ContactInfo.Instance) { return contactInfoType; }
@@ -44,7 +44,7 @@ export const {nodeInterface, nodeField} = nodeDefinitions(
         else if (obj instanceof PropertyType.Instance) { return propertyTypeType; }
         else if (obj instanceof Media.Instance) { return mediaType; }
         else if (obj instanceof OwnerType.Instance) { return ownerTypeType; }
-        else if (obj instanceof Viewer) { return viewerType; }
+        else if (obj.id = 'me') { return viewerType; }
         else {
             return null;
         }
@@ -437,13 +437,13 @@ export const viewerType = new GraphQLObjectType({
                         contract_type = '',
                         city_where_term = '';
 
+
                     if(args.reference) { reference = " AND LOWER(reference) = LOWER('" +args.reference + "')" ; }
                     if(args.contract_type) { contract_type = " AND ppc.property_contract_id = '" +args.contract_type + "'" ; }
                     if(args.city) {
                         city_term = " INNER JOIN property_location pl ON pl.property_id = p.id" +
                                     " INNER JOIN location l ON l.id = pl.location_id ";
                         city_where_term = " AND LOWER(l.city) = LOWER('" +args.city + "')";
-
                     }
 
 
