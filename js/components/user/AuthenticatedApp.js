@@ -1,7 +1,7 @@
 import React from 'react';
 import Relay from 'react-relay';
 import Header from './Header';
-import AuthService from './AuthService';
+import AuthService from '../service/AuthService';
 
 class AuthenticatedApp extends React.Component {
 

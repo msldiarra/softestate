@@ -1,8 +1,8 @@
 import React from 'react';
 import Relay from 'react-relay';
 import Images from './Images';
-import DeletePropertyMutation from './DeletePropertyMutation';
-import UserService from './AuthService'
+import DeletePropertyMutation from '../mutation/DeletePropertyMutation';
+import UserService from '../service/AuthService'
 import AppMessage from './AppMessage';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 

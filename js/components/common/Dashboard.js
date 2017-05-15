@@ -1,6 +1,5 @@
 import React from 'react';
 import Relay from 'react-relay';
-import AuthenticatedComponent from './AuthenticatedComponent';
 import Properties  from './Properties'
 
 class Dashboard extends React.Component {

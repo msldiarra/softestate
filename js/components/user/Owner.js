@@ -1,5 +1,5 @@
 import React from 'react';
-import PropertySummary from './PropertySummary';
+import PropertySummary from '../PropertySummary';
 
 export default class Owner extends React.Component {
 

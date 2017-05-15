@@ -1,23 +1,22 @@
 import React from 'react'
 import Relay from 'react-relay'
-import EditPropertyMutation from './EditPropertyMutation'
-import AppMessage from './AppMessage';
+import AddPropertyMutation from '../mutation/AddPropertyMutation'
+import AttachMediaMutation from '../mutation/AttachMediaMutation'
+import AppMessage from '../common/AppMessage';
 import SearchComponent from './SearchComponent';
 import SearchLocation from './SearchLocation';
 import AttachMedia from './AttachMedia';
-import UserService from './AuthService'
-import ReactDOM from 'react-dom'
-import AttachMediaMutation from './AttachMediaMutation'
-import {EditorState, ContentState} from 'draft-js';
-import RichEditor from './RichEditor';
+import UserService from '../service/AuthService'
+import ReactDOM from 'react-dom';
+import Chance from 'chance';
 
 
-class PropertyDetailsEdit extends React.Component {
+
+class NewProperty extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            type_id : 0,
+        this.state = {propertyType : 0,
             contractType : 0,
             ownerRef: '',
             message : "",
@@ -30,37 +29,32 @@ class PropertyDetailsEdit extends React.Component {
         } ;
     }
 
-
-    onEditDescription(editorState){
-
-        this.setState({editorState});
-    }
-
-    onEditProperty(e) {
+    onAddProperty(e) {
 
         e.preventDefault();
 
-        var property = this.props.viewer.properties.edges[0].node;
-
-        var type_id =  this.state.type_id;
+        var name = new Chance().word({length: 12});
+        var reference =  new Chance().word({length: 12});
+        var propertyType =  this.state.propertyType;
         var contractType =  this.state.contractType;
-        var description =  ''; //this.state.editorState.getCurrentContent().getPlainText();
+        var description =  ''
         var size = this.refs.size.value;
         var unit = this.refs.unit.value;
         var floorCount = this.state.floorCount;
         var roomCount = this.state.roomCount;
-        var price = this.refs.price.value;
         var city = this.state.city;
         var neighborhood = this.state.neighborhood;
+        var price = this.refs.price.value;
         var owner = this.state.ownerRef;
         var mediaNames = this.state.mediaNames;
 
 
-        var editPropertyMutation = new EditPropertyMutation({
+        var addPropertyMutation = new AddPropertyMutation({
             viewer: this.props.viewer,
             viewerId: UserService.getUserId(),
-            reference: property.reference,
-            propertyType: type_id,
+            name: name,
+            reference: reference,
+            propertyType: propertyType,
             contractType: contractType,
             description: description,
             size: size,
@@ -68,31 +62,25 @@ class PropertyDetailsEdit extends React.Component {
             floorCount: floorCount,
             roomCount: roomCount,
             price: price,
-            ownerRef: owner,
             city: city,
             neighborhood: neighborhood,
+            ownerRef: owner,
             mediaNames: mediaNames
         });
 
-        var onSuccess = () => this.context.router.push('/admin/property/' + property.reference);
+        var onSuccess = () => this.context.router.push('/admin/property/' + reference);
 
-        var onFailure = (transaction) => {
-            console.log(transaction.getError());
-            this.setState({message : "Désolé, nous avons rencontré un problème lors de l'enregistrement." +
-            " Contactez l'administrateur" });
-        }
+        var onFailure = (transaction) => this.setState({message : "Désolé, nous avons rencontré un problème lors de l'enregistrement." +
+        " Contactez l'administrateur"});
 
-        Relay.Store.commitUpdate(editPropertyMutation, {onSuccess, onFailure})
+        Relay.Store.commitUpdate(addPropertyMutation, {onSuccess, onFailure})
 
     }
 
     onMediaInsert(file, uri) {
 
         var onSuccess = (response) => this.setState({message: "Nouvelle image ajoutée avec succes!"});
-        var onFailure = (transaction) => {
-            this.setState({message: "Désolé, nous avons rencontré un problème lors de l'enregistrement." +
-            " Contactez l'administrateur"});
-        }
+        var onFailure = (transaction) => this.setState({message: transaction});
 
         Relay.Store.commitUpdate(
             new AttachMediaMutation({
@@ -105,18 +93,18 @@ class PropertyDetailsEdit extends React.Component {
         );
     }
 
-    onAddMedia(mediaName) {
+    onAddMedia(mediaNames) {
         var names = this.state.mediaNames;
-        names.push(mediaName);
+        names.push(mediaNames);
         this.setState({mediaNames: names});
     }
 
     changePropertyType(e) {
-        this.setState({ type_id : e.target.value });
+        this.setState({propertyType: e.target.value});
     }
 
     changeContractType(e) {
-        this.setState({ contractType : e.target.value });
+        this.setState({contractType: e.target.value});
     }
 
     onDecrementFloor(e) {
@@ -150,65 +138,50 @@ class PropertyDetailsEdit extends React.Component {
         });
     }
 
-    componentDidMount() {
-
-        var property = this.props.viewer.properties.edges[0].node;
-
-        this.setState({
-            type_id : property.type_id ,
-            contractType : property.contract_type,
-            roomCount : property.room_count? property.room_count: 0,
-            city : property.city, 'neighborhood': property.neighborhood
-        });
-
-    }
-
     render() {
-
-        var property = this.props.viewer.properties.edges[0].node;
         const text = this.state.message;
-        let location = property.neighborhood? property.city +', '+ property.neighborhood: property.city
+
 
         return (
             <div className="">
                 <div className="page-header col-md-6 center-block row">
                     <h3>
-                        <span className="col-md-12"><i className="fa fa-home" aria-hidden="true" /> Propriété</span>
+                        <span className="col-md-12"><i className="fa fa-home" aria-hidden="true" /> Nouvelle propriété</span>
                     </h3>
                 </div>
 
                 {text? <AppMessage message={text} /> : ''}
 
-                <form className="form-horizontal padding-20" name="edit-property" >
+                <form className="form-horizontal padding-20" name="add-property">
                     <div className="page-content row">
                         <div className="col-md-6 center-block">
                             <div className="form-group">
                                 <div className="col-md-12">
-                                    <SearchComponent userID={UserService.getUserId()}
+                                    <SearchComponent viewerId={UserService.getUserId()}
                                                      search="" placeHolder="Entrer le nom du Propriétaire"
                                                      onOwnerEnter={this.onOwnerEnter.bind(this)}
-                                                     defaultValue={property.owner.reference}
+                                                     defaultValue=""
                                         {...this.props} />
                                 </div>
                             </div>
                             <div className="form-group">
                                 <div className="col-md-12">
                                     <SearchLocation search="" placeHolder="Entrer la ville ou le quartier"
-                                                    onLocationEnter={this.onLocationEnter.bind(this)}
-                                                    defaultValue={location}
+                                                     onLocationEnter={this.onLocationEnter.bind(this)}
+                                                     defaultValue=""
                                         {...this.props} />
                                 </div>
                             </div>
                             <div className="form-group">
                                 <div className="btn-group btn-group-justified col-md-12" role="group" >
                                     <div className="btn-group" role="group">
-                                        <button onClick={this.changePropertyType.bind(this)} type="button" className={"btn btn-default " + (this.state.type_id ==  1? "active" : "")} value="1">Appart.</button>
+                                        <button onClick={this.changePropertyType.bind(this)} type="button" className={"btn btn-default " + (this.state.propertyType ==  1? "active" : "")} value="1">Appart.</button>
                                     </div>
                                     <div className="btn-group" role="group">
-                                        <button onClick={this.changePropertyType.bind(this)} type="button" className={"btn btn-default " + (this.state.type_id ==  2? "active" : "")} value="2">Villa</button>
+                                        <button onClick={this.changePropertyType.bind(this)} type="button" className={"btn btn-default " + (this.state.propertyType ==  2? "active" : "")} value="2">Villa</button>
                                     </div>
                                     <div className="btn-group" role="group">
-                                        <button onClick={this.changePropertyType.bind(this)} type="button" className={"btn btn-default " + (this.state.type_id ==  3? "active" : "")} value="3">Terrain</button>
+                                        <button onClick={this.changePropertyType.bind(this)} type="button" className={"btn btn-default " + (this.state.propertyType ==  3? "active" : "")} value="3">Terrain</button>
                                     </div>
                                 </div>
                             </div>
@@ -231,15 +204,15 @@ class PropertyDetailsEdit extends React.Component {
                                 <div className="col-md-12">
                                     <div className="input-group col-md-12">
                                         <span className="input-group-addon">Prix en CFA</span>
-                                        <input type="text" ref="price" id="price" defaultValue={property.price} className="form-control" placeholder="Loyer ou prix de vente" />
+                                        <input type="text" ref="price" id="price" className="form-control" placeholder="Loyer ou prix de vente" />
                                     </div>
                                 </div>
                             </div>
                             <div className="form-group">
                                 <div className="col-md-12">
                                     <div className="input-group col-xs-12">
-                                        <input type="text" ref="size" id="size" defaultValue={property.size} className="form-control" style={{width:'70%'}} placeholder="Superficie totale du bien" />
-                                        <select ref="unit" defaultValue={property.size_unit} className="form-control text-center" style={{width:'30%', fontWeight:'600'}} >
+                                        <input type="text" ref="size" id="size" className="form-control" style={{width:'70%'}} placeholder="Superficie totale du bien" />
+                                        <select ref="unit" className="form-control text-center" style={{width:'30%', fontWeight:'600'}} >
                                             <option value="m²" style={{fontWeight:'600'}} >m²</option>
                                             <option value="ha" style={{fontWeight:'600'}} >ha</option>
                                         </select>
@@ -271,7 +244,7 @@ class PropertyDetailsEdit extends React.Component {
                             <br/>
                             <div className="form-group">
                                 <div className="col-md-12">
-                                    <inupt type="submit" style={{width:'100%'}}className="btn btn-primary" onClick={this.onEditProperty.bind(this)}><b>Enregistrer la nouvelle propriété</b></inupt>
+                                    <inupt type="submit" style={{width:'100%'}}className="btn btn-primary" onClick={this.onAddProperty.bind(this)}><b>Enregistrer la nouvelle propriété</b></inupt>
                                 </div>
                             </div>
                         </div>
@@ -279,56 +252,25 @@ class PropertyDetailsEdit extends React.Component {
                 </form>
             </div>
         );
-
     }
 }
 
-PropertyDetailsEdit.contextTypes = {
+
+NewProperty.contextTypes = {
     router: React.PropTypes.object.isRequired
 }
 
-export default Relay.createContainer(PropertyDetailsEdit, {
-
-    initialVariables: {reference: ''},
+export default Relay.createContainer(NewProperty, {
 
     fragments: {
         viewer: () => Relay.QL`
           fragment on Viewer {
-                id,
-                properties(reference: $reference, first: 10) {
-                  edges {
-                    node {
-                      id
-                      reference
-                      name
-                      type_id
-                      contract_type
-                      city
-                      neighborhood
-                      size
-                      size_unit
-                      floor_count
-                      room_count
-                      price
-                      description
-                      owner {
-                        reference
-                      }
-                      media(first: 10) {
-                        edges {
-                            node {
-                                uri
-                            }
-                        }
-                      }
-                    }
-                  },
-                },
-                ${EditPropertyMutation.getFragment('viewer')}
-                ${SearchComponent.getFragment('viewer')}
-                ${SearchLocation.getFragment('viewer')}
-                ${AttachMediaMutation.getFragment('viewer')}
+               id,
+               ${AddPropertyMutation.getFragment('viewer')}
+               ${SearchComponent.getFragment('viewer')}
+               ${SearchLocation.getFragment('viewer')}
+               ${AttachMediaMutation.getFragment('viewer')}
           }
     `,
-    },
+    }
 });

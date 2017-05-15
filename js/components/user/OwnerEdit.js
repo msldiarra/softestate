@@ -1,8 +1,8 @@
 import React from 'react'
 import Relay from 'react-relay'
-import EditOwnerMutation from './EditOwnerMutation'
-import AppMessage from './AppMessage';
-import UserService from './AuthService'
+import EditOwnerMutation from '../mutation/EditOwnerMutation'
+import AppMessage from '../common/AppMessage';
+import UserService from '../service/AuthService'
 
 
 class OwnerEdit extends React.Component {

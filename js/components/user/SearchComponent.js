@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Relay from 'react-relay'
-import UserService from './AuthService'
+import UserService from '../service/AuthService'
 
 
 class SearchComponent extends React.Component {

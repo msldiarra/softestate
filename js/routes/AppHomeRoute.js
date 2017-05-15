@@ -2,16 +2,16 @@ import Relay from 'react-relay';
 import React from 'react';
 import IndexRoute from 'react-router/lib/IndexRoute';
 import Route from 'react-router/lib/Route';
-import AuthenticatedApp from '../components/AuthenticatedApp';
+import AuthenticatedApp from '../components/user/AuthenticatedApp';
 import AnonymousApp from '../components/AnonymousApp';
-import Dashboard from '../components/Dashboard';
-import Login from '../components/Login';
-import NewOwner from '../components/NewOwner';
-import NewProperty from '../components/NewProperty';
-import PropertyDetails from '../components/PropertyDetails';
-import PropertyDetailsEdit from '../components/PropertyDetailsEdit';
-import OwnerDetails from '../components/OwnerDetails';
-import OwnerEdit from '../components/OwnerEdit';
+import Dashboard from '../components/common/Dashboard';
+import Login from '../components/user/Login';
+import NewOwner from '../components/user/NewOwner';
+import NewProperty from '../components/user/NewProperty';
+import PropertyDetails from '../components/common/PropertyDetails';
+import PropertyDetailsEdit from '../components/user/PropertyDetailsEdit';
+import OwnerDetails from '../components/user/OwnerDetails';
+import OwnerEdit from '../components/user/OwnerEdit';
 
 class RouteHome extends Relay.Route {
     static queries = {

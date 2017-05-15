@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Relay from 'react-relay'
-import AttachMediaMutation from './AttachMediaMutation'
-import UserService from './AuthService'
+import AttachMediaMutation from '../mutation/AttachMediaMutation'
+import UserService from '../service/AuthService'
 
 export default class AttachMedia extends React.Component {
 

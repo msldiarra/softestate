@@ -1,8 +1,8 @@
 import React from 'react'
 import Relay from 'react-relay'
-import AddOwnerMutation from './AddOwnerMutation'
-import AppMessage from './AppMessage';
-import UserService from './AuthService';
+import AddOwnerMutation from '../mutation/AddOwnerMutation'
+import AppMessage from '../common/AppMessage';
+import UserService from '../service/AuthService';
 
 
 class NewOwner extends React.Component {
