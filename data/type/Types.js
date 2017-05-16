@@ -1,7 +1,7 @@
 import { GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLFloat, GraphQLScalarType, GraphQLError, Kind } from 'graphql';
 import { connectionArgs, connectionFromPromisedArray, globalIdField, nodeDefinitions, fromGlobalId, connectionDefinitions} from 'graphql-relay';
 import { DB, User, Contact, Login, ContactInfo, Customer, Owner, Property, PropertyType, OwnerType, Media, Places }from '../database';
-import { Viewer,  } from '../store/UserStore';
+import { Viewer, getViewer } from '../store/UserStore';
 import moment from 'moment';
 
 
@@ -25,7 +25,7 @@ export const {nodeInterface, nodeField} = nodeDefinitions(
         if (type === 'PropertyType') { return DB.models.property_type.findOne({where: {id: id}}); }
         if (type === 'Media') { return DB.models.media.findOne({where: {id: id}}); }
         if (type === 'OwnerType') { return DB.models.owner_type.findOne({where: {id: id}}); }
-        if (type === 'Viewer') { return {id: id} }
+        if (type === 'Viewer') { return getViewer(id)}
         else { return null; }
     },
     (obj) => {
@@ -44,7 +44,7 @@ export const {nodeInterface, nodeField} = nodeDefinitions(
         else if (obj instanceof PropertyType.Instance) { return propertyTypeType; }
         else if (obj instanceof Media.Instance) { return mediaType; }
         else if (obj instanceof OwnerType.Instance) { return ownerTypeType; }
-        else if (obj.id = 'me') { return viewerType; }
+        else if (obj.id.startsWith('me')) { return viewerType; }
         else {
             return null;
         }
@@ -335,25 +335,90 @@ export const userType = new GraphQLObjectType({
     fields: () => {
         return {
             id: globalIdField('UserType'),
-            firstName: {
-                type: GraphQLString,
-                resolve: (obj) => obj.firstName
+            firstName: { type: GraphQLString, resolve: (obj) => obj.first_name },
+            lastName: { type: GraphQLString, resolve: (obj) => obj.last_name },
+            login: { type: GraphQLString, resolve: (obj) => obj.login },
+            email: { type: GraphQLString, resolve: (obj) => obj.email },
+            enabled: { type: GraphQLBoolean, resolve: (obj) => obj.enabled },
+            customer: { type: GraphQLString, resolve(user) { return user.customer} },
+            contact: { type: contactType, resolve(user) { return DB.models.contact.findOne({where: {id: user.id}}) } },
+            owners: {
+                type: ownerConnection,
+                description: "A customer's collection of owners",
+                args: {
+                    ...connectionArgs,
+                    search: {
+                        name: 'search',
+                        type: new GraphQLNonNull(GraphQLString)
+                    }
+                },
+                resolve: (user, args) => {
+                    var term = args.search? args.search + '%' : '';
+                    let where = term ? " WHERE o.reference like '"+ term + "' " +
+                    " OR ocn.name like '"+ term + "' " +
+                    " OR c.last_name like '"+ term + "' " : " WHERE o.reference like '' ";
+
+                    return connectionFromPromisedArray(DB.query('SELECT o.* FROM owner o' +
+                        ' LEFT JOIN owner_contact oc ON oc.owner_id = o.id' +
+                        ' LEFT JOIN owner_company_name ocn ON ocn.owner_id = o.id' +
+                        ' LEFT JOIN customer_owner co ON co.owner_id = o.id' +
+                        ' LEFT JOIN customer cu ON cu.id = co.customer_id' +
+                        ' LEFT JOIN contact c ON c.id = oc.contact_id' +
+                        where +
+                        " AND customer.name = '" + user.customer + "' ",
+                        {type: DB.QueryTypes.SELECT}), args)
+                }
             },
-            lastName: {
-                type: GraphQLString,
-                resolve: (obj) => obj.lastName
-            },
-            login: {
-                type: GraphQLString,
-                resolve: (obj) => obj.login
-            },
-            email: {
-                type: GraphQLString,
-                resolve: (obj) => obj.email
-            },
-            enabled: {
-                type: GraphQLBoolean,
-                resolve: (obj) => obj.enabled
+            properties : {
+                type: propertyConnection,
+                description: "An owner's collection of properties",
+                args: {
+                    ...connectionArgs,
+                    reference: {
+                        name: 'reference',
+                        type: GraphQLString
+                    },
+                    city: {
+                        name: 'city',
+                        type: GraphQLString
+                    },
+                    contract_type: {
+                        name: 'contract_type',
+                        type: GraphQLInt
+                    }
+                },
+                resolve: (user, args) => {
+
+                    var reference ='',
+                        city_term = '',
+                        contract_type = '',
+                        city_where_term = '';
+
+
+                    if(args.reference) { reference = " AND LOWER(reference) = LOWER('" +args.reference + "')" ; }
+                    if(args.contract_type) { contract_type = " AND ppc.property_contract_id = '" +args.contract_type + "'" ; }
+                    if(args.city) {
+                        city_term = " INNER JOIN property_location pl ON pl.property_id = p.id" +
+                            " INNER JOIN location l ON l.id = pl.location_id ";
+                        city_where_term = " AND LOWER(l.city) = LOWER('" +args.city + "')";
+                    }
+
+
+                    return connectionFromPromisedArray(DB.query('SELECT p.* FROM property p ' +
+                        city_term +
+                        ' LEFT JOIN property_property_contract ppc ON ppc.property_id = p.id' +
+                        ' WHERE p.id in ' +
+                        '(SELECT property_id FROM owner_property op ' +
+                        ' LEFT JOIN customer_owner co ON co.owner_id = op.owner_id' +
+                        ' LEFT JOIN customer c ON c.id = co.customer_id' +
+                        " WHERE c.name = '"+ user.customer +"') "
+                        + reference
+                        + contract_type
+                        + city_where_term
+                        + ' ORDER BY p.start_date DESC',
+                        {type: DB.QueryTypes.SELECT}), args)
+                }
+
             }
         }
     },
@@ -366,9 +431,9 @@ export const viewerType = new GraphQLObjectType({
     fields: () => {
         return {
             id: globalIdField('Viewer'),
-            user: { type:  userType, resolve: (obj) => obj},
-            customer: { type: GraphQLString, resolve(user) { return user.customer} },
-            contact: { type: contactType, resolve(user) { return DB.models.contact.findOne({where: {id: user.id}}) } },
+            user: { type:  userType, resolve: (obj) => {
+                if(obj.userId) return DB.models.user.findOne({where: {id: obj.userId}})
+            } },
             owners: {
                 type: ownerConnection,
                 description: "A customer's collection of owners",
@@ -454,7 +519,7 @@ export const viewerType = new GraphQLObjectType({
                         '(SELECT property_id FROM owner_property op ' +
                         ' LEFT JOIN customer_owner co ON co.owner_id = op.owner_id' +
                         ' LEFT JOIN customer c ON c.id = co.customer_id' +
-                        ' WHERE c.name = \'AIA-Mali SARL\') '
+                        ' ) '
                         + reference
                         + contract_type
                         + city_where_term

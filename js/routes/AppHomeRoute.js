@@ -5,6 +5,7 @@ import Route from 'react-router/lib/Route';
 import AuthenticatedApp from '../components/user/AuthenticatedApp';
 import AnonymousApp from '../components/AnonymousApp';
 import Dashboard from '../components/common/Dashboard';
+import CustomerDashboard from '../components/user/CustomerDashboard';
 import Login from '../components/user/Login';
 import NewOwner from '../components/user/NewOwner';
 import NewProperty from '../components/user/NewProperty';
@@ -52,7 +53,7 @@ function getAnonymousParams(params, route){
 
     return {
         ...params,
-        viewerId: 1
+        viewerId: ''
     }
 }
 
@@ -63,7 +64,7 @@ function getAnonymousDashboardParams(params, route){
         ...params,
         reference:'',
         city: 'Bamako',
-        viewerId: 1
+        viewerId: ''
     }
 }
 
@@ -74,7 +75,7 @@ export default  <Route>
                         <Route path="property/:reference" component={PropertyDetails} queries={RouteHome.queries} prepareParams={getAnonymousParams} />
                     </Route>
                     <Route path="/admin" component={AuthenticatedApp} queries={RouteHome.queries} prepareParams={getParams} >
-                        <IndexRoute component={Dashboard} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />
+                        <IndexRoute component={CustomerDashboard} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />
                         <Route path="newowner" component={NewOwner} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />
                         <Route path="newproperty" component={NewProperty} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />
                         <Route path="property/:reference" component={PropertyDetails} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />

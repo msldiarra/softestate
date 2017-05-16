@@ -235,7 +235,7 @@ CREATE TABLE IF NOT EXISTS contact_login (
 
 
 CREATE VIEW Users AS
-  SELECT c.id, c.first_name, c.last_name, ci.phone, l.login, l.password, l.enabled, cu.name as customer
+  SELECT l.id, c.first_name, c.last_name, ci.phone, l.login, l.password, l.enabled, cu.name as customer
   FROM contact_login AS cl
     INNER JOIN login AS l ON l.Id = cl.login_id
     INNER JOIN contact AS c ON c.Id = cl.contact_id

@@ -260,13 +260,15 @@ type User implements Node {
   login: String
   email: String
   enabled: Boolean
+  customer: String
+  contact: Contact
+  owners(after: String, first: Int, before: String, last: Int, search: String!): OwnersConnection
+  properties(after: String, first: Int, before: String, last: Int, reference: String, city: String, contract_type: Int): PropertiesConnection
 }
 
 type Viewer implements Node {
   id: ID!
   user: User
-  customer: String
-  contact: Contact
   owners(after: String, first: Int, before: String, last: Int, search: String!): OwnersConnection
   places(after: String, first: Int, before: String, last: Int, search: String!): PlacesConnection
   properties(after: String, first: Int, before: String, last: Int, reference: String, city: String, contract_type: Int): PropertiesConnection

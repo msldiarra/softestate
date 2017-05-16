@@ -12,7 +12,15 @@ INSERT INTO size_unit VALUES (1, 'm²'), (2, 'ha');
 INSERT INTO contact_info (phone) VALUES ('0022373034603');
 
 INSERT INTO contact (first_name, last_name) VALUES ('Seydou', 'Niang');
-
+----------------------
+INSERT INTO contact (first_name, last_name) VALUES ('Mamadou', 'Diarra');
+INSERT INTO contact_contact_info VALUES (1,2);
+INSERT INTO contact_contact_type VALUES (1,2);
+INSERT INTO customer (name, reference) VALUES ('Test','00002');
+INSERT INTO customer_contact VALUES (1,2);
+INSERT INTO login (login, password, enabled) VALUES ('msldiarra','dnaqr7AnyCW9mrq3iyNAcOcCdS9iW3UuVeVbSOYH41g=','1');
+INSERT INTO contact_login VALUES (1,2);
+--------------------------------------------
 
 INSERT INTO contact_contact_info VALUES (1,1);
 INSERT INTO contact_contact_type VALUES (1,1);

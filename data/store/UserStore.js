@@ -16,10 +16,15 @@ export function registerViewer(viewer) {
     }
 }
 
+export function registerViewerId(viewer) {
+    users[viewer.id] = viewer
+}
+
 export function getViewer(viewerId) {
 
     console.log("getViewer with Id : " + viewerId)
     console.log("getViewer : " + JSON.stringify(users[viewerId]))
 
-    return users[viewerId] == undefined ? DB.models.user.findOne({where: {id: viewerId}}) : users[viewerId]
+    //return users[viewerId] == undefined ? DB.models.user.findOne({where: {id: viewerId}}) : users[viewerId]
+    return users[viewerId];
 }
