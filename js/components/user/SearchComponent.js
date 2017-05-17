@@ -78,7 +78,7 @@ class SearchComponent extends React.Component {
 
         var tabIndex = 2;
 
-        var owners = this.props.viewer.owners.edges.map(function(edge){
+        var owners = this.props.viewer.user.owners.edges.map(function(edge){
 
             const fullName = edge.node.contact && edge.node.contact.first_name ? edge.node.contact.first_name+' '+edge.node.contact.last_name: "...";
             tabIndex++;
@@ -126,20 +126,23 @@ export default Relay.createContainer(SearchComponent, {
         viewer: () => Relay.QL`
           fragment on Viewer {
                 id,
-                owners(search: $search, first: 10) {
-                  edges {
-                    node {
-                      id
-                      reference
-                      company
-                      type
-                      contact {
-                        first_name
-                        last_name
-                      }
-                    }
-                  },
-                },
+                user{
+                    id
+                    owners(search: $search, first: 10) {
+                      edges {
+                        node {
+                          id
+                          reference
+                          company
+                          type
+                          contact {
+                            first_name
+                            last_name
+                          }
+                        }
+                      },
+                    },
+                }
           }
     `,
     },

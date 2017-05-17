@@ -82,7 +82,6 @@ export default  <Route>
                         <Route path="property/:reference/edit" component={PropertyDetailsEdit} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />
                         <Route path="owner/:search" component={OwnerDetails} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />
                         <Route path="owner/:search/edit" component={OwnerEdit} queries={RouteHome.queries} prepareParams={getParams} onEnter={requireAuth} />
-
                     </Route>
                     <Route path="login" component={Login}  />
                 </Route>

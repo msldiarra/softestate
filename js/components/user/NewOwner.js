@@ -41,7 +41,8 @@ class NewOwner extends React.Component {
 
         var addOwnerMutation = new AddOwnerMutation({
             viewer: this.props.viewer,
-            viewerId: UserService.getUserId(),
+            viewerId: this.props.viewer.id,
+            customer: this.props.viewer.user.customer,
             reference: reference,
             type: type,
             company: company,
@@ -146,6 +147,10 @@ export default Relay.createContainer(NewOwner, {
         viewer: () => Relay.QL`
           fragment on Viewer {
                id
+               user {
+                id
+                customer
+               }
                ${AddOwnerMutation.getFragment('viewer')}
           }
     `,

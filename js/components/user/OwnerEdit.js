@@ -32,7 +32,7 @@ class OwnerEdit extends React.Component {
 
         let names = this.computeName(this.refs.name.value);
 
-        var owner = this.props.viewer.owners.edges[0].node;
+        var owner = this.props.viewer.user.owners.edges[0].node;
 
 
         var company = this.refs.company.value;
@@ -44,7 +44,7 @@ class OwnerEdit extends React.Component {
 
         var editOwnerMutation = new EditOwnerMutation({
             viewer: this.props.viewer,
-            viewerId: UserService.getUserId(),
+            viewerId: this.props.viewer.id,
             reference: reference,
             type: type,
             company: company,
@@ -67,13 +67,13 @@ class OwnerEdit extends React.Component {
 
     componentDidMount() {
 
-        var owner = this.props.viewer.owners.edges[0].node;
+        var owner = this.props.viewer.user.owners.edges[0].node;
         this.setState({ type : owner.type_id });
     }
 
     render() {
 
-        var owner = this.props.viewer.owners.edges[0].node;
+        var owner = this.props.viewer.user.owners.edges[0].node;
 
         const text = this.state.message;
 
@@ -153,24 +153,26 @@ export default Relay.createContainer(OwnerEdit, {
         viewer: () => Relay.QL`
           fragment on Viewer {
                id
-               owners(search: $search, first: 1) {
-                  edges {
-                    node {
-                      id
-                      reference
-                      company
-                      type
-                      type_id
-                      contact {
-                        first_name
-                        last_name
-                        info {
-                           phone
+               user {
+                   owners(search: $search, first: 1) {
+                      edges {
+                        node {
+                          id
+                          reference
+                          company
+                          type
+                          type_id
+                          contact {
+                            first_name
+                            last_name
+                            info {
+                               phone
+                            }
+                          }
                         }
-                      }
-                    }
-                  },
-                },
+                      },
+                    },
+                }
                ${EditOwnerMutation.getFragment('viewer')}
           }
     `,

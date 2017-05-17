@@ -3,11 +3,12 @@ import {  mutationWithClientMutationId } from 'graphql-relay';
 import { DB } from '../database';
 import {viewerType} from '../type/Types'
 import sanitize from 'sanitize-filename';
+import {getViewer} from '../store/UserStore';
 
 export default mutationWithClientMutationId({
     name: 'AttachMedia',
     inputFields: {
-        viewerId: { type: new GraphQLNonNull(GraphQLInt) },
+        viewerId: { type: new GraphQLNonNull(GraphQLString) },
         uri: {type: new GraphQLNonNull(GraphQLString)},
         name: {type: new GraphQLNonNull(GraphQLString)},
     },
@@ -15,7 +16,7 @@ export default mutationWithClientMutationId({
 
         viewer: {
             type: viewerType,
-            resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}}),
+            resolve: ({viewerId}) => getViewer(viewerId),
         }
     },
     mutateAndGetPayload: (input, options) => {

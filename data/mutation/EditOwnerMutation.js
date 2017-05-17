@@ -2,13 +2,14 @@ import {  GraphQLInt,  GraphQLNonNull, GraphQLObjectType, GraphQLString } from '
 import {  mutationWithClientMutationId } from 'graphql-relay';
 import { DB } from '../database';
 import {viewerType} from '../type/Types'
+import {getViewer} from '../store/UserStore';
 
 
 
 export default mutationWithClientMutationId({
     name: 'EditOwner',
     inputFields: {
-        viewerId: { type: new GraphQLNonNull(GraphQLInt) },
+        viewerId: { type: new GraphQLNonNull(GraphQLString) },
         reference: { type: new GraphQLNonNull(GraphQLString) },
         company: { type: new GraphQLNonNull(GraphQLString) },
         firstName: { type: new GraphQLNonNull(GraphQLString) },
@@ -19,7 +20,7 @@ export default mutationWithClientMutationId({
     outputFields: {
         viewer: {
             type: viewerType,
-            resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}})
+            resolve: ({viewerId}) => getViewer(viewerId)
         }
 
     },
@@ -42,7 +43,7 @@ export default mutationWithClientMutationId({
 
                                         contact.updateAttributes({first_name: firstName, last_name: lastName})
 
-                                        if (contact.getContactInfo()) { contact.getContactInfo().then(contactInfo => contactInfo[0].updateAttributes({phone: phone})) }
+                                        if (contact.getContactInfos()) { contact.getContactInfos().then(contactInfo => contactInfo[0].updateAttributes({phone: phone})) }
                                         else { if (phone) contact.createContactInfo({phone: phone}) }
                                     })
                             }

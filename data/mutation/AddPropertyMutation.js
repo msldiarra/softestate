@@ -4,13 +4,12 @@ import { DB }from '../database';
 import {viewerType} from '../type/Types';
 import _ from 'lodash';
 import sanitize from 'sanitize-filename';
-
-
+import {getViewer} from '../store/UserStore';
 
 export default mutationWithClientMutationId({
     name: 'AddProperty',
     inputFields: {
-        viewerId: { type: new GraphQLNonNull(GraphQLInt) },
+        viewerId: { type: new GraphQLNonNull(GraphQLString) },
         reference: { type: new GraphQLNonNull(GraphQLString) },
         propertyType: { type: new GraphQLNonNull(GraphQLInt) },
         contractType: { type: new GraphQLNonNull(GraphQLInt) },
@@ -28,7 +27,7 @@ export default mutationWithClientMutationId({
     outputFields: {
         viewer: {
             type: viewerType,
-            resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}}),
+            resolve: ({viewerId}) => getViewer(viewerId),
         }
     },
     mutateAndGetPayload: ({viewerId, reference, propertyType, contractType, description, ownerRef, mediaNames, price, floorCount, roomCount, size, sizeUnit, city, neighborhood}) => {

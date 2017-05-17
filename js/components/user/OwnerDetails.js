@@ -7,7 +7,7 @@ class OwnerDetails extends React.Component {
 
     componentDidMount() {
 
-        var owner = this.props.viewer.owners.edges.length > 0 ? this.props.viewer.owners.edges[0].node: null;
+        var owner = this.props.viewer.user.owners.edges.length > 0 ? this.props.viewer.user.owners.edges[0].node: null;
         if(!owner)
             this.context.router.replace('/');
 
@@ -16,7 +16,7 @@ class OwnerDetails extends React.Component {
     render() {
 
         var ownerDisplay = '';
-        var owner = this.props.viewer.owners.edges.length > 0 ? this.props.viewer.owners.edges[0].node: null;
+        var owner = this.props.viewer.user.owners.edges.length > 0 ? this.props.viewer.user.owners.edges[0].node: null;
 
         if(owner)
             ownerDisplay = (
@@ -68,23 +68,26 @@ export default Relay.createContainer(OwnerDetails, {
         viewer: () => Relay.QL`
           fragment on Viewer {
                 id,
-                owners(search: $search, first: 1) {
-                  edges {
-                    node {
-                      id
-                      reference
-                      company
-                      type
-                      contact {
-                        first_name
-                        last_name
-                        info {
-                           phone
+                user {
+                    id
+                    owners(search: $search, first: 1) {
+                      edges {
+                        node {
+                          id
+                          reference
+                          company
+                          type
+                          contact {
+                            first_name
+                            last_name
+                            info {
+                               phone
+                            }
+                          }
                         }
-                      }
-                    }
-                  },
-                },
+                      },
+                    },
+                }
           }
     `,
     },

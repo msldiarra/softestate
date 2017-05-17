@@ -98,8 +98,16 @@ export const contactType = new GraphQLObjectType({
             id: globalIdField('Contact'),
             first_name: { type: GraphQLString, resolve(contact) { return contact.first_name } },
             last_name: { type: GraphQLString, resolve(contact) { return contact.last_name } },
-            info: {type: contactInfoType, resolve(contact) {return contact.getContactInfo().then(infos => infos ? infos[0]: {})}},
-            credentials: { type: new GraphQLList(loginType), resolve(contact) { return contact.getLogins() } }
+            info: {type: contactInfoType, resolve(contact) {
+                return DB.models.contact_contact_info.findOne({where:{contact_id : contact.id}})
+                    .then(contact_contact_info => {
+                        return DB.models.contact_info.findAll({where:{id : contact_contact_info.contact_info_id}}
+                    )})
+                    .then(infos => infos ? infos[0]: {})
+            }},
+            credentials: { type: new GraphQLList(loginType), resolve(contact) {
+                return DB.models.contact.findOne({where:{id : contact.id}})
+                .then(contact =>contact.getLogins() ) }}
         }
     },
     interfaces: () => [nodeInterface]
@@ -354,9 +362,9 @@ export const userType = new GraphQLObjectType({
                 },
                 resolve: (user, args) => {
                     var term = args.search? args.search + '%' : '';
-                    let where = term ? " WHERE o.reference like '"+ term + "' " +
+                    let where = term ? " WHERE (o.reference like '"+ term + "' " +
                     " OR ocn.name like '"+ term + "' " +
-                    " OR c.last_name like '"+ term + "' " : " WHERE o.reference like '' ";
+                    " OR c.last_name like '"+ term + "') " : " WHERE o.reference like '' ";
 
                     return connectionFromPromisedArray(DB.query('SELECT o.* FROM owner o' +
                         ' LEFT JOIN owner_contact oc ON oc.owner_id = o.id' +
@@ -365,7 +373,7 @@ export const userType = new GraphQLObjectType({
                         ' LEFT JOIN customer cu ON cu.id = co.customer_id' +
                         ' LEFT JOIN contact c ON c.id = oc.contact_id' +
                         where +
-                        " AND customer.name = '" + user.customer + "' ",
+                        " AND cu.name = '" + user.customer + "' ",
                         {type: DB.QueryTypes.SELECT}), args)
                 }
             },
@@ -434,31 +442,6 @@ export const viewerType = new GraphQLObjectType({
             user: { type:  userType, resolve: (obj) => {
                 if(obj.userId) return DB.models.user.findOne({where: {id: obj.userId}})
             } },
-            owners: {
-                type: ownerConnection,
-                description: "A customer's collection of owners",
-                args: {
-                    ...connectionArgs,
-                    search: {
-                        name: 'search',
-                        type: new GraphQLNonNull(GraphQLString)
-                    }
-                },
-                resolve: (_, args) => {
-                    var term = args.search? args.search + '%' : '';
-                    let where = term ? " WHERE o.reference like '"+ term + "' " +
-                            " OR ocn.name like '"+ term + "' " +
-                            " OR c.last_name like '"+ term + "' " :
-                        " WHERE o.reference like '' ";
-
-                    return connectionFromPromisedArray(DB.query('SELECT o.* FROM owner o' +
-                        ' LEFT JOIN owner_contact oc ON oc.owner_id = o.id' +
-                        ' LEFT JOIN owner_company_name ocn ON ocn.owner_id = o.id' +
-                        ' LEFT JOIN contact c ON c.id = oc.contact_id' +
-                        where,
-                        {type: DB.QueryTypes.SELECT}), args)
-                }
-            },
             places: {
                 type: placeConnection,
                 description: "List of available locations",

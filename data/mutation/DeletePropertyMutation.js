@@ -2,12 +2,12 @@ import {GraphQLInt,  GraphQLNonNull, GraphQLString} from 'graphql';
 import {mutationWithClientMutationId} from 'graphql-relay';
 import {DB} from '../database';
 import {viewerType} from '../type/Types'
-
+import {getViewer} from '../store/UserStore';
 
 export default mutationWithClientMutationId({
     name: 'DeleteProperty',
     inputFields: {
-        viewerId: { type: new GraphQLNonNull(GraphQLInt) },
+        viewerId: { type: new GraphQLNonNull(GraphQLString) },
         propertyId: { type: new GraphQLNonNull(GraphQLString) },
         propertyReference: { type: new GraphQLNonNull(GraphQLString) }
     },
@@ -18,7 +18,7 @@ export default mutationWithClientMutationId({
         },
         viewer: {
             type: viewerType,
-            resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}}),
+            resolve: ({viewerId}) => getViewer(viewerId),
         }
     },
     mutateAndGetPayload: ({viewerId, propertyId, propertyReference}) => {

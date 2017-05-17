@@ -38,7 +38,7 @@ class PropertyDetailsEdit extends React.Component {
 
         e.preventDefault();
 
-        var property = this.props.viewer.properties.edges[0].node;
+        var property = this.props.viewer.user.properties.edges[0].node;
 
         var type_id =  this.state.type_id;
         var contractType =  this.state.contractType;
@@ -56,7 +56,7 @@ class PropertyDetailsEdit extends React.Component {
 
         var editPropertyMutation = new EditPropertyMutation({
             viewer: this.props.viewer,
-            viewerId: UserService.getUserId(),
+            viewerId: this.props.viewer.id,
             reference: property.reference,
             propertyType: type_id,
             contractType: contractType,
@@ -95,7 +95,7 @@ class PropertyDetailsEdit extends React.Component {
         Relay.Store.commitUpdate(
             new AttachMediaMutation({
                 viewer: this.props.viewer,
-                viewerId: UserService.getUserId(),
+                viewerId: this.props.viewer.id,
                 uri: uri,
                 name: file.name,
                 file: file
@@ -150,7 +150,7 @@ class PropertyDetailsEdit extends React.Component {
 
     componentDidMount() {
 
-        var property = this.props.viewer.properties.edges[0].node;
+        var property = this.props.viewer.user.properties.edges[0].node;
 
         this.setState({
             type_id : property.type_id ,
@@ -163,7 +163,7 @@ class PropertyDetailsEdit extends React.Component {
 
     render() {
 
-        var property = this.props.viewer.properties.edges[0].node;
+        var property = this.props.viewer.user.properties.edges[0].node;
         const text = this.state.message;
         let location = property.neighborhood? property.city +', '+ property.neighborhood: property.city
 
@@ -293,35 +293,38 @@ export default Relay.createContainer(PropertyDetailsEdit, {
         viewer: () => Relay.QL`
           fragment on Viewer {
                 id,
-                properties(reference: $reference, first: 10) {
-                  edges {
-                    node {
-                      id
-                      reference
-                      name
-                      type_id
-                      contract_type
-                      city
-                      neighborhood
-                      size
-                      size_unit
-                      floor_count
-                      room_count
-                      price
-                      description
-                      owner {
-                        reference
-                      }
-                      media(first: 10) {
-                        edges {
-                            node {
-                                uri
+                user {
+                    id
+                    properties(reference: $reference, first: 10) {
+                      edges {
+                        node {
+                          id
+                          reference
+                          name
+                          type_id
+                          contract_type
+                          city
+                          neighborhood
+                          size
+                          size_unit
+                          floor_count
+                          room_count
+                          price
+                          description
+                          owner {
+                            reference
+                          }
+                          media(first: 10) {
+                            edges {
+                                node {
+                                    uri
+                                }
                             }
+                          }
                         }
-                      }
-                    }
-                  },
-                },
+                      },
+                    },
+                }
                 ${EditPropertyMutation.getFragment('viewer')}
                 ${SearchComponent.getFragment('viewer')}
                 ${SearchLocation.getFragment('viewer')}

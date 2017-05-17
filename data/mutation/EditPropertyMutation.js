@@ -4,13 +4,14 @@ import { DB } from '../database';
 import _ from 'lodash';
 import sanitize from 'sanitize-filename';
 import {viewerType} from '../type/Types'
+import {getViewer} from '../store/UserStore';
 
 
 
 export default mutationWithClientMutationId({
     name: 'EditProperty',
     inputFields: {
-        viewerId: { type: new GraphQLNonNull(GraphQLInt) },
+        viewerId: { type: new GraphQLNonNull(GraphQLString) },
         reference: { type: new GraphQLNonNull(GraphQLString) },
         propertyType: { type: new GraphQLNonNull(GraphQLInt) },
         contractType: { type: new GraphQLNonNull(GraphQLInt) },
@@ -28,7 +29,7 @@ export default mutationWithClientMutationId({
     outputFields: {
         viewer: {
             type: viewerType,
-            resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}}),
+            resolve: ({viewerId}) => getViewer(viewerId),
         }
     },
     mutateAndGetPayload: ({viewerId, reference, propertyType, contractType, description, mediaNames, price, floorCount, roomCount, size, sizeUnit, city, neighborhood}) => {

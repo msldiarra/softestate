@@ -1,6 +1,7 @@
 input AddOwnerInput {
-  viewerId: Int!
+  viewerId: String!
   company: String!
+  customer: String!
   reference: String!
   firstName: String!
   lastName: String!
@@ -15,7 +16,7 @@ type AddOwnerPayload {
 }
 
 input AddPropertyInput {
-  viewerId: Int!
+  viewerId: String!
   reference: String!
   propertyType: Int!
   contractType: Int!
@@ -38,7 +39,7 @@ type AddPropertyPayload {
 }
 
 input AttachMediaInput {
-  viewerId: Int!
+  viewerId: String!
   uri: String!
   name: String!
   clientMutationId: String!
@@ -71,7 +72,7 @@ type Customer implements Node {
 scalar Date
 
 input DeletePropertyInput {
-  viewerId: Int!
+  viewerId: String!
   propertyId: String!
   propertyReference: String!
   clientMutationId: String!
@@ -84,7 +85,7 @@ type DeletePropertyPayload {
 }
 
 input EditOwnerInput {
-  viewerId: Int!
+  viewerId: String!
   reference: String!
   company: String!
   firstName: String!
@@ -100,7 +101,7 @@ type EditOwnerPayload {
 }
 
 input EditPropertyInput {
-  viewerId: Int!
+  viewerId: String!
   reference: String!
   propertyType: Int!
   contractType: Int!
@@ -269,7 +270,6 @@ type User implements Node {
 type Viewer implements Node {
   id: ID!
   user: User
-  owners(after: String, first: Int, before: String, last: Int, search: String!): OwnersConnection
   places(after: String, first: Int, before: String, last: Int, search: String!): PlacesConnection
   properties(after: String, first: Int, before: String, last: Int, reference: String, city: String, contract_type: Int): PropertiesConnection
 }

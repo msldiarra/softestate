@@ -17,6 +17,7 @@ export default class AddOwnerMutation extends Relay.Mutation {
             viewerId: this.props.viewerId,
             reference: this.props.reference,
             company: this.props.company,
+            customer: this.props.customer,
             firstName: this.props.firstName,
             lastName: this.props.lastName,
             phone: this.props.phone,

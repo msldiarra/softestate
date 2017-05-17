@@ -51,7 +51,8 @@ class NewProperty extends React.Component {
 
         var addPropertyMutation = new AddPropertyMutation({
             viewer: this.props.viewer,
-            viewerId: UserService.getUserId(),
+            viewerId: this.props.viewer.id,
+            userId: UserService.getUserId(),
             name: name,
             reference: reference,
             propertyType: propertyType,
@@ -85,7 +86,7 @@ class NewProperty extends React.Component {
         Relay.Store.commitUpdate(
             new AttachMediaMutation({
                 viewer: this.props.viewer,
-                viewerId: UserService.getUserId(),
+                viewerId: this.props.viewer.id,
                 uri: uri,
                 name: file.name,
                 file: file

@@ -2,13 +2,15 @@ import {  GraphQLInt,  GraphQLNonNull, GraphQLObjectType, GraphQLString } from '
 import {  mutationWithClientMutationId } from 'graphql-relay';
 import { DB } from '../database';
 import {viewerType} from '../type/Types'
+import {getViewer} from '../store/UserStore';
 
 
 export default mutationWithClientMutationId({
     name: 'AddOwner',
     inputFields: {
-        viewerId: { type: new GraphQLNonNull(GraphQLInt) },
+        viewerId: { type: new GraphQLNonNull(GraphQLString) },
         company: { type: new GraphQLNonNull(GraphQLString) },
+        customer: { type: new GraphQLNonNull(GraphQLString) },
         reference: { type: new GraphQLNonNull(GraphQLString) },
         firstName: { type: new GraphQLNonNull(GraphQLString) },
         lastName: { type: new GraphQLNonNull(GraphQLString) },
@@ -18,11 +20,11 @@ export default mutationWithClientMutationId({
     outputFields: {
         viewer: {
             type: viewerType,
-            resolve: ({viewerId}) => DB.models.user.findOne({where: {id: viewerId}})
+            resolve: ({viewerId}) => getViewer(viewerId)
         }
 
     },
-    mutateAndGetPayload: ({viewerId, reference, company, firstName, lastName, phone, type}) => {
+    mutateAndGetPayload: ({viewerId, reference, company, customer, firstName, lastName, phone, type}) => {
 
         var owner = {
             reference: reference,
@@ -55,6 +57,11 @@ export default mutationWithClientMutationId({
                     });
 
 
+            }
+
+            if(customer) {
+                DB.models.customer.findOne({where :{name: customer}})
+                    .then(customer => customer.addOwner(owner))
             }
 
             return {
