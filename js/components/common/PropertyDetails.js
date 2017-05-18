@@ -11,7 +11,7 @@ class PropertyDetails extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { message : "", canEdit: UserService.getUserId() != undefined? true: false} ;
+        this.state = { message : "", canEdit : false} ;
     }
 
     deleteProperty(e) {
@@ -22,7 +22,7 @@ class PropertyDetails extends React.Component {
 
         var deletePropertyMutation = new DeletePropertyMutation({
             viewer: this.props.viewer,
-            viewerId: UserService.getUserId(),
+            viewerId: this.props.viewer.id,
             propertyId: property.id,
             propertyReference: property.reference
         });
@@ -43,6 +43,15 @@ class PropertyDetails extends React.Component {
         if(property == null)
             this.context.router.replace('/');
 
+        var canEdit = false;
+        const { location } = this.props;
+        var pathName = location.pathname;
+
+        if (location && pathName) {
+            canEdit = (UserService.getUserId() != undefined) && pathName.startsWith('/admin')
+        }
+
+        this.setState({canEdit :  canEdit});
     }
 
     render() {
@@ -74,7 +83,7 @@ class PropertyDetails extends React.Component {
                                     </a>
                                 </div>: ''}
                         </h2>
-                        <h4>{property.price ? 'A partir de ' + property.price + ' ' + property.contract_type==1? ' FCFA / mois' : '' : ''} </h4><br/>
+                        <h4>{property.price ? property.price + ' ' + (property.contract_type==1? ' FCFA / mois' : ' FCFA') : ''} </h4><br/>
                         <dl>
                             <dt></dt>
                             <dd>
